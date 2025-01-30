@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -6,24 +7,24 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem('token')
-
+  async function handleLogin() {
+    const res = await axios.post('http://localhost:3001/auth/login', {
+      email,
+      password
+    })
+    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('user', res.data.user.role)
+    console.log(res)
+    if(res.data.user.role === 'admin'){
+      console.log('admin')
+      navigate('/admin')
+    }else{
+      navigate('/')
+    }
+  }
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(email, password)
-    // fetch("/login", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ email, password }),
-    // }).then((res) => {
-    //   if (res.ok) {
-    //     res.json().then((data) => {
-    //       localStorage.setItem("token", data.token);
-    //       navigate("/");
-    //     });
-    //   } else {
-    //     alert("Invalid email or password");
-    //   }
-    // });
+    handleLogin()
   }
 
   useEffect(() => {
@@ -62,7 +63,7 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        <button type="submit" className="btn btn-success">
+        <button disabled={!email || password.length < 8} type="submit" className="btn btn-success">
           Login
         </button>
         <p>New to the website? <Link to={'/register'}>Create Account</Link></p>

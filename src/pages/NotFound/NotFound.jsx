@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 
 function NotFound() {
   const navigate = useNavigate();
+  const user = localStorage.getItem("user");
   return (
     <div
       style={{
@@ -13,7 +14,7 @@ function NotFound() {
     >
       <div>
         <h1>Not Found</h1>
-        <button className="btn btn-success" onClick={() => navigate("/")}>
+        <button className="btn btn-success" onClick={() => user === "admin" ? navigate("/admin") : navigate("/")}>
           Go To Homepage
         </button>
       </div>
