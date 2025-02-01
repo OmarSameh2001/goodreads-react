@@ -15,13 +15,21 @@ import AdminCategories from "./pages/Admin/Categories/Categories";
 import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
+ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+ const queryClient = new QueryClient(); 
+
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}> {/* Wrap the entire app */}
     <div className="App">
-      <BrowserRouter>
+
+      
+       <BrowserRouter>
         <Navbar />
-        <Routes>
+        <Authors></Authors>
+        {/*<Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -89,9 +97,10 @@ function App() {
             }
           />
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        </Routes>*/}
+      </BrowserRouter> 
     </div>
+    </QueryClientProvider>
   );
 }
 
