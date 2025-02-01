@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
@@ -15,6 +16,7 @@ import AdminCategories from "./pages/Admin/Categories/Categories";
 import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
+import Otp from "./pages/Register/Otp";
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/otp" element={<Otp />} />
           <Route
             path="/admin"
             element={
