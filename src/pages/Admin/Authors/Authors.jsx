@@ -50,7 +50,11 @@ function AdminAuthors() {
         "Are you sure you want to delete this author?"
       );
       if (confirm) {
-        await axios.delete(`http://localhost:3001/authors/${id}`);
+        await axios.delete(`http://localhost:3001/authors/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         <Snackbar open={true} autoHideDuration={2000} message="Author deleted" />;
         handleClose();
         refetch();
@@ -64,7 +68,11 @@ function AdminAuthors() {
     try {
       e.preventDefault();
       console.log(update)
-      await axios.put(`http://localhost:3001/authors/${update._id}`, update);
+      await axios.put(`http://localhost:3001/authors/${update._id}`, update, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       handleClose();
       refetch();
     } catch (error) {
@@ -76,7 +84,11 @@ function AdminAuthors() {
     try {
       e.preventDefault();
       console.log(newAuthor)
-      await axios.post("http://localhost:3001/authors", newAuthor);
+      await axios.post("http://localhost:3001/authors", newAuthor, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       handleClose();
       refetch();
     } catch (error) {
@@ -86,7 +98,11 @@ function AdminAuthors() {
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/authors");
+      const res = await axios.get("http://localhost:3001/authors", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       return res.data;
     }
   });
@@ -118,7 +134,7 @@ function AdminAuthors() {
       align: "left",
     },
   ];
-  
+
   if (isLoading) {
     return <div className="App-header" style={{ backgroundColor: "white" }}><CircularProgress /></div>;
   }
@@ -177,7 +193,7 @@ function AdminAuthors() {
       ): null}
       <IoMdAddCircle style={{ scale: 2, cursor: "pointer", marginBottom: 20 }} onClick={() => setIsNew(true)} />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -198,7 +214,7 @@ function AdminAuthors() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data
+              {data && data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((author, index) => (
                   <TableRow
@@ -221,7 +237,7 @@ function AdminAuthors() {
                     <TableCell align="left">{author.name}</TableCell>
                     <TableCell align="left">{author.about}</TableCell>
                     <TableCell align="left">
-                      {author.DOB.split("T")[0]}
+                      {author?.DOB?.split("T")[0]}
                     </TableCell>
                     <TableCell align="left">
                       <FaPencilAlt
