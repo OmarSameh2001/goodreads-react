@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import { IoMdAddCircle } from "react-icons/io";
@@ -26,6 +26,8 @@ function AdminBooks() {
   const [update, setUpdate] = useState({});
   const [isNew, setIsNew] = useState(false);
   const [newBook, setNewBook] = useState({});
+  const [image, setImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,13 +42,46 @@ function AdminBooks() {
     setUpdate({});
     setIsNew(false);
     setNewBook({});
+    setImage(null);
   }
 
+  function handleImage(e) {
+    setImageLoading(true);
+    const file = e.target.files[0];
+    const maxSize = 4 * 1024 * 1024; // 4MB
+    if(file.size > maxSize) {
+      alert("Image size should be less than 4MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+      setImage(base64String);
+      setImageLoading(false);
+      const event = {
+        target: {
+          name: e.target.name,
+          value: base64String,
+        },
+      };
+      handleChange(event);
+    };
+
+    reader.readAsDataURL(file);
+  }
   function handleChange(e) {
     console.log(e.target.name, e.target.value);
     isNew
-      ? setNewBook({ ...newBook, [e.target.name]: e.target.value })
-      : setUpdate({ ...update, [e.target.name]: e.target.value });
+      ? setNewBook({
+          ...newBook,
+          [e.target.name]: e.target.value,
+        })
+      : setUpdate({
+          ...update,
+          [e.target.name]: e.target.value,
+        });
   }
 
   async function handleDelete(id) {
@@ -70,19 +105,19 @@ function AdminBooks() {
   }
 
   function handleIds(author, category) {
-    console.log(author, category)
+    console.log(author, category);
     let newAuthor, newCategory;
-    let bookObj = isNew ? {...newBook} : {...update}
-    if(author && !authors.name) {
-        newAuthor = authors.find(auth => auth.name === author)
-        if(newAuthor) bookObj = {...bookObj, author: newAuthor._id}
-    };
-    if(category && !categories.name) {
-        newCategory = categories.data.find(categ => categ.name === category)
-        if(newCategory) bookObj = {...bookObj, category: newCategory._id}  
-    };
-    console.log(bookObj)
-    return bookObj
+    let bookObj = isNew ? { ...newBook } : { ...update };
+    if (author && !authors.name) {
+      newAuthor = authors.find((auth) => auth.name === author);
+      if (newAuthor) bookObj = { ...bookObj, author: newAuthor._id };
+    }
+    if (category && !categories.name) {
+      newCategory = categories.data.find((categ) => categ.name === category);
+      if (newCategory) bookObj = { ...bookObj, category: newCategory._id };
+    }
+    console.log(bookObj);
+    return bookObj;
   }
 
   async function handleUpdate(e) {
@@ -114,7 +149,7 @@ function AdminBooks() {
       handleClose();
       refetch();
     } catch (error) {
-        alert(error.response.data.message)
+      alert(error.response.data.message);
       console.log(error);
     }
   }
@@ -218,11 +253,11 @@ function AdminBooks() {
     },
   ];
   useEffect(() => {
-      console.log(newBook)
-  }, [newBook])
+    console.log(newBook);
+  }, [newBook]);
   useEffect(() => {
-      console.log(update)
-  }, [update])
+    console.log(update);
+  }, [update]);
   if (authorLoading || categoryLoading || bookLoading) {
     return (
       <div className="App-header" style={{ backgroundColor: "white" }}>
@@ -273,6 +308,40 @@ function AdminBooks() {
                 />
               </div>
               <div className="mb-1">
+                <label htmlFor="photo" className="form-label">
+                  Photo
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  placeholder="Photo"
+                  name="img"
+                  accept="image/*"
+                  onChange={(e) => handleImage(e)}
+                  required
+                  max={1}
+                />
+                {imageLoading ? <CircularProgress /> : image || update.img ? (
+                  <img
+                    src={image ? `data:image/png;base64,${image}` : update.img}
+                    alt="Uploaded"
+                    style={{
+                      objectFit: "contain",
+                      width: "100%",
+                      maxHeight: 200,
+                      marginTop: 5,
+                      borderRadius: 3,
+                    }}
+                  />
+                ) : null}
+                {/* <button
+                  className="btn btn-primary mt-2"
+                  disabled={!image}
+                >
+                  {imageLoading ? <CircularProgress /> : "Upload"}
+                </button> */}
+              </div>
+              <div className="mb-1">
                 <label htmlFor="description" className="form-label">
                   Description
                 </label>
@@ -294,7 +363,9 @@ function AdminBooks() {
                   disablePortal
                   defaultValue={update?.author?.name || ""}
                   options={authors?.map((author) => author.name)}
-                  onChange={(e, value) => handleChange({target: {name: 'author', value}})}
+                  onChange={(e, value) =>
+                    handleChange({ target: { name: "author", value } })
+                  }
                   name="author"
                   required
                   sx={{ width: 300 }}
@@ -311,7 +382,9 @@ function AdminBooks() {
                   disablePortal
                   defaultValue={update?.category?.name || ""}
                   options={categories?.data?.map((category) => category.name)}
-                  onChange={(e, value) => handleChange({target: {name: 'category', value}})}
+                  onChange={(e, value) =>
+                    handleChange({ target: { name: "category", value } })
+                  }
                   name="category"
                   required
                   sx={{ width: 300 }}
@@ -346,7 +419,7 @@ function AdminBooks() {
         onClick={() => setIsNew(true)}
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
-        <TableContainer >
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -383,7 +456,11 @@ function AdminBooks() {
                       {page * rowsPerPage + index + 1}
                     </TableCell>
                     <TableCell align="left">
-                      <a href={book.img} target="_blank" rel="noreferrer">
+                      <a
+                        href={book.img || "https://via.placeholder.com/150"}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         Book's Image
                       </a>
                     </TableCell>
