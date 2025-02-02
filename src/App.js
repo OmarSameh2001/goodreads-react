@@ -21,18 +21,11 @@ import { AddHomeOutlined } from "@mui/icons-material";
 function App() {
   const queryClient = new QueryClient();
   return (
-  //   <BrowserRouter>
-  //   <Navbar />
-   
-  //   <AdminCategories/>
-  // </BrowserRouter>
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        {/* <AdminCategories/> */}
-       
         <BrowserRouter>
           <Navbar/>
-          <AdminAuthors />
+          {/* <AdminAuthors /> */}
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
