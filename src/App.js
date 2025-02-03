@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
@@ -16,14 +16,16 @@ import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import { AddHomeOutlined } from "@mui/icons-material";
+//npm install @mui/material @emotion/react @emotion/styled @mui/icons-material axios
 function App() {
   const queryClient = new QueryClient();
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <Navbar />
+          <Navbar/>
+          {/* <AdminAuthors /> */}
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -92,8 +94,8 @@ function App() {
               }
             />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+          </Routes> 
+        </BrowserRouter> 
       </QueryClientProvider>
     </div>
   );
