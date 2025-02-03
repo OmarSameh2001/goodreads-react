@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Search from "../../../components/Search/Search";
 import ReactPaginate from "react-paginate";
-
+//npm install react-router-dom react-paginate
 function Authors() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6; // lma tzawedy el authers matense4 t8yary de
@@ -43,7 +43,6 @@ function Authors() {
 
   return (
     <div className="container mt-4">
-      <Search/>
       <h1 className="text-2xl font-bold mb-4">Authors</h1>
       <div className="row">
         {currentAuthors.map((author) => (
