@@ -13,12 +13,16 @@ import ReactPaginate from "react-paginate";
 function Authors() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6; // lma tzawedy el authers matense4 t8yary de
-
+  const token = localStorage.getItem("token");
 
   const { data: authors, error, isLoading} = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/authors");
+      const res = await axios.get("http://localhost:3001/authors", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return res.data;
     },
   });
