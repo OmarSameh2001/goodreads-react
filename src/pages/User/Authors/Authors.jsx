@@ -53,7 +53,6 @@ function Authors() {
 
 
 
-
       <ReactPaginate
         previousLabel={"← Previous"}
         nextLabel={"Next →"}

@@ -28,8 +28,8 @@ function App() {
       
        <BrowserRouter>
         <Navbar />
-        <Authors></Authors>
-        {/*<Routes>
+        {/* <Authors></Authors> */}
+        <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -97,7 +97,7 @@ function App() {
             }
           />
           <Route path="*" element={<NotFound />} />
-        </Routes>*/}
+        </Routes>
       </BrowserRouter> 
     </div>
     </QueryClientProvider>
