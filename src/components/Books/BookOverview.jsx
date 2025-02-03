@@ -4,7 +4,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 
-
 const BookOverview = ({ book }) => {
     return (
         <Link to={`/book/${book.id}`} style={{ textDecoration: "none" }}>

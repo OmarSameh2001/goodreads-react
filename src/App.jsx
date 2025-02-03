@@ -27,10 +27,11 @@ function App() {
         <BrowserRouter>
           <Navbar />
           <Routes>
+          <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/otp" element={<Otp />} />
-
+          
             <Route
               path="/admin"
               element={
