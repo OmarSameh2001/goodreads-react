@@ -1,61 +1,59 @@
-//This component is responsible for showing the top 10 popular authors
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "../../apis/config";
-import { Card, CardMedia, Container, Grid2, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import { useEffect } from "react";
+import { Card, CardContent, Typography, CardMedia, Box } from "@mui/material";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+import { useNavigate } from "react-router-dom";
 
 export default function ListPopularAuthors() {
   const [popularAuthors, setPopularAuthors] = useState([]);
-
-  // create a function to redirect to the author details page
-  function handleRedirectionToAuthorDetails(id) {
-    navigate(`/authors/${id}`);
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
       .get("/authors/popular")
-      .then((res) => {
-        setPopularAuthors(res.data); // ✅ Ensure you're accessing `res.data`
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.error("Unable to fetch popular authors", err);
-      });
+      .then((res) => setPopularAuthors(res.data))
+      .catch((err) => console.error("Unable to fetch popular authors", err));
   }, []);
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: true,
+    responsive: [
+      { breakpoint: 900, settings: { slidesToShow: 2 } },
+      { breakpoint: 600, settings: { slidesToShow: 1 } }
+    ]
+  };
+
   return (
-    <Stack spacing={2}>
-      <h1>Popular Authors</h1>
-      <Grid2 container spacing={5}>
-        {popularAuthors.map((popularAuthor) => {
-          return (
-            <>
-              <Card key={popularAuthor._id} sx={{ width: 310 }}>
-                <Typography
-                  gutterBottom
-                  sx={{ color: "text.secondary", fontSize: 14 }}
-                >
-                  {popularAuthor.name}
-                </Typography>
-                <Typography variant="h5" component="div">
-                  {popularAuthor.about}
-                </Typography>
-                <CardMedia
-                  component="img"
-                  image={`${popularAuthor.img}`}
-                  alt="author image"
-                  onClick={() =>
-                    handleRedirectionToAuthorDetails(popularAuthor.id)
-                  }
-                />
-                {/* <img src="https://i.imgur.com/BYwiZv4_d.webp?maxwidth=760&fidelity=grand" ></img> */}
-              </Card>
-            </>
-          );
-        })}
-      </Grid2>
-    </Stack>
+    <Box sx={{ width: "80%", margin: "auto", mt: 4 }}>
+      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
+        Popular Authors
+      </Typography>
+      <Slider {...settings}>
+        {popularAuthors.map((author) => (
+          <Card key={author._id} sx={{ mx: 1, p: 2 }}>
+            <CardContent>
+              <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
+                {author.name}
+              </Typography>
+              <Typography variant="h6">{author.about}</Typography>
+            </CardContent>
+            <CardMedia
+              component="img"
+              image={author.img}
+              alt="Author image"
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate(`/authors/${author._id}`)}
+            />
+          </Card>
+        ))}
+      </Slider>
+    </Box>
   );
 }
