@@ -1,26 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useState, useRef, use } from "react";
-import axiosInstance from "../../../apis/config";
+import axiosInstance from "../../../apis/config.js";
+import BookCard from "../../../components/Card/BookCard";
 function UserBooks() {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
   useEffect(() => {
-    try {
-      const fetchData = async () => {
+    const fetchData = async () => {
+      try {
         const response = await axiosInstance.get("/books");
         console.log(response.data);
         setBooks(response.data);
-        setIsLoading(false);
-      };
-      fetchData();
-    } catch (error) {
-      setError(error);
-    }
+      } catch (error) {
+        setError(error); // Properly catch errors
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated
+      }
+    };
+
+    fetchData();
   }, []);
 
+  console.log(books);
   return (
     <div>
       <h1>Books</h1>
@@ -29,12 +32,10 @@ function UserBooks() {
       {error && <div>Error: {error.message}</div>}
 
       {books && books.length > 0 ? (
-        <div>
+        <div className="row row-cols-1 row-cols-md-5 g-4 text-center">
           {books.map((book) => (
-            <div key={book._id}>
-              <h2>{book.title}</h2>
-              <p>{book.author?.name || "Unknown Author"}</p>
-              <p>{book.category?.name || "Uncategorized"}</p>
+            <div className="col" key={book._id}>
+              <BookCard book={book} />
             </div>
           ))}
         </div>

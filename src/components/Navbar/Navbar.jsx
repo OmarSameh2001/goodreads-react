@@ -28,16 +28,8 @@ function Navbar() {
           gap: 20,
         }}
       >
-        <Link
-          style={{ textDecoration: "none", color: "black" }}
-          to={user === "admin" ? "/admin" : "/"}
-        >
-          <button class="button" data-text="Awesome">
-            <span class="actual-text">&nbsp;goodReads&nbsp;</span>
-            <span aria-hidden="true" class="hover-text">
-              &nbsp;goodReads&nbsp;
-            </span>
-          </button>
+        <Link style={{ textDecoration: "none", color: "black" }} to={user === "admin" ? "/admin" : "/"}>
+          <h1>GoodReads</h1>
         </Link>
         {user === "user" && (
           <>
@@ -52,10 +44,7 @@ function Navbar() {
             </Link>
           </>
         )}
-        <Link
-          style={{ textDecoration: "none", color: "black" }}
-          to={user === "admin" ? "/adminBooks" : "/books"}
-        >
+        <Link style={{ textDecoration: "none", color: "black" }} to={user === "admin" ? "/adminBooks" : "/books"}>
           <h5>Books</h5>
         </Link>
         <Link
@@ -71,6 +60,7 @@ function Navbar() {
           <h5>Categories</h5>
         </Link>
         {user === "user" && <Search />}
+        
       </div>
       <div
         style={{
