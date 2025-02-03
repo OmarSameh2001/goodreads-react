@@ -17,6 +17,7 @@ function AdminCategories() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
+  const token = localStorage.getItem("token");
 
     useEffect(() => {
       fetchCategories();
@@ -24,41 +25,52 @@ function AdminCategories() {
   
 
     const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/categories");
-        setCategories(response.data.data || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setCategories([]);
-      }
+        try {
+            const response = await axios.get("http://localhost:3001/categories", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setCategories(response.data.data || []);
+          } catch (error) {
+            console.error("Error fetching categories:", error);
+            setCategories([]);
+          }
     };
     
-      // add w 
+      // add w update
       const handleSave = async () => {
         if (!formData.name || !formData.description || !formData.image) {
           setError("All fields are required");
           return;
         }
         try {
-          if (editMode) {
-            await axios.put(`http://localhost:3001/categories/${editId}`, formData);
-          } else {
-            await axios.post("http://localhost:3001/categories", formData);
+            if (editMode) {
+              await axios.put(`http://localhost:3001/categories/${editId}`, formData, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+            } else {
+              await axios.post("http://localhost:3001/categories", formData, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+            }
+            fetchCategories();
+            handleClose();
+          } catch (error) {
+            console.error("Error saving category:", error);
           }
-          fetchCategories();
-          handleClose();
-        } catch (error) {
-          console.error("Error saving category:", error);
-        }
       };
     
       const handleDelete = async (id) => {
         try {
-          await axios.delete(`http://localhost:3001/categories/${id}`);
-          fetchCategories();
-        } catch (error) {
-          console.error("Error deleting category:", error);
-        }
+            const confirm = window.confirm("Are you sure you want to delete this category?");
+            if (confirm) {
+              await axios.delete(`http://localhost:3001/categories/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              fetchCategories();
+            }
+          } catch (error) {
+            console.error("Error deleting category:", error);
+          }
       };
     
   
