@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import CategoryCard from "../../../components/Card/CategoryCard";
 import Pagination from "@mui/material/Pagination";
+import ReactPaginate from "react-paginate";
 
 function Categories() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,11 +44,24 @@ function Categories() {
       </div>
 
       {/* Pagination Component */}
-      <Pagination
-        count={data.totalPages} // Use total pages from API
-        page={currentPage}
-        onChange={handlePageChange}
-        color="primary"
+      <ReactPaginate
+        previousLabel={"← Previous"}
+        nextLabel={"Next →"}
+        breakLabel={"..."}
+        pageCount={totalPages}
+        marginPagesDisplayed={1}
+        pageRangeDisplayed={2}
+        onPageChange={handlePageChange}
+        containerClassName={"pagination justify-content-center mt-4"}
+        pageClassName={"page-item"}
+        pageLinkClassName={"page-link"}
+        previousClassName={"page-item"}
+        previousLinkClassName={"page-link"}
+        nextClassName={"page-item"}
+        nextLinkClassName={"page-link"}
+        breakClassName={"page-item"}
+        breakLinkClassName={"page-link"}
+        activeClassName={"active"}
       />
     </div>
   );
