@@ -49,7 +49,7 @@ function AdminBooks() {
     setImageLoading(true);
     const file = e.target.files[0];
     const maxSize = 4 * 1024 * 1024; // 4MB
-    if(file.size > maxSize) {
+    if (file.size > maxSize) {
       alert("Image size should be less than 4MB");
       return;
     }
@@ -176,7 +176,7 @@ function AdminBooks() {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/categories", {
+      const res = await axios.get("http://localhost:3001/categories/names", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -192,12 +192,13 @@ function AdminBooks() {
   } = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/books/paginated", {
+      const res = await axios.get("http://localhost:3001/books/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      return res.data.data.items;
+      console.log(res.data);
+      return res.data;
     },
   });
   const columns = [
@@ -252,12 +253,12 @@ function AdminBooks() {
       align: "left",
     },
   ];
-  useEffect(() => {
-    console.log(newBook);
-  }, [newBook]);
-  useEffect(() => {
-    console.log(update);
-  }, [update]);
+  // useEffect(() => {
+  //   console.log(newBook);
+  // }, [newBook]);
+  // useEffect(() => {
+  //   console.log(update);
+  // }, [update]);
   if (authorLoading || categoryLoading || bookLoading) {
     return (
       <div className="App-header" style={{ backgroundColor: "white" }}>
@@ -321,7 +322,9 @@ function AdminBooks() {
                   required
                   max={1}
                 />
-                {imageLoading ? <CircularProgress /> : image || update.img ? (
+                {imageLoading ? (
+                  <CircularProgress />
+                ) : image || update.img ? (
                   <img
                     src={image ? `data:image/png;base64,${image}` : update.img}
                     alt="Uploaded"
@@ -440,66 +443,68 @@ function AdminBooks() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {books
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((book, index) => (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={book._id}
-                    style={{
-                      backgroundColor: index % 2 === 0 ? "#ffffff" : "#ececec",
-                    }}
-                  >
-                    <TableCell align="left">
-                      {page * rowsPerPage + index + 1}
-                    </TableCell>
-                    <TableCell align="left">
-                      <a
-                        href={book.img || "https://via.placeholder.com/150"}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Book's Image
-                      </a>
-                    </TableCell>
-                    <TableCell align="left">{book.title}</TableCell>
-                    <TableCell align="left">{book.description}</TableCell>
-                    <TableCell align="left">
-                      {book?.author?.name || "N/A"}
-                    </TableCell>
-                    <TableCell align="left">
-                      {book?.category?.name || "N/A"}
-                    </TableCell>
-                    <TableCell align="left">
-                      {book.totalRate / book.totalRateCount || 0}
-                    </TableCell>
-                    <TableCell align="left">{book.edition}</TableCell>
-                    <TableCell align="left">{book.views}</TableCell>
-                    <TableCell align="left">
-                      <FaPencilAlt
-                        style={{
-                          marginRight: 20,
-                          cursor: "pointer",
-                          scale: 1.5,
-                        }}
-                        onClick={() => setUpdate(book)}
-                      />
-                      <RiDeleteBinFill
-                        style={{ cursor: "pointer", scale: 1.5 }}
-                        onClick={() => handleDelete(book._id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {books &&
+                books
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((book, index) => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={book._id}
+                      style={{
+                        backgroundColor:
+                          index % 2 === 0 ? "#ffffff" : "#ececec",
+                      }}
+                    >
+                      <TableCell align="left">
+                        {page * rowsPerPage + index + 1}
+                      </TableCell>
+                      <TableCell align="left">
+                        <a
+                          href={book.img || "https://via.placeholder.com/150"}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Book's Image
+                        </a>
+                      </TableCell>
+                      <TableCell align="left">{book.title}</TableCell>
+                      <TableCell align="left">{book.description}</TableCell>
+                      <TableCell align="left">
+                        {book?.author?.name || "N/A"}
+                      </TableCell>
+                      <TableCell align="left">
+                        {book?.category?.name || "N/A"}
+                      </TableCell>
+                      <TableCell align="left">
+                        {book.totalRate / book.totalRateCount || 0}
+                      </TableCell>
+                      <TableCell align="left">{book.edition}</TableCell>
+                      <TableCell align="left">{book.views}</TableCell>
+                      <TableCell align="left">
+                        <FaPencilAlt
+                          style={{
+                            marginRight: 20,
+                            cursor: "pointer",
+                            scale: 1.5,
+                          }}
+                          onClick={() => setUpdate(book)}
+                        />
+                        <RiDeleteBinFill
+                          style={{ cursor: "pointer", scale: 1.5 }}
+                          onClick={() => handleDelete(book._id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={books.length}
+          count={books?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
