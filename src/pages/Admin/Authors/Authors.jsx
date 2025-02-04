@@ -1,5 +1,5 @@
 import {
-    CircularProgress,
+  CircularProgress,
   Paper,
   Snackbar,
   Table,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import { IoMdAddCircle } from "react-icons/io";
@@ -24,6 +24,10 @@ function AdminAuthors() {
   const [update, setUpdate] = useState({});
   const [isNew, setIsNew] = useState(false);
   const [newAuthor, setNewAuthor] = useState({});
+  const token = localStorage.getItem("token");
+  const [image, setImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  console.log(token);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -35,15 +39,58 @@ function AdminAuthors() {
   };
 
   function handleClose() {
-    setUpdate({})
-    setIsNew(false)
-    setNewAuthor({})
+    setUpdate({});
+    setIsNew(false);
+    setNewAuthor({});
+    setImage(null);
   }
 
   function handleChange(e) {
-      isNew ? setNewAuthor({...newAuthor, [e.target.name]: e.target.value}) : setUpdate({...update, [e.target.name]: e.target.value})
-      console.log(newAuthor)
+    isNew
+      ? setNewAuthor({ ...newAuthor, [e.target.name]: e.target.value })
+      : setUpdate({ ...update, [e.target.name]: e.target.value });
+    console.log(newAuthor);
   }
+
+
+  function handleImage(e) {
+    setImageLoading(true);
+    const file = e.target.files[0];
+    if (!file) {
+      setImageLoading(false);
+      return;
+    }
+
+    const maxSize = 4 * 1024 * 1024; // 4MB
+    if (file.size > maxSize) {
+      alert("Image size should be less than 4MB");
+      setImageLoading(false);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1]; // Extract Base64 content
+      setImage(base64String);
+      setImageLoading(false);
+
+      handleChange({
+        target: {
+          name: e.target.name,
+          value: base64String,
+        },
+      });
+    };
+
+    reader.onerror = () => {
+      alert("Error loading image. Please try again.");
+      setImageLoading(false);
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  
   async function handleDelete(id) {
     try {
       const confirm = window.confirm(
@@ -55,7 +102,11 @@ function AdminAuthors() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        <Snackbar open={true} autoHideDuration={2000} message="Author deleted" />;
+        <Snackbar
+          open={true}
+          autoHideDuration={2000}
+          message="Author deleted"
+        />;
         handleClose();
         refetch();
       }
@@ -67,7 +118,7 @@ function AdminAuthors() {
   async function handleEdit(e) {
     try {
       e.preventDefault();
-      console.log(update)
+      console.log(update);
       await axios.put(`http://localhost:3001/authors/${update._id}`, update, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -83,28 +134,33 @@ function AdminAuthors() {
   async function handleAdd(e) {
     try {
       e.preventDefault();
-      console.log(newAuthor)
-      await axios.post("http://localhost:3001/authors", newAuthor, {
+      console.log(newAuthor);
+      const res = await axios.post("http://localhost:3001/authors", newAuthor, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+      console.log(res);
       handleClose();
       refetch();
     } catch (error) {
       console.log(error);
     }
   }
+
+   
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/authors", {
+      const res = await axios.get("http://localhost:3001/authors/paginated", {
+        
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      return res.data;
-    }
+      console.log(res.data.data.items);
+      return res.data.data.items;
+    },
   });
   const columns = [
     { id: "Id", label: "Id", minWidth: 50, align: "left" },
@@ -135,13 +191,23 @@ function AdminAuthors() {
     },
   ];
 
+  useEffect(() => {
+    console.log(update);
+  }, [update]);
   if (isLoading) {
-    return <div className="App-header" style={{ backgroundColor: "white" }}><CircularProgress /></div>;
+    return (
+      <div className="App-header" style={{ backgroundColor: "white" }}>
+        <CircularProgress />
+      </div>
+    );
   }
   return (
     <div className="d-flex flex-column align-items-center justify-content-center">
       {update._id || isNew ? (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ zIndex: 9999 }}>
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          style={{ zIndex: 9999 }}
+        >
           <div
             className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"
             style={{ backdropFilter: "blur(10px)" }}
@@ -150,9 +216,21 @@ function AdminAuthors() {
             className="position-relative bg-white p-4 rounded-4 shadow-lg"
             style={{ width: "350px", backdropFilter: "blur(5px)" }}
           >
-            <h2 className="text-center mb-3">{isNew ? "Add" : "Edit"} {!isNew && update.name.split(" ")[0]}</h2>
-            <GiCancel style={{ position: "absolute", top: 20, right: 20, scale: 2, cursor: "pointer", color: "red" }} onClick={handleClose}/>
-            <form onSubmit={(e) => isNew ? handleAdd(e) : handleEdit(e)}>
+            <h2 className="text-center mb-3">
+              {isNew ? "Add" : "Edit"} {!isNew && update.name.split(" ")[0]}
+            </h2>
+            <GiCancel
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 20,
+                scale: 2,
+                cursor: "pointer",
+                color: "red",
+              }}
+              onClick={handleClose}
+            />
+            <form onSubmit={(e) => (isNew ? handleAdd(e) : handleEdit(e))}>
               <div className="mb-3">
                 <input
                   type="name"
@@ -185,13 +263,34 @@ function AdminAuthors() {
                   onChange={(e) => handleChange(e)}
                   required
                 />
+                <input type="file" 
+                className="form-control mb-3"
+                 accept="image/*"
+                  name="img" 
+                  onChange={handleImage} />
+                  <img
+                    src={image ? `data:image/png;base64,${image}` : update.img}
+                    alt="Uploaded"
+                    style={{
+                      objectFit: "contain",
+                      width: "100%",
+                      maxHeight: 200,
+                      marginTop: 5,
+                      borderRadius: 3,
+                    }}
+                  />
               </div>
-              <button className="btn btn-primary w-100" type="submit">{isNew ? "Add" : "Update"}</button>
+              <button className="btn btn-primary w-100" type="submit">
+                {isNew ? "Add" : "Update"}
+              </button>
             </form>
           </div>
         </div>
-      ): null}
-      <IoMdAddCircle style={{ scale: 2, cursor: "pointer", marginBottom: 20 }} onClick={() => setIsNew(true)} />
+      ) : null}
+      <IoMdAddCircle
+        style={{ scale: 2, cursor: "pointer", marginBottom: 20 }}
+        onClick={() => setIsNew(true)}
+      />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
@@ -214,47 +313,51 @@ function AdminAuthors() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data && data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((author, index) => (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={author._id}
-                    style={{
-                      backgroundColor: index % 2 === 0 ? "#ffffff" : "#ececec",
-                    }}
-                  >
-                    <TableCell align="left">
-                      {page * rowsPerPage + index + 1}
-                    </TableCell>
-                    <TableCell align="left">
-                      <a href={author.image} target="_blank" rel="noreferrer">
-                        {author.name.split(" ")[0]} Image
-                      </a>
-                    </TableCell>
-                    <TableCell align="left">{author.name}</TableCell>
-                    <TableCell align="left">{author.about}</TableCell>
-                    <TableCell align="left">
-                      {author?.DOB?.split("T")[0]}
-                    </TableCell>
-                    <TableCell align="left">
-                      <FaPencilAlt
-                        style={{
-                          marginRight: 20,
-                          cursor: "pointer",
-                          scale: 1.5,
-                        }}
-                        onClick={() => setUpdate(author)}
-                      />
-                      <RiDeleteBinFill
-                        style={{ cursor: "pointer", scale: 1.5 }}
-                        onClick={() => handleDelete(author._id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {data &&
+                data
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((author, index) => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={author._id}
+                      style={{
+                        backgroundColor:
+                          index % 2 === 0 ? "#ffffff" : "#ececec",
+                      }}
+                    >
+                      <TableCell align="left">
+                        {page * rowsPerPage + index + 1}
+                      </TableCell>
+                      <TableCell align="left">
+                        <a href={author.img || "https://via.placeholder.com/150"}
+                           target="_blank"
+                           rel="noreferrer">
+                          {author.name.split(" ")[0]} Image
+                        </a>
+                      </TableCell>
+                      <TableCell align="left">{author.name}</TableCell>
+                      <TableCell align="left">{author.about}</TableCell>
+                      <TableCell align="left">
+                        {author?.DOB?.split("T")[0]}
+                      </TableCell>
+                      <TableCell align="left">
+                        <FaPencilAlt
+                          style={{
+                            marginRight: 20,
+                            cursor: "pointer",
+                            scale: 1.5,
+                          }}
+                          onClick={() => setUpdate(author)}
+                        />
+                        <RiDeleteBinFill
+                          style={{ cursor: "pointer", scale: 1.5 }}
+                          onClick={() => handleDelete(author._id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>

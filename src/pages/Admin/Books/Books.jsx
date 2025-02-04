@@ -192,12 +192,12 @@ function AdminBooks() {
   } = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/books", {
+      const res = await axios.get("http://localhost:3001/books/paginated", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      return res.data;
+      return res.data.data.items;
     },
   });
   const columns = [
