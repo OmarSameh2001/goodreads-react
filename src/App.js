@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
@@ -15,13 +15,13 @@ import AdminCategories from "./pages/Admin/Categories/Categories";
 import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
- import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AddHomeOutlined } from "@mui/icons-material";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
-
- const queryClient = new QueryClient(); 
 
 
 function App() {
+  const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}> {/* Wrap the entire app */}
     <div className="App">
