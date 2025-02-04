@@ -18,7 +18,7 @@ function Authors() {
   const { data: authors, error, isLoading} = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/authors", {
+      const res = await axios.get("http://localhost:3001/authors/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

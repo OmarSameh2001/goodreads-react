@@ -16,6 +16,7 @@ import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
  import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 
  const queryClient = new QueryClient(); 
 
@@ -69,6 +70,14 @@ function App() {
             element={
               <UserRoute>
                 <Home />
+              </UserRoute>
+            }
+          />
+          <Route
+            path="/authors/:id"
+            element={
+              <UserRoute>
+                <AuthorDetails />
               </UserRoute>
             }
           />
