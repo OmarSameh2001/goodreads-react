@@ -16,8 +16,11 @@ import { useEffect } from "react";
 import { useLocation } from "react-router";
 import { Chip } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
+import WtrBooksContext from "../../../context/wtrBooks.js";
+import { useContext } from "react";
 
 function BookDetails(props) {
+  const { wtrBooks, setWtrBooks } = useContext(WtrBooksContext);
   const userId = localStorage.getItem("userId");
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -32,6 +35,7 @@ function BookDetails(props) {
           `http://localhost:3001/books/${bookId}`
         );
         setBook(res.data);
+        setWtrBooks(res.data);
       } catch (error) {
         setError(error);
       } finally {
@@ -114,9 +118,8 @@ function BookDetails(props) {
             variant="contained"
             color="success"
             sx={{ py: 1.5 }}
-            onClick={() => {
-              handleAddToWantToRead(userId, book._id);
-            }}
+            onClick={() => handleAddToWantToRead(userId, book._id)}
+            // disabled={wtrBooks.some((b) => b._id === book._id)} // Disable if book exists in user's list
           >
             Add to Want to Read
           </Button>
