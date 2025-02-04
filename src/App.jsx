@@ -18,11 +18,13 @@ import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
 import Otp from "./pages/Register/Otp";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Read_Book from "./pages/Admin/Books/Read_Book";
 
 function App() {
   const queryClient = new QueryClient();
   return (
     <div className="App">
+      {/* <Read_Book/> */}
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Navbar />
