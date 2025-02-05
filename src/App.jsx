@@ -17,89 +17,107 @@ import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
 import Otp from "./pages/Register/Otp";
+import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Read_Book from "./pages/Admin/Books/Read_Book";
+import BooksContext from "./context/books";
+import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
+import { useState } from "react";
 
 function App() {
+  const [books, setBooks] = useState([]);
+  const [wtrBooks, setWtrBooks] = useState([]); // Add state to store user's want to read books
+
   const queryClient = new QueryClient();
   return (
     <div className="App">
       {/* <Read_Book/> */}
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <Navbar />
-          <Routes>
-          
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/otp" element={<Otp />} />
-          
-            <Route
-              path="/admin"
-              element={
-                <AdminRoute>
-                  <AdminHome />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/adminAuthors"
-              element={
-                <AdminRoute>
-                  <AdminAuthors />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/adminBooks"
-              element={
-                <AdminRoute>
-                  <AdminBooks />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/adminCategories"
-              element={
-                <AdminRoute>
-                  <AdminCategories />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <UserRoute>
-                  <Home />
-                </UserRoute>
-              }
-            />
-            <Route
-              path="/authors"
-              element={
-                <UserRoute>
-                  <Authors />
-                </UserRoute>
-              }
-            />
-            <Route
-              path="/books"
-              element={
-                <UserRoute>
-                  <Books />
-                </UserRoute>
-              }
-            />
-            <Route
-              path="/categories"
-              element={
-                <UserRoute>
-                  <Categories />
-                </UserRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <BooksContext.Provider value={{ books, setBooks }}>
+            <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
+              <Navbar />
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/otp" element={<Otp />} />
+
+                <Route
+                  path="/admin"
+                  element={
+                    <AdminRoute>
+                      <AdminHome />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/adminAuthors"
+                  element={
+                    <AdminRoute>
+                      <AdminAuthors />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/adminBooks"
+                  element={
+                    <AdminRoute>
+                      <AdminBooks />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/adminCategories"
+                  element={
+                    <AdminRoute>
+                      <AdminCategories />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/"
+                  element={
+                    <UserRoute>
+                      <Home />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/authors"
+                  element={
+                    <UserRoute>
+                      <Authors />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/books"
+                  element={
+                    <UserRoute>
+                      <Books />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/bookDetails"
+                  element={
+                    <UserRoute>
+                      <BookDetails />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/categories"
+                  element={
+                    <UserRoute>
+                      <Categories />
+                    </UserRoute>
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </WtrBooksContext.Provider>
+          </BooksContext.Provider>
         </BrowserRouter>
       </QueryClientProvider>
     </div>
