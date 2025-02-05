@@ -5,7 +5,6 @@ import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
 import NotFound from "./pages/NotFound/NotFound";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import AdminRoute from "./components/ProtectedRoute/AdminRoute";

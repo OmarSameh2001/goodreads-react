@@ -49,37 +49,42 @@ export default function ListPopularAuthors() {
           }}
         >
           {popularAuthors.map((author) => (
-              <Box>
-            <Box
-              key={author._id}
-              onClick={() => navigate(`/authors/${author._id}`)}
-              sx={{
-                cursor: "pointer",
-                borderRadius: 2,
-                boxShadow: 3,
-                transition: "transform 0.3s ease",
-                "&:hover": { transform: "scale(1.05)" },
-                width: imageWidth,
-                height: imageHeight,
-                overflow: "hidden",
-                border: "10px solid rgb(48, 47, 53)",
-                flex: `0 0 ${imageWidth}px`,
-                mx: `${gap / 2}px`,
-                textAlign: "center",
-              }}
-            >
-              <img
-                src={author.img}
-                alt={author.name}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                loading="lazy"
-              />
-
+            <Box   key={author._id}>
+              <Box
+              
+                onClick={() => navigate(`/authors/${author._id}`)}
+                sx={{
+                  cursor: "pointer",
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  transition: "transform 0.3s ease",
+                  "&:hover": { transform: "scale(1.05)" },
+                  width: imageWidth,
+                  height: imageHeight,
+                  overflow: "hidden",
+                  border: "10px solid rgb(48, 47, 53)",
+                  flex: `0 0 ${imageWidth}px`,
+                  mx: `${gap / 2}px`,
+                  textAlign: "center",
+                }}
+              >
+                <img
+                  src={author.img}
+                  alt={author.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  loading="lazy"
+                />
+              </Box>
+              <h4
+                style={{
+                  textAlign: "center",
+                  fontSize: "12px",
+                  color: "rgb(48, 47, 53)",
+                }}
+              >
+                {author.name}
+              </h4>
             </Box>
-                          <h6 style={{ color: "rgb(30, 16, 99)", marginTop: "8px", padding: "0 5px" }}>
-                          {author.name}
-                        </h6>
-                        </Box>
           ))}
         </Box>
       </Box>

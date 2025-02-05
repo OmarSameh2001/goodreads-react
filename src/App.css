@@ -40,3 +40,99 @@ a {
   text-decoration: none;
   font-family: 'Montserrat', sans-serif; /* Default font */
 }
+/* Global Styles */
+
+/* Base Font */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;  /* Primary Background */
+  color: #333333;  /* Primary Text */
+  line-height: 1.6;
+}
+
+/* Links */
+a {
+  color: #007BFF;  /* Link Text */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Button Styles */
+button, .btn {
+  background-color: #f8f7f6;  /* Button & CTAs */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover, .btn:hover {
+  background-color: #FF6A00;  /* Hover State */
+}
+
+/* Accent Styles */
+.accent {
+  color: #F1C40F;  /* Accent Color */
+}
+
+.badge {
+  background-color: #F1C40F;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+/* Borders/Lines */
+hr {
+  border: 2px solid #DDDDDD;  /* Borders/Lines */
+  margin: 20px 0;
+}
+
+/* Container Styles */
+.container {
+  width: 90%;
+  margin: auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+.b612-regular {
+  font-family: "B612", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.b612-bold {
+  font-family: "B612", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.b612-regular-italic {
+  font-family: "B612", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.b612-bold-italic {
+  font-family: "B612", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+/*
+Primary Text: #333333 (dark gray) – easy on the eyes, not too harsh like black
+Secondary Text: #666666 (medium gray) – for less important text (like metadata or subtitles)
+Link Text: #007BFF (blue) – for clickable links (subtle but noticeable)
+Button & CTAs	#FF8C00	Buttons for actions (e.g., “Buy Now”)
+Accent	#F1C40F	Highlights, badges, secondary accents
+Borders/Lines	#DDDDDD	Divider lines and borders
+Header/Footer Background	#2C3E50	For navigation and footer sections
+Error	#E74C3C	For error messages and alerts
+*/

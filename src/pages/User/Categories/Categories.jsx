@@ -48,7 +48,7 @@ function Categories() {
         previousLabel={"← Previous"}
         nextLabel={"Next →"}
         breakLabel={"..."}
-        pageCount={totalPages}
+        pageCount={12}
         marginPagesDisplayed={1}
         pageRangeDisplayed={2}
         onPageChange={handlePageChange}

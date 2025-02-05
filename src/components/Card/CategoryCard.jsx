@@ -1,34 +1,35 @@
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { Card, CardContent, CardMedia, CardActions, Button, Typography, Grid2 } from "@mui/material";
 
 const CategoryCard = ({ category }) => {
   return (
+    <Grid2 item xs={12} sm={6} md={4} className="mb-4">
+      <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        {/* Optional: You can use CardMedia for the image */}
+        {/* <CardMedia
+          component="img"
+          height="140"
+          image={category.image}
+          alt={category.name}
+        /> */}
+        <CardContent sx={{ flexGrow: 1 }}>
+          {/* Optional: Add a description or any other content */}
+          {/* <Typography variant="body2" color="text.secondary">
+            {category.about}
+          </Typography> */}
+        </CardContent>
 
-    <div className="col-md-4 mb-4"> 
-    <div style={{ height: "200px" }} className="card d-flex flex-column">
-      {/* <img
-        src={category.image}
-        alt={category.name}
-        className="card-img-top" 
-      /> */}
-      <div className="card-body d-flex flex-column">
-        {/* <p className="card-text">{category.about}</p> */}
-      </div>
-
-      <div className="card-footer text-center mt-auto">
-      <h5 className="card-title">{category.name}</h5>
-      <p>{category.description}</p>
-        {/* <a
-          href={`/categorys/${category._id}`}
-          className="btn btn-primary"
-        >
-          View Profile
-        </a> */}
-      </div>
-    </div>
-  </div>
-);
+        <CardActions sx={{ justifyContent: 'center', marginTop: 'auto' }}>
+          <Typography variant="h6" component="div">
+            {category.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {category.description}
+          </Typography>
+        </CardActions>
+      </Card>
+    </Grid2>
+  );
 };
 
 export default CategoryCard;

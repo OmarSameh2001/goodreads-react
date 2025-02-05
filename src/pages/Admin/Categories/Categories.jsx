@@ -44,7 +44,7 @@ function AdminCategories() {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/categories/paginated",
+        "http://localhost:3001/categories/",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
