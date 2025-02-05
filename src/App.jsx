@@ -16,12 +16,15 @@ import AdminCategories from "./pages/Admin/Categories/Categories";
 import Authors from "./pages/User/Authors/Authors";
 import Books from "./pages/User/Books/Books";
 import Categories from "./pages/User/Categories/Categories";
-import Otp from "./pages/Register/Otp";
+import Otp from "./components/Otp/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
+import Profile from "./pages/User/Profile/Profile";
+import Success from "./components/Payment/Success";
+import Cancel from "./components/Payment/Cancel";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -112,6 +115,9 @@ function App() {
                     </UserRoute>
                   }
                 />
+                <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
+                <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
+                <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </WtrBooksContext.Provider>
