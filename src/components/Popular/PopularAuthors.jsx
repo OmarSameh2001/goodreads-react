@@ -4,14 +4,12 @@ import { Box, Typography, IconButton } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-import "../Popular/popular.css"
-
 export default function ListPopularAuthors() {
   const [popularAuthors, setPopularAuthors] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
   const visibleCount = 5; // number of items visible at once
-  const imageWidth = 140; // narrower width
+  const imageWidth = 150; // narrower width
   const imageHeight = 250; // taller height
   const gap = 16; // gap between items
 
@@ -37,59 +35,51 @@ export default function ListPopularAuthors() {
   };
 
   return (
-    <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
-      <Typography variant="h4" sx={{ mb: 3, textAlign: "left" }}>
-        Check out our popular authors
-      </Typography>
-
+    <Box sx={{ width: "90%", margin: "auto", mt: 4, position: "relative" }}>
       {/* Carousel viewport */}
       <Box overflow="hidden">
+        <h2 style={{ textAlign: "left" }}>Check out our popular authors</h2>
         <Box
           display="flex"
           sx={{
             transform: `translateX(-${currentIndex * (imageWidth + gap)}px)`,
             transition: "transform 0.3s ease",
+            borderRadius: "10px",
+            padding: "18px",
           }}
         >
           {popularAuthors.map((author) => (
+              <Box>
             <Box
               key={author._id}
+              onClick={() => navigate(`/authors/${author._id}`)}
               sx={{
+                cursor: "pointer",
+                borderRadius: 2,
+                boxShadow: 3,
+                transition: "transform 0.3s ease",
+                "&:hover": { transform: "scale(1.05)" },
+                width: imageWidth,
+                height: imageHeight,
+                overflow: "hidden",
+                border: "10px solid rgb(48, 47, 53)",
                 flex: `0 0 ${imageWidth}px`,
                 mx: `${gap / 2}px`,
                 textAlign: "center",
               }}
             >
-              <Box
-                onClick={() => navigate(`/authors/${author._id}`)}
-                sx={{
-                  cursor: "pointer",
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  transition: "transform 0.3s ease",
-                  "&:hover": { transform: "scale(1.05)" },
-                  width: imageWidth,
-                  height: imageHeight,
-                  overflow: "hidden",
-                  border: "5px solid #383838",
-                }}
-              >
-                <img
-                  src={author.img}
-                  alt={author.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                 
-                  }}
-                  loading="lazy"
-                />
-              </Box>
-              <Typography variant="subtitle1" sx={{ mt: 1 }}>
-                {author.name}
-              </Typography>
+              <img
+                src={author.img}
+                alt={author.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                loading="lazy"
+              />
+
             </Box>
+                          <h6 style={{ color: "rgb(30, 16, 99)", marginTop: "8px", padding: "0 5px" }}>
+                          {author.name}
+                        </h6>
+                        </Box>
           ))}
         </Box>
       </Box>

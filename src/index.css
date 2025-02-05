@@ -1,16 +1,20 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color:  #f2f3f4;
+  background-color:  #F5F5F5;
+  font-family: 'Montserrat', sans-serif; /* Default font */
 }
 
+h1, h2 {
+  font-family: 'Poiret One', cursive; 
+}
+
+p {
+  font-family: 'B612', sans-serif;
+}
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",monospace;
 }
 .form-box {
   border: 1px solid grey;
@@ -18,3 +22,106 @@ code {
   margin: 30px;
   text-align: left; /* Equivalent to Bootstrap's text-start */
 }
+/* Global Styles */
+
+/* Base Font */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #F5F5F5;  /* Primary Background */
+  color: #333333;  /* Primary Text */
+  line-height: 1.6;
+}
+
+/* Links */
+a {
+  color: #007BFF;  /* Link Text */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Button Styles */
+button, .btn {
+  background-color: #FF8C00;  /* Button & CTAs */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover, .btn:hover {
+  background-color: #FF6A00;  /* Hover State */
+}
+
+/* Accent Styles */
+.accent {
+  color: #F1C40F;  /* Accent Color */
+}
+
+.badge {
+  background-color: #F1C40F;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+/* Borders/Lines */
+hr {
+  border: 1px solid #DDDDDD;  /* Borders/Lines */
+  margin: 20px 0;
+}
+
+/* Header and Footer */
+header, footer {
+  background-color: #2C3E50;  /* Header/Footer Background */
+  color: #fff;
+  padding: 20px;
+}
+
+header a, footer a {
+  color: #fff;
+}
+
+header a:hover, footer a:hover {
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.error-message {
+  color: #E74C3C;  /* Error Color */
+  background-color: #F8D7DA;
+  padding: 15px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+
+.error-message a {
+  color: #E74C3C;
+  text-decoration: underline;
+}
+
+/* Container Styles */
+.container {
+  width: 90%;
+  margin: auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+
+/*
+Primary Text: #333333 (dark gray) – easy on the eyes, not too harsh like black
+Secondary Text: #666666 (medium gray) – for less important text (like metadata or subtitles)
+Link Text: #007BFF (blue) – for clickable links (subtle but noticeable)
+Button & CTAs	#FF8C00	Buttons for actions (e.g., “Buy Now”)
+Accent	#F1C40F	Highlights, badges, secondary accents
+Borders/Lines	#DDDDDD	Divider lines and borders
+Header/Footer Background	#2C3E50	For navigation and footer sections
+Error	#E74C3C	For error messages and alerts
+*/

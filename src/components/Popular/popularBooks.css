@@ -1,18 +1,16 @@
 .book-3d {
   --book-thickness: 26px;
-  --cover-color: #4D9077;
-  padding-bottom:30px ;
+  --cover-color: #262a31;
+  margin-bottom:30px ;
 	perspective: 1000px;
   max-width: 250px;
-  margin: 0 10px;
-  /* height: 200px; */
-
+  margin: 0 ;
 }
 
 .book-3d__inner {
 	position: relative;
 	transform-style: preserve-3d;
-transform: rotateY(-25deg)
+  transform: rotateY(-25deg)
 }
 
 /* Book Pages */
@@ -38,15 +36,14 @@ transform: rotateY(-25deg)
   transform: translateZ( calc( var(--book-thickness) * -1 ) );
   background-color: var(--cover-color);
   border-radius: 0 2px 2px 0;
-  box-shadow: -10px 0 50px 10px rgba(0,0,0, 0.3);
+  /* box-shadow: -10px 0 50px 10px rgba(0,0,0, 0.3); */
 }
 
 .book-3d__cover {
   display:block;
   width:100%;
-  /* height: auto; */
-  height: 300px;
-  border-radius: 0px 2px 2px 0px;
+  height: 250px;
+  border-radius: 0px 3px 3px 0px;
   transform: translateZ( var(--book-thickness) );
   box-shadow: 5px 5px 20px rgba(0,0,0, 0.1);
 }
@@ -57,10 +54,10 @@ transform: rotateY(-25deg)
  * ===================
 */
 
-*, *::before, *::after {
+/* *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
+} */
 
 

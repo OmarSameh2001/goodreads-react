@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../apis/config";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import "../Popular/popularBooks.css";
 export default function BookList() {
@@ -11,7 +11,7 @@ export default function BookList() {
   const visibleCount = 5; // number of items visible at once
   const imageWidth = 140; // narrower width
   const imageHeight = 250; // taller height
-  const gap = 16; // gap between items
+  const gap = 80; // gap between items
 
   // Shift left by one item
   const handlePrev = () => {
@@ -35,12 +35,10 @@ export default function BookList() {
   }, []);
   return (
         <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
-          <Typography variant="h4" sx={{ mb: 3, textAlign: "left" }}>
-            Check out our popular authors
-          </Typography>
-    
+        <h2 style={{textAlign:"left"}}>You cannot miss out these trending books !</h2>
+
           {/* Carousel viewport */}
-          <Box overflow="hidden">
+          <Box overflow="hidden" sx={{padding:"30px"}}>
             <Box
               display="flex"
               sx={{
@@ -75,8 +73,8 @@ export default function BookList() {
                     <div className="book-3d__inner">
                       <img
                          className="book-3d__cover" 
-                         src={`${book.img}`}
-                         alt="The Wizard of Oz by L. Frank Baum"
+                         src={book.img}
+                         alt={book.title}
                        />
                     </div>
                   </div>
