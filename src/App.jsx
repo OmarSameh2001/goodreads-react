@@ -24,6 +24,7 @@ import UserBooks from "./context/userBooks"; // Import WtrBooksContext
 import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
+import MyBooks from "./pages/User/UserActivity/MyBooks";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -149,6 +150,14 @@ function App() {
                       </UserRoute>
                     }
                   />
+                  <Route
+                  path="/mybooks"
+                  element={
+                    <UserRoute>
+                      <MyBooks />
+                    </UserRoute>
+                  }
+                />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </TokenContext.Provider>
