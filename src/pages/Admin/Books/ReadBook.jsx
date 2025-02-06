@@ -1,7 +1,7 @@
 // import {Document,Page} from 'react-pdf/dist/esm/entry.webpack';
 import React, { useState } from 'react';
 import axios from 'axios';
-function Read_Book() {
+function ReadBook() {
 
 
 const [title,settitle]=useState('');
@@ -62,6 +62,6 @@ const submitImage=async(e)=>{
               </form>
     </div>
   );
-}
+};
 
-export default Read_Book
+export default ReadBook;

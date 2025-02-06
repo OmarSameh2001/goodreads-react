@@ -19,7 +19,7 @@ import Categories from "./pages/User/Categories/Categories";
 import Otp from "./pages/Register/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Read_Book from "./pages/Admin/Books/Read_Book";
+import ReadBook from "./pages/Admin/Books/ReadBook";
 import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
@@ -32,9 +32,11 @@ function App() {
   return (
     <div className="App">
       {/* <Read_Book/> */}
-      <QueryClientProvider client={queryClient}>
+      
+       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <BooksContext.Provider value={{ books, setBooks }}>
+        <AdminBooks/>
+       {/*   <BooksContext.Provider value={{ books, setBooks }}>
             <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
               <Navbar />
               <Routes>
@@ -117,9 +119,9 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </WtrBooksContext.Provider>
-          </BooksContext.Provider>
+          </BooksContext.Provider>*/}
         </BrowserRouter>
-      </QueryClientProvider>
+      </QueryClientProvider> 
     </div>
   );
 }
