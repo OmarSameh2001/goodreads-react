@@ -3,39 +3,40 @@ import {
   Container,
   Card,
   CardMedia,
-  CardContent,
   Typography,
-  Button,
   Rating,
+  Box,
+  Link,
 } from "@mui/material";
+import Button from "@mui/material/Button";
+
 import Grid from "@mui/material/Grid";
 import { use, useState } from "react";
 import axios from "axios";
 import axiosInstance from "../../../apis/config.js";
 import { useEffect } from "react";
-import { useLocation } from "react-router";
 import { Chip } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
-import WtrBooksContext from "../../../context/wtrBooks.js";
 import { useContext } from "react";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { Link as RouterLink } from "react-router";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import LinkIcon from "@mui/icons-material/Link";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import UserBooks from "../../../context/userBooks.js";
 
 function BookDetails(props) {
-  const { wtrBooks, setWtrBooks } = useContext(WtrBooksContext);
+  const { userBooks, setUserBooks } = useContext(UserBooks);
   const userId = localStorage.getItem("userId");
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const bookId = searchParams.get("bookId");
+  const { bookId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [book, setBook] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get(
-          `http://localhost:3001/books/${bookId}`
-        );
+        const res = await axiosInstance.get(`/books/${bookId}`);
         setBook(res.data);
-        setWtrBooks(res.data);
       } catch (error) {
         setError(error);
       } finally {
@@ -43,7 +44,7 @@ function BookDetails(props) {
       }
     };
     fetchData();
-  }, []);
+  }, [bookId]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -59,70 +60,240 @@ function BookDetails(props) {
         type: "success",
         theme: "colored",
       });
+      setUserBooks((prevUserBooks) => [...prevUserBooks, response.data]);
     } catch (error) {
       toast("Error, Book already exist", { type: "error", theme: "colored" });
     }
   }
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Grid container spacing={4}>
-        {/* Book Cover */}
+    <Container
+      sx={{ py: 6, fontFamily: "Merriweather, serif", width: "100vw" }}
+    >
+      <Grid container spacing={6}>
+        {/* Book Cover Section */}
         <Grid item xs={12} md={4}>
-          <Card>
+          <Card
+            sx={{
+              position: "relative",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+              "&:hover": { transform: "scale(1.02)" },
+              transition: "all 0.3s ease",
+            }}
+          >
             <CardMedia
               component="img"
-              image={book.img} // Replace with actual book cover
-              alt="Book Cover"
-              sx={{ borderRadius: 2 }}
+              image={book.img || "/default-book-cover.jpg"}
+              alt={book.title}
+              sx={{
+                height: "auto",
+                borderRadius: "4px",
+                aspectRatio: "2/3",
+                objectFit: "cover",
+              }}
+            />
+            <Chip
+              label={`${book.edition} Edition`}
+              color="secondary"
+              sx={{
+                position: "absolute",
+                top: 16,
+                right: 16,
+                fontWeight: "bold",
+                backdropFilter: "blur(4px)",
+                backgroundColor: "rgba(66, 64, 64, 0.9)",
+              }}
             />
           </Card>
         </Grid>
 
-        {/* Book Information */}
+        {/* Book Details Section */}
         <Grid item xs={12} md={8}>
-          <Typography variant="h4" fontWeight="bold">
-            {`Book Title: ${book.title}`}
-          </Typography>
-          <Typography variant="h6" sx={{ my: 1 }}>
-            {`Author Name: ${book.author.name}`}
-          </Typography>
+          <Box sx={{ mb: 4 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              sx={{
+                fontWeight: 700,
+                mb: 2,
+                color: "text.primary",
+                lineHeight: 1.2,
+                fontFamily: "inherit",
+              }}
+            >
+              {book.title}
+            </Typography>
 
-          {/* Rating */}
-          <Typography variant="h6" sx={{ my: 1 }}>
-            {`About author: ${book.author.about}`}
-          </Typography>
-          <Rating
-            value={book.totalRate / book.totalRateCount}
-            precision={0.5}
-            readOnly
-            sx={{ mb: 2 }}
-          />
-          <Grid container spacing={1} sx={{ mb: 2 }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              sx={{
+                mb: 3,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <PersonOutlineIcon fontSize="small" />
+              {book.author?.name || "Unknown Author"}
+            </Typography>
+
+            <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
+              <Rating
+                value={
+                  book.totalRateCount > 0
+                    ? book.totalRate / book.totalRateCount
+                    : 0
+                }
+                precision={0.1}
+                readOnly
+                size="large"
+                sx={{ color: "main" }}
+              />
+              <Typography variant="body1" sx={{ color: "text.secondary" }}>
+                ({book.totalRateCount.toLocaleString()} ratings)
+              </Typography>
+              <Chip
+                label={`📖 ${book.views.toLocaleString()} views`}
+                variant="outlined"
+                sx={{ borderRadius: 1, borderColor: "divider" }}
+              />
+            </Box>
+
             {book.category?.name && (
-              <Grid item>
+              <Link
+                to={`/category/${book.category._id}`}
+                component={RouterLink}
+                sx={{
+                  textDecoration: "none",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
                 <Chip
                   label={book.category.name}
                   color="primary"
-                  sx={{ borderRadius: "20px" }}
+                  variant="outlined"
+                  sx={{
+                    mb: 3,
+                    borderRadius: "8px",
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                  }}
                 />
-              </Grid>
+              </Link>
             )}
-          </Grid>
+          </Box>
+
+          {/* Book Metadata */}
+          <Box
+            sx={{
+              backgroundColor: "background.paper",
+              borderRadius: 2,
+              p: 3,
+              mb: 4,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={6} md={3}>
+                <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                  Added:
+                </Typography>
+                <Typography variant="body1">
+                  {new Date(book.createdAt).toLocaleDateString()}
+                </Typography>
+              </Grid>
+
+              {book.url && (
+                <Grid item xs={6} md={3}>
+                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    Read Online
+                  </Typography>
+                  <Link
+                    href={book.url}
+                    target="_blank"
+                    rel="noopener"
+                    sx={{ textDecoration: "none" }}
+                  >
+                    <Button
+                      variant="text"
+                      size="small"
+                      startIcon={<LinkIcon />}
+                    >
+                      Access Book
+                    </Button>
+                  </Link>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
+
+          {/* Author Section */}
+          {book.author?.about && (
+            <Box sx={{ mb: 4 }}>
+              <Typography
+                variant="h6"
+                component="h3"
+                sx={{ mb: 2, fontWeight: 600 }}
+              >
+                About the Author
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  lineHeight: 1.8,
+                  color: "text.secondary",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {book.author.about}
+              </Typography>
+            </Box>
+          )}
 
           {/* Description */}
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            {book.description}
-          </Typography>
+          <Box sx={{ mb: 4 }}>
+            <Typography
+              variant="h6"
+              component="h3"
+              sx={{ mb: 2, fontWeight: 600 }}
+            >
+              Book Description
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                lineHeight: 1.8,
+                fontSize: "1.1rem",
+                color: "text.primary",
+              }}
+            >
+              {book.description}
+            </Typography>
+          </Box>
 
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ py: 1.5 }}
-            onClick={() => handleAddToWantToRead(userId, book._id)}
-            // disabled={wtrBooks.some((b) => b._id === book._id)} // Disable if book exists in user's list
-          >
-            Add to Want to Read
-          </Button>
+          {/* Action Buttons */}
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<BookmarkAddIcon />}
+              onClick={() => handleAddToWantToRead(userId, book._id)}
+              disabled={userBooks.some(
+                (userBook) => userBook.book._id === book._id
+              )}
+              sx={{
+                px: 4,
+                fontWeight: 600,
+                borderRadius: "8px",
+                textTransform: "none",
+              }}
+            >
+              {userBooks.some((userBook) => userBook.book._id === book._id)
+                ? "Already Added"
+                : "Want to Read"}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
       <ToastContainer />
