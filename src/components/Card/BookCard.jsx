@@ -10,50 +10,144 @@ import Typography from "@mui/joy/Typography";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { Navigate } from "react-router";
 import { Link as RouterLink } from "react-router"; // Import React Router Link
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import Box from "@mui/joy/Box";
+import Rating from "@mui/material/Rating";
+import axiosInstance from "../../apis/config";
+import { toast } from "react-toastify";
+import { useContext } from "react";
+import UserBooks from "../../context/userBooks";
 export default function BookCard(props) {
   const { book } = props;
+  const { userBooks, setUserBooks } = useContext(UserBooks);
+  const userId = localStorage.getItem("userId");
+  async function handleAddToWantToRead(user_id, book_id) {
+    const requestBody = {
+      user: user_id,
+      book: book_id,
+    };
+
+    try {
+      const response = await axiosInstance.post("userBook/", requestBody);
+      toast(`Book: ${book.title} has been added successfully`, {
+        type: "success",
+        theme: "colored",
+      });
+      setUserBooks((prevUserBooks) => [...prevUserBooks, response.data]);
+    } catch (error) {
+      toast("Error, Book already exist", { type: "error", theme: "colored" });
+    }
+  }
   return (
     <Card
       sx={{
-        width: 320,
-        maxWidth: "100%",
-        boxShadow: "lg",
-        minHeight: 550,
-        padding: 10,
-        justifyContent: "center",
-        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform 0.2s, box-shadow 0.2s",
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow: "xl",
+        },
       }}
     >
       <CardOverflow>
-        <AspectRatio sx={{ minWidth: 200 }}>
-          <img src={book.img} srcSet={book.img} loading="lazy" alt="" />
+        <AspectRatio ratio="2/3" sx={{ borderRadius: "sm" }}>
+          <img
+            src={book.img || "/default-book-cover.jpg"}
+            srcSet={book.img || "/default-book-cover.jpg"}
+            loading="lazy"
+            alt={book.title}
+            style={{ objectFit: "cover" }}
+          />
         </AspectRatio>
       </CardOverflow>
-      <CardContent sx={{ justifyContent: "center", alignItems: "center" }}>
+
+      <CardContent sx={{ flexGrow: 1, px: 2, pt: 2 }}>
         <Typography
-          level="body-xs"
-          sx={{ justifyContent: "center", alignItems: "center" }}
-        >
-          {book.author.name}
-        </Typography>
-        <Link
-          component={RouterLink} // Use React Router's Link as the base component
-          to={`/bookDetails?bookId=${book._id}`} // React Router's navigation prop
-          color="neutral"
-          textColor="text.primary"
-          sx={{ fontWeight: "md" }}
+          level="title-md"
+          component={RouterLink}
+          to={`/bookDetails/${book._id}`}
+          sx={{
+            fontWeight: "bold",
+            mb: 0.5,
+            textDecoration: "none",
+            "&:hover": { textDecoration: "underline" },
+          }}
         >
           {book.title}
-        </Link>
+        </Typography>
 
-        <Typography level="body-sm">
-          {book.description.slice(0, 100)}...
+        <Typography level="body-sm" sx={{ mb: 1, color: "text.secondary" }}>
+          by {book.author?.name || "Unknown Author"}
+        </Typography>
+
+        <Box sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}>
+          <Rating
+            name="book-rating"
+            value={
+              book.totalRateCount > 0 ? book.totalRate / book.totalRateCount : 0
+            }
+            precision={0.5}
+            readOnly
+            size="sm"
+          />
+          <Typography level="body-xs">
+            ({book.totalRateCount} ratings)
+          </Typography>
+        </Box>
+
+        <Typography
+          level="body-xs"
+          sx={{
+            mb: 1,
+            color: "text.tertiary",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {book.description}
         </Typography>
       </CardContent>
-      <CardOverflow>
-        <Button variant="solid" color="success" size="lg">
-          Add to Want to Read
+
+      <CardOverflow
+        sx={{ px: 2, pb: 2, borderTop: "1px solid", borderColor: "divider" }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Chip variant="outlined" size="sm" color="neutral">
+            {book.edition} Edition
+          </Chip>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <VisibilityIcon fontSize="small" />
+            <Typography level="body-xs">{book.views}</Typography>
+          </Box>
+        </Box>
+
+        <Button
+          fullWidth
+          variant="soft"
+          color="primary"
+          size="sm"
+          onClick={() => handleAddToWantToRead(userId, book._id)}
+          disabled={userBooks.some(
+            (userBook) => userBook.book._id === book._id
+          )}
+          sx={{ mt: 1.5 }}
+        >
+          {userBooks.some((userBook) => userBook.book._id === book._id)
+            ? "Already Added"
+            : "Want to Read"}
         </Button>
       </CardOverflow>
     </Card>
