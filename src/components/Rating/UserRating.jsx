@@ -7,7 +7,6 @@ function UserRating({ userId, bookId, rating = 0 }) {
   const [rate, setRating] = useState(rating);
 
   function handleRatingChange(event, newValue) {
-    console.log(userId, bookId, newValue);
     axiosInstance
       .patch(`/userbook/rate/${bookId}`, {
         rating: newValue,
