@@ -17,13 +17,15 @@ import {
   Typography,
   Fab,
   Pagination,
+  TablePagination,
 } from "@mui/material";
 import { Edit, Delete, Add, Close } from "@mui/icons-material";
-import axios from "axios";
 import React, { useState, useEffect } from "react";
+import axiosInstance from "../../../apis/config";
+import { useQuery } from "@tanstack/react-query";
+import { IoMdAddCircle } from "react-icons/io";
 
 function AdminCategories() {
-  const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -34,29 +36,26 @@ function AdminCategories() {
   });
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
-  const token = localStorage.getItem("token");
+  const [total, setTotal] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3001/categories/",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+  const {
+    data: categories,
+    error: fetchError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["categories", page, rowsPerPage],
+    queryFn: async () => {
+      const res = await axiosInstance.get(
+        `/categories/paginated?page=${page}&limit=${rowsPerPage}`
       );
-      setCategories(response.data.data.items || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setCategories([]);
-    }
-  };
+      console.log(res);
+      setTotal(res.data.data.pagination.total);
+      return res.data.data.items;
+    },
+  });
 
-  // add w update
   const handleSave = async () => {
     if (!formData.name || !formData.description || !formData.image) {
       setError("All fields are required");
@@ -64,19 +63,11 @@ function AdminCategories() {
     }
     try {
       if (editMode) {
-        await axios.put(
-          `http://localhost:3001/categories/${editId}`,
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await axiosInstance.put(`/categories/${editId}`, formData);
       } else {
-        await axios.post("http://localhost:3001/categories", formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axiosInstance.post("/categories", formData);
       }
-      fetchCategories();
+      refetch();
       handleClose();
     } catch (error) {
       console.error("Error saving category:", error);
@@ -89,10 +80,8 @@ function AdminCategories() {
         "Are you sure you want to delete this category?"
       );
       if (confirm) {
-        await axios.delete(`http://localhost:3001/categories/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        fetchCategories();
+        await axiosInstance.delete(`/categories/${id}`);
+        refetch();
       }
     } catch (error) {
       console.error("Error deleting category:", error);
@@ -120,79 +109,87 @@ function AdminCategories() {
   };
 
   const handlePageChange = (event, value) => {
-    setPage(value);
+    setPage(value + 1);
   };
-  const paginatedCategories = categories.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(event.target.value);
+  };
 
   return (
-    <div style={{ padding: "20px", position: "relative" }}>
-      <Fab
-        size="small"
-        style={{ backgroundColor: "black", color: "white" }}
-        aria-label="add"
+    <div style={{ position: "relative" }}>
+      <IoMdAddCircle
+        style={{ scale: 2, cursor: "pointer", marginBottom: 20 }}
         onClick={() => handleOpen()}
-      >
-        <Add />
-      </Fab>
-
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead style={{ backgroundColor: "#111", color: "#fff" }}>
-            <TableRow>
-              <TableCell style={{ color: "#fff" }}>ID</TableCell>
-              <TableCell style={{ color: "#fff" }}>Name</TableCell>
-              <TableCell style={{ color: "#fff" }}>Description</TableCell>
-              <TableCell style={{ color: "#fff" }}>Image</TableCell>
-              <TableCell style={{ color: "#fff" }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedCategories &&
-              paginatedCategories.map((category, index) => (
-                <TableRow key={category._id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{category.name}</TableCell>
-                  <TableCell>{category.description}</TableCell>
-                  <TableCell>
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {" "}
-                    {/* style={{ display: "flex", gap: "10px" }} */}
-                    <IconButton
-                      style={{ color: "black" }}
-                      onClick={() => handleOpen(category)}
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      style={{ color: "black" }}
-                      onClick={() => handleDelete(category._id)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Pagination
-        count={Math.ceil(categories.length / itemsPerPage)}
-        page={page}
-        onChange={handlePageChange}
-        style={{ marginTop: "20px", display: "flex", justifyContent: "center" }}
       />
-
+      <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead style={{ backgroundColor: "#111", color: "#fff" }}>
+              <TableRow>
+                <TableCell style={{ color: "#fff" }}>ID</TableCell>
+                <TableCell style={{ color: "#fff" }}>Name</TableCell>
+                <TableCell style={{ color: "#fff" }}>Description</TableCell>
+                <TableCell style={{ color: "#fff" }}>Image</TableCell>
+                <TableCell style={{ color: "#fff" }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {categories &&
+                categories.map((category, index) => (
+                  <TableRow
+                    key={category._id}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? "#ffffff" : "#ececec",
+                    }}
+                  >
+                    <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
+                    <TableCell>{category.name}</TableCell>
+                    <TableCell>{category.description}</TableCell>
+                    <TableCell>
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {" "}
+                      {/* style={{ display: "flex", gap: "10px" }} */}
+                      <IconButton
+                        style={{ color: "black" }}
+                        onClick={() => handleOpen(category)}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        style={{ color: "black" }}
+                        onClick={() => handleDelete(category._id)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          count={total}
+          page={page - 1}
+          onPageChange={handlePageChange}
+          rowsPerPageOptions={
+            total > 25 ? [10, 25, 100] : total > 10 ? [10, 25] : [10]
+          }
+          component="div"
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>
+        <DialogTitle
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <Typography variant="h6">
             {editMode ? "Edit Category" : "Add Category"}
           </Typography>
