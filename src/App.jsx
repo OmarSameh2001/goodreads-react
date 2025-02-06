@@ -21,6 +21,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
+import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -84,6 +85,14 @@ function App() {
                   element={
                     <UserRoute>
                       <Authors />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/authors/:id"
+                  element={
+                    <UserRoute>
+                      <AuthorDetails />
                     </UserRoute>
                   }
                 />

@@ -4,20 +4,15 @@ import { Link } from "react-router-dom";
 
 const AuthorCard = ({ author }) => {
   return (
-    <Grid2 item xs={12} sm={6} md={4} className="mb-4">
+    <Grid2 className="mb-4 mx-2" sx={{ maxWidth: "20%" }}>
       <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <CardMedia
           component="img"
           height="200"
-          image={author.image}
+          image={author.img}
           alt={author.name}
         />
-        <CardContent sx={{ flexGrow: 1 }}>
-          {/* Optionally add additional details like "about" */}
-          {/* <Typography variant="body2" color="text.secondary">
-            {author.about}
-          </Typography> */}
-        </CardContent>
+        
 
         <CardActions sx={{ justifyContent: 'center', marginTop: 'auto' }}>
           <Typography variant="h6" component="div">
