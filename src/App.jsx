@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -22,6 +23,7 @@ import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
+import UserBooks from "./pages/User/UserActivity/UserBooks";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -117,6 +119,14 @@ function App() {
                   element={
                     <UserRoute>
                       <Categories />
+                    </UserRoute>
+                  }
+                />
+                                <Route
+                  path="/mybooks"
+                  element={
+                    <UserRoute>
+                      <UserBooks />
                     </UserRoute>
                   }
                 />
