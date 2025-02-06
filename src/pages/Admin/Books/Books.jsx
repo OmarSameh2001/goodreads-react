@@ -28,7 +28,10 @@ function AdminBooks() {
   const [newBook, setNewBook] = useState({});
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+ 
 
+
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -136,21 +139,33 @@ function AdminBooks() {
     }
   }
 
+  function handlePDFUpload(e) {
+    const file = e.target.files[0];
+    if (!file || file.type !== "application/pdf") {
+      alert("Only PDF files are allowed!");
+      return;
+    }
+    setNewBook({ ...newBook, pdf: file });
+  }
+  
   async function handleAdd(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", newBook.title);
+    formData.append("author", newBook.author);
+    formData.append("category", newBook.category);
+    formData.append("edition", newBook.edition);
+    formData.append("description", newBook.description);
+    if (newBook.pdf) formData.append("pdf", newBook.pdf);
+  
     try {
-      e.preventDefault();
-      const body = handleIds(newBook.author, newBook.category);
-      console.log(newBook);
-      await axios.post("http://localhost:3001/books", body, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      await axios.post("http://localhost:3001/books", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       handleClose();
       refetch();
     } catch (error) {
       alert(error.response.data.message);
-      console.log(error);
     }
   }
 
@@ -359,6 +374,17 @@ function AdminBooks() {
                 />
               </div>
               <div className="mb-1">
+                <label htmlFor="pdf" className="form-label">Upload PDF</label>
+                 <input
+                   type="file"
+                   className="form-control"
+                   name="pdf"
+                   accept="application/pdf"
+                    onChange={handlePDFUpload}
+                   required
+                  />
+                </div>
+              <div className="mb-1">
                 <label htmlFor="author" className="form-label">
                   Author
                 </label>
@@ -471,6 +497,13 @@ function AdminBooks() {
                       </TableCell>
                       <TableCell align="left">{book.title}</TableCell>
                       <TableCell align="left">{book.description}</TableCell>
+                      <TableCell align="left">
+                         {book.pdfUrl ? (
+                         <a href={book.pdfUrl} target="_blank" rel="noopener noreferrer">
+                            View PDF
+                         </a>
+                          ) : "No PDF"}
+                      </TableCell>
                       <TableCell align="left">
                         {book?.author?.name || "N/A"}
                       </TableCell>

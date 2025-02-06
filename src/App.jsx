@@ -21,6 +21,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
+// import ReadBook from "./pages/User/Books/ReadBook";
+import PdfViwer from "./components/Books/PdfViwer";
+
+
+const googleDrivePdfUrl = "https://drive.google.com/uc?export=download&id=1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC";
+  
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -31,7 +37,9 @@ function App() {
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <BooksContext.Provider value={{ books, setBooks }}>
+        {/* <PdfViwer pdfUrl={googleDrivePdfUrl}/> */}
+        {/* <PdfViwer/> */}
+           <BooksContext.Provider value={{ books, setBooks }}>
             <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
               <Navbar />
               <Routes>
@@ -115,6 +123,8 @@ function App() {
               </Routes>
             </WtrBooksContext.Provider>
           </BooksContext.Provider>
+          {/* <ReadBook /> */}
+         
         </BrowserRouter>
       </QueryClientProvider>
     </div>
