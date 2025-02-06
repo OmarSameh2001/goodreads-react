@@ -15,6 +15,8 @@ export default function CategoryPolarChart() {
       },
     ],
   });
+  const controller = new AbortController();
+
 
   useEffect(() => {
     axiosInstance
@@ -40,6 +42,8 @@ export default function CategoryPolarChart() {
         }
       })
       .catch((err) => console.error("Unable to fetch popular categories", err));
+
+    return () => controller.abort();
   }, []);
 
   const chartOptions = {

@@ -12,12 +12,14 @@ export default function ListPopularAuthors() {
   const imageWidth = 150; // narrower width
   const imageHeight = 250; // taller height
   const gap = 16; // gap between items
-
+  const controller = new AbortController();
   useEffect(() => {
     axiosInstance
       .get("/authors/popular")
       .then((res) => setPopularAuthors(res.data))
       .catch((err) => console.error("Unable to fetch popular authors", err));
+
+      return () => controller.abort(); // Cleanup function to cancel request
   }, []);
 
   // Shift left by one item

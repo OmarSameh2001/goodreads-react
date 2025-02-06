@@ -12,6 +12,7 @@ export default function BookList() {
   const imageWidth = 140; // narrower width
   const imageHeight = 250; // taller height
   const gap = 80; // gap between items
+  const controller = new AbortController();
 
   // Shift left by one item
   const handlePrev = () => {
@@ -32,6 +33,8 @@ export default function BookList() {
       .get("/books/popular")
       .then((res) => setBooks(res.data))
       .catch((err) => console.error("Unable to fetch popular books", err));
+
+    return () => controller.abort();
   }, []);
   return (
         <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
