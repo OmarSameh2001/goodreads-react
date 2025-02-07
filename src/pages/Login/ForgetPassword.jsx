@@ -32,15 +32,16 @@ function ForgetPassword() {
           ? "http://localhost:3001/auth/forget-password"
           : `http://localhost:3001/auth/send-otp?email=${email}`;
 
-      const res = await axios.post(
-        link,
-        body
-      );
+      const res = await axios.post(link, body);
       toast("Please check your email for password reset link", {
         theme: "colored",
         type: "success",
       });
-      navigate("/otp", { state: { email, type: "forget" } });
+      if (type === "forget") {
+        navigate("/login");
+      } else {
+        navigate("/otp", { state: { email, type: "forget" } });
+      }
     } catch (error) {
       toast(error.response.data.message, {
         theme: "colored",
@@ -141,7 +142,11 @@ function ForgetPassword() {
                 onChange={handleChange}
               />
               {formErrors.passwordError && (
-                <div className="text-danger">{formErrors.passwordError === "error" ? null : formErrors.passwordError}</div>
+                <div className="text-danger">
+                  {formErrors.passwordError === "error"
+                    ? null
+                    : formErrors.passwordError}
+                </div>
               )}
             </div>
             <div className="mb-3">
@@ -158,7 +163,9 @@ function ForgetPassword() {
               />
               {formErrors.confirmPasswordError && (
                 <div className="text-danger">
-                  {formErrors.confirmPasswordError === "error" ? null : formErrors.confirmPasswordError}
+                  {formErrors.confirmPasswordError === "error"
+                    ? null
+                    : formErrors.confirmPasswordError}
                 </div>
               )}
             </div>
