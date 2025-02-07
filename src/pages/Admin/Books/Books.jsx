@@ -84,37 +84,39 @@ function AdminBooks() {
     const file = e.target.files[0];
     if (!file) return;
   
-    // Validate file type
     if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
       return;
     }
   
-    // Validate file size (10MB max)
+    
     const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
       alert("File size should not exceed 10MB.");
       return;
     }
   
-    // Show loading indicator
+    
     setUploading(true);
   
     const formData = new FormData();
     formData.append("file", file);
   
-    // Upload PDF to backend (which will upload to Google Drive)
     axiosInstance
       .post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`Upload progress: ${percentCompleted}%`);
+        },
       })
       .then((response) => {
-        const pdfLink = response.data.fileUrl; // Get embedded PDF link from backend
+        const pdfLink = response.data.fileUrl; 
         console.log("Uploaded PDF link:", pdfLink);
   
-        setPdfUrl(pdfLink); // Store for preview
-  
-        // Update newBook or update object to include the PDF link
+        setPdfUrl(pdfLink);
         isNew
           ? setNewBook((prev) => ({ ...prev, pdfLink }))
           : setUpdate((prev) => ({ ...prev, pdfLink }));
@@ -122,7 +124,7 @@ function AdminBooks() {
         setUploading(false);
       })
       .catch((error) => {
-        console.error("Error uploading PDF:", error);
+        console.error("Error uploading PDF:", error.response?.data || error.message);
         alert("Failed to upload PDF. Please try again.");
         setUploading(false);
       });
