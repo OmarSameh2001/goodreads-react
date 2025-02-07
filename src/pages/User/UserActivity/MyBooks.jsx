@@ -2,25 +2,25 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../apis/config";
-import {  Box } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Box } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Delete";
 import UserRating from "../../../components/Rating/UserRating";
 import BookState from "../../../components/Userbook/BookState";
+import UserReview from "../../../components/Reviews/UserReview";
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
-  { _id: 2, label: "Image", align: "center", minWidth: 100 },
+  { _id: 2, label: "Cover", align: "center", minWidth: 100 },
   { _id: 3, label: "Author", align: "left", minWidth: 100 },
   { _id: 4, label: "Rating", align: "center", minWidth: 100 },
-  { _id: 5, label: "Review", align: "center", minWidth: 150 },
+  { _id: 5, label: "Review", align: "center", minWidth: 50, maxWidth: 50 },
   { _id: 6, label: "Status", align: "center", minWidth: 100 },
   { _id: 7, label: "Actions", align: "center", minWidth: 100 },
 ];
@@ -33,18 +33,10 @@ export default function MyBooks() {
   useEffect(() => {
     async function fetchUserBooks() {
       const response = await axiosInstance.get(`/userbook/userActivity/${id}`);
-      console.log(response.data);
       setUserbooks(response.data);
     }
     fetchUserBooks();
   }, []);
-
-  function handleReviewClick(bookId) {
-    const book = userbooks.find((book) => book._id === bookId);
-    if (book) {
-      console.log("Review for book", book);
-    }
-  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -53,32 +45,21 @@ export default function MyBooks() {
     setPage(0);
   };
 
-  function handleStatusChange(event, bookId) {
-    const updatedStatus = event.target.value;
-    axiosInstance
-      .put(`/userbook/${bookId}`, { state: updatedStatus })
-      .then((response) => {
-        console.log("Status updated successfully", response.data);
-      })
-      .catch((error) => {
-        console.error("Error updating status:", error);
-      });
-  }
-
   function handleDelete(bookId) {
     axiosInstance
       .delete(`/userbook/${bookId}`)
       .then((response) => {
-          setUserbooks(userbooks.filter((book) => book._id !== bookId));
+        setUserbooks(userbooks.filter((book) => book._id !== bookId));
       })
       .catch((error) => {
         console.error("Error deleting book:", error);
       });
   }
+
   return (
     <Box sx={{ margin: "20px" }}>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
@@ -88,7 +69,7 @@ export default function MyBooks() {
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
                   >
-                    {column.label}
+                    <h4 className="b612-regular">{column.label}</h4>
                   </TableCell>
                 ))}
               </TableRow>
@@ -98,11 +79,25 @@ export default function MyBooks() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row._id}>
-                    <TableCell>{row.book.title}</TableCell>
-                    <TableCell align="center">
-                      <img src={row.book.img} alt={row.book.title} style={{ width: 50, height: 75 }} />
+                    <TableCell>
+                      <h6 className="b612-regular">{row.book.title}</h6>
                     </TableCell>
-                    <TableCell>{row.book.author.name}</TableCell>
+                    <TableCell align="center">
+                      <img
+                        src={row.book.img}
+                        alt={row.book.title}
+                        style={{ width: 50, height: 75 }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {" "}
+                      <h6
+                        style={{ fontSize: "12px" }}
+                        className="b612-regular-italic"
+                      >
+                        {row.book.author.name}{" "}
+                      </h6>
+                    </TableCell>
                     <TableCell align="center">
                       <UserRating
                         userId={id}
@@ -111,29 +106,19 @@ export default function MyBooks() {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      {row.review ? (
-                        row.review
-                      ) : (
-                        <AddCircleOutlineIcon
-                          seclassname="fas"
-                          className="fa-plus-circle"
-                          fontSize="small"
-                          sx={{
-                            color: "gray", // Default color
-                            cursor: "pointer",
-                            transition: "0.3s",
-                            "&:hover": {
-                              color: "green", // Change color on hover
-                              transform: "scale(1.2)", // Slightly enlarge
-                            },
-                          }}
-                          onClick={() => handleReviewClick(row._id)}
-                        ></AddCircleOutlineIcon>
-                      )}
+                      <UserReview
+                        bookId={row.book._id}
+                        review={row.review}
+                      />
                     </TableCell>
                     <TableCell align="center">
-                      <BookState userId={id} bookId={row.book._id} state={row.state} />
+                      <BookState
+                        userId={id}
+                        bookId={row.book._id}
+                        state={row.state}
+                      />
                     </TableCell>
+                    {/* Delete Button */}
                     <TableCell align="center">
                       <ClearIcon
                         sx={{

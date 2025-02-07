@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 import MyBooks from "./pages/User/UserActivity/MyBooks";
+import Reviews from "./pages/User/UserActivity/Reviews";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -155,6 +156,14 @@ function App() {
                   element={
                     <UserRoute>
                       <MyBooks />
+                    </UserRoute>
+                  }
+                />
+                 <Route
+                  path="/reviews/:bookId"
+                  element={
+                    <UserRoute>
+                      <Reviews />
                     </UserRoute>
                   }
                 />
