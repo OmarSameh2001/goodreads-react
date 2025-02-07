@@ -19,6 +19,9 @@ import { IoMdAddCircle } from "react-icons/io";
 import { RiDeleteBinFill } from "react-icons/ri";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import axiosInstance from "../../../apis/config";
+// import { Worker, Viewer } from "@react-pdf-viewer/core";
+// import "@react-pdf-viewer/core/lib/styles/index.css";
 
 function AdminBooks() {
   const [page, setPage] = useState(0);
@@ -28,7 +31,8 @@ function AdminBooks() {
   const [newBook, setNewBook] = useState({});
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
-
+  const [pdfUrl, setPdfUrl] = useState(""); 
+  const [uploading, setUploading] = useState(false);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -44,7 +48,7 @@ function AdminBooks() {
     setNewBook({});
     setImage(null);
   }
-
+ /// image 
   function handleImage(e) {
     setImageLoading(true);
     const file = e.target.files[0];
@@ -71,6 +75,62 @@ function AdminBooks() {
 
     reader.readAsDataURL(file);
   }
+
+
+
+
+  ///pdf
+  function handlePdfUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    // Validate file type
+    if (file.type !== "application/pdf") {
+      alert("Please upload a valid PDF file.");
+      return;
+    }
+  
+    // Validate file size (10MB max)
+    const maxSize = 20 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size should not exceed 10MB.");
+      return;
+    }
+  
+    // Show loading indicator
+    setUploading(true);
+  
+    const formData = new FormData();
+    formData.append("file", file);
+  
+    // Upload PDF to backend (which will upload to Google Drive)
+    axiosInstance
+      .post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((response) => {
+        const pdfLink = response.data.fileUrl; // Get embedded PDF link from backend
+        console.log("Uploaded PDF link:", pdfLink);
+  
+        setPdfUrl(pdfLink); // Store for preview
+  
+        // Update newBook or update object to include the PDF link
+        isNew
+          ? setNewBook((prev) => ({ ...prev, pdfLink }))
+          : setUpdate((prev) => ({ ...prev, pdfLink }));
+  
+        setUploading(false);
+      })
+      .catch((error) => {
+        console.error("Error uploading PDF:", error);
+        alert("Failed to upload PDF. Please try again.");
+        setUploading(false);
+      });
+  }
+  
+  
+  
+  ///////////
   function handleChange(e) {
     console.log(e.target.name, e.target.value);
     isNew
@@ -123,7 +183,7 @@ function AdminBooks() {
   async function handleUpdate(e) {
     try {
       e.preventDefault();
-      const body = handleIds(update.author, update.category);
+      const body = handleIds(update.author, update.category ,update.fileUrl);
       await axios.put(`http://localhost:3001/books/${update._id}`, body, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -139,7 +199,7 @@ function AdminBooks() {
   async function handleAdd(e) {
     try {
       e.preventDefault();
-      const body = handleIds(newBook.author, newBook.category);
+      const body = handleIds(newBook.author, newBook.category , newBook.fileUrl);
       console.log(newBook);
       await axios.post("http://localhost:3001/books", body, {
         headers: {
@@ -246,6 +306,11 @@ function AdminBooks() {
       minWidth: 170,
       align: "left",
     },
+    { id: "Upload PDF",
+      label: "Upload PDF",
+      minWidth: 170,
+      align: "left"
+     },
     {
       id: "Actions",
       label: "Actions",
@@ -279,7 +344,12 @@ function AdminBooks() {
           ></div>
           <div
             className="position-relative bg-white p-4 rounded-4 shadow-lg"
-            style={{ width: "350px", backdropFilter: "blur(5px)" }}
+            style={{
+              width: "400px",
+              maxHeight: "80vh", 
+              overflowY: "auto", 
+              backdropFilter: "blur(5px)"
+            }}
           >
             <h2 className="text-center mb-3">{isNew ? "Add" : "Edit"} Book</h2>
             <GiCancel
@@ -344,6 +414,36 @@ function AdminBooks() {
                   {imageLoading ? <CircularProgress /> : "Upload"}
                 </button> */}
               </div>
+              <div className="mb-1">
+              <label htmlFor="pdfUpload" className="form-label">Upload PDF</label>
+              <input
+                id="pdfUpload"
+                type="file"
+                className="form-control"
+                name="pdf"
+                accept="application/pdf"
+                onChange={handlePdfUpload}
+                required={isNew} // Only required when adding a new book
+              />
+  
+               {/* Show loader when uploading */}
+              {uploading && (
+              <div className="mt-2">
+              <CircularProgress size={20} style={{ marginLeft: "10px" }} />
+              <span style={{ marginLeft: "5px" }}>Uploading...</span>
+              </div>
+              )}
+
+             {/* Show uploaded PDF link */}
+            {pdfUrl && !uploading && (
+             <div className="mt-2">
+               <a href={pdfUrl} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                  View Uploaded PDF
+              </a>
+            </div>
+            )}
+           </div>
+  
               <div className="mb-1">
                 <label htmlFor="description" className="form-label">
                   Description
@@ -423,7 +523,7 @@ function AdminBooks() {
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
         <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" >
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -483,6 +583,15 @@ function AdminBooks() {
                       <TableCell align="left">{book.edition}</TableCell>
                       <TableCell align="left">{book.views}</TableCell>
                       <TableCell align="left">
+                        {book.pdfLink ? (
+                         <a href={book.pdfLink} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                           View PDF
+                          </a>
+                          ) : (
+                         <span style={{ color: "gray" }}>No PDF Available</span>
+                         )}
+                      </TableCell>
+                      <TableCell align="left">
                         <FaPencilAlt
                           style={{
                             marginRight: 20,
@@ -511,7 +620,21 @@ function AdminBooks() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-    </div>
+      {/* <div>
+      <h3>Upload PDF</h3>
+      <input type="file" accept="application/pdf" onChange={handlePdfUpload} />
+
+      {pdfUrl && (
+        <div style={{ marginTop: 20, height: "600px" }}>
+          <h3>PDF Preview</h3>
+          <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+
+            <Viewer fileUrl={pdfUrl} />
+          </Worker>
+        </div>
+      )}
+    </div>*/}
+    </div> 
   );
 }
 

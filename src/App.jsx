@@ -22,7 +22,8 @@ import BooksContext from "./context/books";
 import WtrBooksContext from "./context/wtrBooks"; // Import WtrBooksContext
 import { useState } from "react";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
-
+import ReadBook from "./components/Books/ReadBook";
+const pdfUrl = "https://drive.google.com/file/d/1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC/preview";
 function App() {
   const [books, setBooks] = useState([]);
   const [wtrBooks, setWtrBooks] = useState([]); // Add state to store user's want to read books
@@ -35,7 +36,9 @@ function App() {
           <BooksContext.Provider value={{ books, setBooks }}>
             <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
               <Navbar />
-              <Routes>
+              
+              <ReadBook pdfUrl={pdfUrl} />
+               {/* <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/otp" element={<Otp />} />
@@ -120,8 +123,8 @@ function App() {
                     </UserRoute>
                   }
                 />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+                <Route path="*" element={<NotFound />} /> 
+              </Routes> */}
             </WtrBooksContext.Provider>
           </BooksContext.Provider>
         </BrowserRouter>
