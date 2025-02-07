@@ -1,51 +1,97 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Box } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import {
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  Card,
+  Container,
+  CardContent,
+  Typography,
+  CardHeader,
+  Avatar,
+  Rating,
+} from "@mui/material";
+import { useContext, useState } from "react";
+import UserBooks from "../../context/userBooks.js";
+import axiosInstance from "../../apis/config.js";
 
-function UserReview({ bookId, review  }) {
-  const [bookReview, setReview] = useState(review || ""); 
-  const navigate = useNavigate(); // ✅ Correct way to use useNavigate
+export default function UserReview({ bookId }) {
+  const { userBooks } = useContext(UserBooks);
+  const userBook = userBooks.find((userBook) => userBook.book._id === bookId && (userBook.rating != null || userBook.review != null)); 
+  const [inputReview, setInputReview] = useState("");
+  const [showTextarea, setShowTextarea] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const username = localStorage.getItem("username");
+console.log(userBook);
+  async function handleReviewSubmit() {
+    setLoading(true);
+    try {
+      await axiosInstance.patch(`/userbook/review/${bookId}`, {
+        userId: localStorage.getItem("userId"),
+        review: inputReview
+      });
+      setShowTextarea(false);
+      setSuccess(true);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <>
-      {bookReview  ? (
-        // If review exists and is longer than 40 characters, trim it
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <h5 className="b612-regular-italic">
-            {bookReview.slice(0, 40)}...
-          </h5>
-
-          <Link
-            to={`/reviews/${bookId}`}  // Navigates to the book review page
-            style={{
-              fontSize: "12px",
-              marginLeft: "8px",  // Space between text and the link
-              color: "#1976d2",  // Blue color
-              textDecoration: "none",
-            }}
-          >
-            View
-          </Link>
-        </Box>
-      ) :  (
-        // If no review exists, show the "Add Review" icon
-        <AddCircleOutlineIcon
-          className="fa-plus-circle"
-          fontSize="small"
-          sx={{
-            color: "gray",  // Default color
-            cursor: "pointer",
-            transition: "0.3s",
-            "&:hover": {
-              color: "green",  // Change color on hover
-              transform: "scale(1.2)",  // Slightly enlarge
-            },
-          }}
-          onClick = {() => {  navigate(`/reviews/${bookId}`)}}
-        />
+    <Container sx={{ mt: 2, p: 2, borderRadius: 2, boxShadow: 1 }}>
+      {showTextarea && (
+        <>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            label="Your Review"
+            value={inputReview}
+            onChange={(e) => setInputReview(e.target.value)}
+            variant="outlined"
+          />
+          <Button variant="contained" onClick={handleReviewSubmit} sx={{ mt: 1 }} disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
+          </Button>
+        </>
       )}
-    </>
+           
+   
+    {userBook ? (
+      <>
+       <h3 className="b612-bold">Your Review</h3>
+        <Card sx={{ background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", borderRadius: 2, boxShadow: 2, p: 2, mb: 2 }}>
+          <CardHeader
+            avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{username?.charAt(0)}</Avatar>}
+            title={username || "Anonymous"}
+            subheader={new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true }).format(new Date(userBook.updatedAt || userBook.createdAt))}
+          />
+          <CardContent>
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>{userBook.review}</Typography>
+            <Rating name="size-medium" value={userBook.rating} readOnly />
+          </CardContent>
+        </Card>
+        </>
+      ) : (
+        !showTextarea && (
+          <Container sx={{ background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", borderRadius: 2, boxShadow: 2, p: 2, mb: 2 , borderRadius: 2, p: 2, textAlign: "center", mt: 3 }}>
+            <Typography variant="h6">No review yet?</Typography>
+            <Button variant="contained" onClick={() => setShowTextarea(true)} sx={{ mt: 1 }}>
+              Write your review now 
+            </Button>
+          </Container>
+        )
+      )}
+
+      {/* Success Snackbar */}
+      <Snackbar open={success} autoHideDuration={3000} onClose={() => setSuccess(false)}>
+        <Alert onClose={() => setSuccess(false)} severity="success" variant="filled">
+          Review submitted successfully!
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 }
-
-export default UserReview;

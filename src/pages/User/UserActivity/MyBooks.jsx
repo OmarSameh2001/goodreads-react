@@ -13,7 +13,7 @@ import { Box } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Delete";
 import UserRating from "../../../components/Rating/UserRating";
 import BookState from "../../../components/Userbook/BookState";
-import UserReview from "../../../components/Reviews/UserReview";
+import ReviewLink from "../../../components/Reviews/ReviewLink";
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
@@ -57,6 +57,9 @@ export default function MyBooks() {
   }
 
   return (
+
+
+
     <Box sx={{ margin: "20px" }}>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer>
@@ -106,7 +109,7 @@ export default function MyBooks() {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <UserReview
+                      <ReviewLink
                         bookId={row.book._id}
                         review={row.review}
                       />

@@ -1,32 +1,55 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../apis/config";
-import { List, ListItem, ListItemText, Divider, Button, TextField, Box, Snackbar, Alert } from "@mui/material";
-import UserBooks from "../../../context/userBooks";
-import BookCard from "../../../components/Card/BookCard";
+import {
+  List,
+  Card,
+  Container,
+  CardContent,
+  Typography,
+  CardHeader,
+  Avatar,
+  Rating,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import UserReview from "../../../components/Reviews/UserReview";
 
 export default function Reviews() {
+  const lightColors = [
+    "#fce4ec",
+    "#e3f2fd",
+    "#e8f5e9",
+    "#fff3e0",
+    "#f3e5f5",
+    "#ede7f6",
+  ];
   const { bookId } = useParams();
-  const { userBooks } = useContext(UserBooks);
-
-  // Extract review from user book
-  const userBook = userBooks.find((userBook) => userBook.book._id === bookId);
-  const [review, setReview] = useState(userBook ? userBook.review : ""); // Saved review
-  const [inputReview, setInputReview] = useState(""); // Separate state for textarea input
-
   const [othersReviews, setOthersReviews] = useState([]);
-  const [book, setBook] = useState({});
-  const [showTextarea, setShowTextarea] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [success, setSuccess] = useState(false); // Success message state
-  
+  const [book, setBook] = useState(null);
+
+  // const Banner = styled("div")(({ theme }) => ({
+  //   background: `linear-gradient(135deg,rgb(223, 124, 197),rgb(228, 222, 237) ,rgb(86, 97, 213))`,
+  //   height: 90,
+  //   display: "flex",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   color:" rgb(242, 233, 240)", // Slightly darker text for contrast
+  //   fontSize: "2rem",
+  //   fontWeight: "bold",
+  //   textShadow: "1px 1px 8px rgba(0,0,0,0.2)",
+  //   borderBottomLeftRadius: "80px", // Unique curve effect
+  //   borderBottomRightRadius: "80px",
+  // }));
+
   useEffect(() => {
     async function fetchData() {
       try {
         const bookResponse = await axiosInstance.get(`/books/${bookId}`);
         setBook(bookResponse.data);
 
-        const reviewsResponse = await axiosInstance.get(`/reviews/${bookId}`);
+        const reviewsResponse = await axiosInstance.get(
+          `userbook/review/${bookId}`
+        );
         setOthersReviews(reviewsResponse.data);
       } catch (error) {
         console.log(error);
@@ -35,93 +58,64 @@ export default function Reviews() {
     fetchData();
   }, [bookId]);
 
-  function handleReviewClick() {
-    setShowTextarea(true);
-  }
-
-  async function handleReviewSubmit() {
-    setLoading(true); // Show loading state
-
-    try {
-      const response = await axiosInstance.patch(`/userbook/review/${bookId}`, { 
-        review: inputReview, 
-        userId: localStorage.getItem("userId") 
-      });
-
-      setReview(response.data.review); // Update saved review
-      setInputReview(""); // Clear input field
-      setShowTextarea(false); // Hide textarea
-      setSuccess(true); // Show success message
-    } catch (error) {
-      console.error("Error submitting review:", error);
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  }
-
   return (
     <>
-      {/* Show book details */}
-      <Box sx={{ mb: 2 }}>
-        {/* <BookCard book={book} /> */}
-      </Box>
-
-      {/* User's Review */}
-      <List sx={{ mb: 2 }} aria-label="user-review">
-        <ListItem>
-          {review ? (
-            <ListItemText primary={review} />
-          ) : (
-            <>
-              <ListItemText primary="Write your review" />
-              <Button variant="outlined" onClick={handleReviewClick}>
-                Write your review
-              </Button>
-            </>
-          )}
-        </ListItem>
-        {showTextarea && (
-          <Box sx={{ mt: 1, p: 2 }}>
-            <TextField
-              fullWidth
-              multiline
-              minRows={3}
-              label="Your Review"
-              value={inputReview} // Use separate inputReview state
-              onChange={(e) => setInputReview(e.target.value)}
-              variant="outlined"
-            />
-            <Button 
-              variant="contained" 
-              onClick={handleReviewSubmit}
-              sx={{ mt: 1 }}
-              disabled={loading} // Disable button when loading
-            >
-              {loading ? "Submitting..." : "Submit"} {/* Show loading text */}
-            </Button>
-          </Box>
-        )}
-        <Divider component="li" />
-      </List>
-
-      {/* Other Users' Reviews */}
-      <List sx={{ mt: 2 }} aria-label="other-reviews">
-        {othersReviews.map((review, index) => (
-          <React.Fragment key={index}>
-            <ListItem sx={index === 0 ? { backgroundColor: "#e0f7fa", transition: "0.5s" } : {}}>
-              <ListItemText primary={review} />
-            </ListItem>
-            <Divider component="li" />
-          </React.Fragment>
-        ))}
-      </List>
-
-      {/* Success Snackbar */}
-      <Snackbar open={success} autoHideDuration={3000} onClose={() => setSuccess(false)}>
-        <Alert onClose={() => setSuccess(false)} severity="success" variant="filled">
-          Review submitted successfully!
-        </Alert>
-      </Snackbar>
+     {/* <Banner>{book ? book.title : "Book Review"}</Banner> */}
+      <UserReview bookId={bookId} />
+      <br/>
+      <Container sx={{ mt: 2, p: 2, borderRadius: 2, boxShadow: 1 }}>
+      <h3 className="b612-bold">Other Users' Reviews</h3>
+        {/* Other Users' Reviews */}
+        <List sx={{ mt: 3 }}>
+          {othersReviews.map((otherUserReview) => {
+            const randomColor =
+              lightColors[Math.floor(Math.random() * lightColors.length)];
+            return (
+              <Card
+                key={otherUserReview._id}
+                sx={{
+                  backgroundColor: randomColor,
+                  borderRadius: 2,
+                  boxShadow: 2,
+                  p: 2,
+                  mb: 2,
+                }}
+              >
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: "primary.main" }}>
+                      {otherUserReview.user.username.charAt(0)}
+                    </Avatar>
+                  }
+                  title={otherUserReview.user.username || "Anonymous"}
+                  subheader={new Intl.DateTimeFormat("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  }).format(
+                    new Date(
+                      otherUserReview.updatedAt || otherUserReview.createdAt
+                    )
+                  )}
+                />
+                <CardContent>
+                  <Typography variant="body1" sx={{ color: "text.secondary" }}>
+                    {otherUserReview.review}
+                  </Typography>
+                  <Rating
+                    name="size-medium"
+                    value={otherUserReview.rating}
+                    readOnly
+                  />
+                </CardContent>
+              </Card>
+            );
+          })}
+        </List>
+        </Container>
     </>
   );
 }

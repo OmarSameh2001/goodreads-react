@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import ApexCharts from "react-apexcharts";
 import axiosInstance from "../../apis/config";
 
@@ -27,7 +27,6 @@ export default function CategoryPolarChart() {
 
           const labels = res.data.map((category) => category.name);
           const data = res.data.map((category) => category.views);
-          const background = res.data.map(() => "#" + Math.floor(Math.random() * 16777215).toString(16)); // Random colors
 
           setChartData({
             labels,
@@ -35,7 +34,6 @@ export default function CategoryPolarChart() {
               {
                 name: "Category Popularity",
                 data,
-                background,
               },
             ],
           });
