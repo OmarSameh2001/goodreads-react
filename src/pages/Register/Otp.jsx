@@ -14,7 +14,8 @@ function Otp() {
     otp6: "",
   });
   const location = useLocation();
-  const { email } = location.state;
+  const { email, type } = location.state;
+  console.log(email);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -43,14 +44,19 @@ function Otp() {
     // console.log(
     //   `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`
     // );
-    const status = await handleOtp();
+    let status
+    if (type === "forget") {
+      status = await handlePassOtp();
+    } else {
+      status = await handleOtp();
+    }
     if (status === 200) {
       toast.onChange((payload) => {
         if (
           payload.status === "removed" &&
           payload.content === "user verified successfully"
         ) {
-          navigate("/login");
+          type === "forget" ? navigate("/forget", { state: {email, type: "forget"} }) : navigate("/login");
         }
       });
       toast("user verified successfully", {
@@ -63,10 +69,30 @@ function Otp() {
   }
   async function handleOtp() {
     try {
-      const res = await axios.post(`http://localhost:3001/auth/verify-otp`, {
+      const body = {
         email: email,
         otp: `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
-      });
+      };
+      const res = await axios.post(
+        `http://localhost:3001/auth/verify-otp`,
+        body
+      );
+      return res.status;
+    } catch (error) {
+      return 400;
+    }
+  }
+  async function handlePassOtp() {
+    try {
+      const body = {
+        email: email,
+        otp: `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
+        type: "password",
+      };
+      const res = await axios.post(
+        `http://localhost:3001/auth/verify-otp`,
+        body
+      );
       return res.status;
     } catch (error) {
       return 400;

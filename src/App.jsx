@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 import MyBooks from "./pages/User/UserActivity/MyBooks";
+import ForgetPassword from "./pages/Login/ForgetPassword";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -69,6 +70,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
+                  <Route path="/forget" element={<ForgetPassword />} />
 
                   <Route
                     path="/admin"
