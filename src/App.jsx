@@ -37,8 +37,8 @@ function App() {
             <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
               <Navbar />
               
-              {/* <ReadBook pdfUrl={pdfUrl} /> */}
-                <Routes>
+              <ReadBook />
+                {/* <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/otp" element={<Otp />} />
@@ -124,7 +124,7 @@ function App() {
                   }
                 />
                 <Route path="*" element={<NotFound />} /> 
-              </Routes> 
+              </Routes>  */}
             </WtrBooksContext.Provider>
           </BooksContext.Provider>
         </BrowserRouter>

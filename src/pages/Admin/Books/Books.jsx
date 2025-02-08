@@ -429,22 +429,13 @@ function AdminBooks() {
               />
   
                {/* Show loader when uploading */}
-              {uploading && (
-              <div className="mt-2">
-              <CircularProgress size={20} style={{ marginLeft: "10px" }} />
-              <span style={{ marginLeft: "5px" }}>Uploading...</span>
-              </div>
-              )}
-
-             {/* Show uploaded PDF link */}
-            {pdfUrl && !uploading && (
-             <div className="mt-2">
-               <a href={pdfUrl} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
-                  View Uploaded PDF
-              </a>
-            </div>
-            )}
-           </div>
+               {uploading && (
+                   <div className="mt-2">
+                   <CircularProgress size={20} style={{ marginLeft: "10px" }} />
+                   <span style={{ marginLeft: "5px" }}>Uploading...</span>
+                   </div>
+                    )}
+                </div>
   
               <div className="mb-1">
                 <label htmlFor="description" className="form-label">
