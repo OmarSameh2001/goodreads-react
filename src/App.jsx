@@ -42,7 +42,6 @@ function App() {
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
-        console.log(response.data);
 
         //Prevent unnecessary re-renders
         if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {

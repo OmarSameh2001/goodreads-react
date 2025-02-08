@@ -40,9 +40,6 @@ function Otp() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // console.log(
-    //   `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`
-    // );
     const status = await handleOtp();
     if (status === 200) {
       toast.onChange((payload) => {
