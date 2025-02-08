@@ -95,12 +95,8 @@ export default function BookCard(props) {
             alignItems: "center",
           }}
         >
-          <Chip variant="outlined" size="sm" color="neutral">
             {book.edition} Edition
-          </Chip>
-          <Chip variant="outlined" size="sm" color="neutral">
             {book.category.name}
-          </Chip>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <VisibilityIcon fontSize="small" />
