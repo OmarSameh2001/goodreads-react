@@ -18,6 +18,7 @@ import axiosInstance from "../../apis/config";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import UserBooks from "../../context/userBooks";
+import CategoryCard from "./CategoryCard";
 export default function BookCard(props) {
   const { book } = props;
   const { userBooks, setUserBooks } = useContext(UserBooks);
@@ -126,6 +127,9 @@ export default function BookCard(props) {
         >
           <Chip variant="outlined" size="sm" color="neutral">
             {book.edition} Edition
+          </Chip>
+          <Chip variant="outlined" size="sm" color="neutral">
+            {book.category.name}
           </Chip>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>

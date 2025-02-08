@@ -67,7 +67,6 @@ function Navbar() {
         >
           <h5>Categories</h5>
         </Link>
-        {user === "user" && <Search />}
       </div>
       <div
         style={{

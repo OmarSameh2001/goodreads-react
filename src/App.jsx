@@ -20,7 +20,7 @@ import Otp from "./pages/Register/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BooksContext from "./context/books";
-import UserBooks from "./context/userBooks"; // Import WtrBooksContext
+import UserBooks from "./context/userBooks";
 import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
@@ -118,13 +118,13 @@ function App() {
                     }
                   />
                   <Route
-                  path="/authors/:id"
-                  element={
-                    <UserRoute>
-                      <AuthorDetails />
-                    </UserRoute>
-                  }
-                />
+                    path="/authors/:id"
+                    element={
+                      <UserRoute>
+                        <AuthorDetails />
+                      </UserRoute>
+                    }
+                  />
                   <Route
                     path="/books"
                     element={

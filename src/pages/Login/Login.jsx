@@ -20,7 +20,7 @@ function Login() {
         password,
       });
       localStorage.setItem("token", res.data.token);
-
+      localStorage.setItem("username", res.data.user.username);
       localStorage.setItem("user", res.data.user.role);
       localStorage.setItem("userId", res.data.user._id);
       if (res.data.user.role === "admin") {
