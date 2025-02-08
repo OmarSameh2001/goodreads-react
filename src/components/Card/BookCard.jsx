@@ -1,46 +1,44 @@
 import * as React from "react";
 import AspectRatio from "@mui/joy/AspectRatio";
-import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
-import Chip from "@mui/joy/Chip";
-import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import { Navigate } from "react-router";
-import { Link as RouterLink } from "react-router"; // Import React Router Link
+import { Link as RouterLink } from "react-router";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import Box from "@mui/joy/Box";
 import Rating from "@mui/material/Rating";
-import axiosInstance from "../../apis/config";
-import { toast } from "react-toastify";
 import { useContext } from "react";
 import UserBooks from "../../context/userBooks";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import Button from "@mui/joy/Button"; 
+import axiosInstance from "../../apis/config"; 
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
+import BookState from "../Userbook/BookState";
 export default function BookCard(props) {
   const { book } = props;
   const { userBooks, setUserBooks } = useContext(UserBooks);
   const userId = localStorage.getItem("userId");
-  async function handleAddToWantToRead(user_id, book_id) {
-    const requestBody = {
-      user: user_id,
-      book: book_id,
-    };
+  const navigate = useNavigate();
 
+  async function handleAddToWantToRead(user_id, book_id) {
+    const requestBody = { user: user_id, book: book_id };
     try {
       const response = await axiosInstance.post("userBook/", requestBody);
-      toast(`Book: ${book.title} has been added successfully`, {
-        type: "success",
-        theme: "colored",
-      });
-      setUserBooks((prevUserBooks) => [...prevUserBooks, response.data]);
+      toast.success(`Book: ${book.title} added successfully!`);
+      setUserBooks((prevUserBooks) => [
+        ...prevUserBooks, 
+        { book: book, state: "want to read" } // Default state
+      ]);
     } catch (error) {
-      toast("Error, Book already exist", { type: "error", theme: "colored" });
+      toast.error("Error: Book already exists!");
     }
   }
+
+  const userBook = userBooks.find((userBook) => userBook.book._id === book._id);
   return (
-    <Card
+    <Card 
       sx={{
         width: "100%",
         height: "100%",
@@ -53,7 +51,7 @@ export default function BookCard(props) {
         },
       }}
     >
-      <CardOverflow>
+      <CardOverflow onClick = {() => navigate(`/bookdetails/${book._id}`)}> 
         <AspectRatio ratio="2/3" sx={{ borderRadius: "sm" }}>
           <img
             src={book.img || "/default-book-cover.jpg"}
@@ -66,20 +64,7 @@ export default function BookCard(props) {
       </CardOverflow>
 
       <CardContent sx={{ flexGrow: 1, px: 2, pt: 2 }}>
-        <Typography
-          level="title-md"
-          component={RouterLink}
-          to={`/bookDetails/${book._id}`}
-          sx={{
-            fontWeight: "bold",
-            mb: 0.5,
-            textDecoration: "none",
-            "&:hover": { textDecoration: "underline" },
-          }}
-        >
-          {book.title}
-        </Typography>
-
+        <h4 className="b612-regular"> {book.title}</h4>
         <Typography level="body-sm" sx={{ mb: 1, color: "text.secondary" }}>
           by {book.author?.name || "Unknown Author"}
         </Typography>
@@ -98,22 +83,7 @@ export default function BookCard(props) {
             ({book.totalRateCount} ratings)
           </Typography>
         </Box>
-
-        <Typography
-          level="body-xs"
-          sx={{
-            mb: 1,
-            color: "text.tertiary",
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {book.description}
-        </Typography>
       </CardContent>
-
       <CardOverflow
         sx={{ px: 2, pb: 2, borderTop: "1px solid", borderColor: "divider" }}
       >
@@ -124,31 +94,28 @@ export default function BookCard(props) {
             alignItems: "center",
           }}
         >
-          <Chip variant="outlined" size="sm" color="neutral">
-            {book.edition} Edition
-          </Chip>
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <VisibilityIcon fontSize="small" />
             <Typography level="body-xs">{book.views}</Typography>
           </Box>
         </Box>
 
-        <Button
-          fullWidth
-          variant="soft"
-          color="primary"
-          size="sm"
-          onClick={() => handleAddToWantToRead(userId, book._id)}
-          disabled={userBooks.some(
-            (userBook) => userBook.book._id === book._id
+        <Box sx={{ mt: 1.5 }}>
+          {userBook ? (
+            <BookState userId={userId} bookId={book._id} state={userBook.state} />
+          ) : (
+            <Button
+              fullWidth
+              variant="soft"
+              color="primary"
+              size="sm"
+              onClick={(event) => handleAddToWantToRead(userId, book._id)}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <BookmarkAddIcon fontSize="small" /> Want to Read
+            </Button>
           )}
-          sx={{ mt: 1.5 }}
-        >
-          {userBooks.some((userBook) => userBook.book._id === book._id)
-            ? "Already Added"
-            : "Want to Read"}
-        </Button>
+        </Box>
       </CardOverflow>
     </Card>
   );

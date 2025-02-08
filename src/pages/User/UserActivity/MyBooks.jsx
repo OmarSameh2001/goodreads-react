@@ -2,7 +2,7 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
@@ -12,8 +12,9 @@ import axiosInstance from "../../../apis/config";
 import { Box } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Delete";
 import UserRating from "../../../components/Rating/UserRating";
-import BookState from "../../../components/Userbook/BookState";
 import ReviewLink from "../../../components/Reviews/ReviewLink";
+import UserBooks from "../../../context/userBooks";
+import BookState from "../../../components/Userbook/BookState";
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
@@ -28,15 +29,11 @@ const columns = [
 export default function MyBooks() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [userbooks, setUserbooks] = useState([]);
   const id = localStorage.getItem("userId");
+  const { userBooks, setUserBooks } = React.useContext(UserBooks);
+
   useEffect(() => {
-    async function fetchUserBooks() {
-      const response = await axiosInstance.get(`/userbook/userActivity/${id}`);
-      setUserbooks(response.data);
-    }
-    fetchUserBooks();
-  }, []);
+  }, [userBooks.length]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -45,11 +42,14 @@ export default function MyBooks() {
     setPage(0);
   };
 
-  function handleDelete(bookId) {
+  function handleDelete(UserBookId) {
     axiosInstance
-      .delete(`/userbook/${bookId}`)
+      .delete(`/userbook/${UserBookId}`)
       .then((response) => {
-        setUserbooks(userbooks.filter((book) => book._id !== bookId));
+        // Remove the deleted userbook from the local state 
+        setUserBooks((prevUserBooks) =>
+          prevUserBooks.filter((userbook) => userbook._id !== UserBookId)
+        );
       })
       .catch((error) => {
         console.error("Error deleting book:", error);
@@ -57,9 +57,6 @@ export default function MyBooks() {
   }
 
   return (
-
-
-
     <Box sx={{ margin: "20px" }}>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer>
@@ -78,7 +75,7 @@ export default function MyBooks() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {userbooks
+              {userBooks
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row._id}>
@@ -148,7 +145,7 @@ export default function MyBooks() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={userbooks.length}
+          count={userBooks.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

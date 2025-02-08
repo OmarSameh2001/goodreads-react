@@ -1,8 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState, useRef, use, useContext } from "react";
 import axiosInstance from "../../../apis/config.js";
 import BookCard from "../../../components/Card/BookCard";
-import BooksContext from "../../../context/books";
 import ReactPaginate from "react-paginate";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -14,7 +12,6 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 function UserBooks() {
-  // const { books, setBooks } = useContext(BooksContext);
   const [books, setBooks] = useState([]);
   const [displayedBooks, setDisplayedBooks] = useState(books);
   const [isLoading, setIsLoading] = useState(true);
