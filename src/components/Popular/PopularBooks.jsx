@@ -59,7 +59,7 @@ export default function BookList() {
                   }}
                 >
                   <Box
-                    onClick={() => navigate(`/books/${author._id}`)}
+                    onClick={() => navigate(`/bookDetails/${book._id}`)}
                     sx={{
                       cursor: "pointer",
                       borderRadius: 2,
