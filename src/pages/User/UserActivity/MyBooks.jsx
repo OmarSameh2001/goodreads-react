@@ -15,11 +15,12 @@ import UserRating from "../../../components/Rating/UserRating";
 import ReviewLink from "../../../components/Reviews/ReviewLink";
 import UserBooks from "../../../context/userBooks";
 import BookState from "../../../components/Userbook/BookState";
+import { useNavigate } from "react-router";
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
   { _id: 2, label: "Cover", align: "center", minWidth: 100 },
-  { _id: 3, label: "Author", align: "left", minWidth: 100 },
+  // { _id: 3, label: "Author", align: "left", minWidth: 100 },
   { _id: 4, label: "Rating", align: "center", minWidth: 100 },
   { _id: 5, label: "Review", align: "center", minWidth: 50, maxWidth: 50 },
   { _id: 6, label: "Status", align: "center", minWidth: 100 },
@@ -31,9 +32,9 @@ export default function MyBooks() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const id = localStorage.getItem("userId");
   const { userBooks, setUserBooks } = React.useContext(UserBooks);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-  }, [userBooks.length]);
+  useEffect(() => {}, [userBooks.length]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -46,7 +47,7 @@ export default function MyBooks() {
     axiosInstance
       .delete(`/userbook/${UserBookId}`)
       .then((response) => {
-        // Remove the deleted userbook from the local state 
+        // Remove the deleted userbook from the local state
         setUserBooks((prevUserBooks) =>
           prevUserBooks.filter((userbook) => userbook._id !== UserBookId)
         );
@@ -79,17 +80,24 @@ export default function MyBooks() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row._id}>
-                    <TableCell>
+                    <TableCell
+                      onClick={() => navigate(`/bookDetails/${row.book._id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <h6 className="b612-regular">{row.book.title}</h6>
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell
+                      align="center"
+                      onClick={() => navigate(`/bookDetails/${row.book._id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <img
                         src={row.book.img}
                         alt={row.book.title}
                         style={{ width: 50, height: 75 }}
                       />
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {" "}
                       <h6
                         style={{ fontSize: "12px" }}
@@ -97,7 +105,7 @@ export default function MyBooks() {
                       >
                         {row.book.author.name}{" "}
                       </h6>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="center">
                       <UserRating
                         userId={id}
@@ -106,10 +114,7 @@ export default function MyBooks() {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <ReviewLink
-                        bookId={row.book._id}
-                        review={row.review}
-                      />
+                      <ReviewLink bookId={row.book._id} review={row.review} />
                     </TableCell>
                     <TableCell align="center">
                       <BookState

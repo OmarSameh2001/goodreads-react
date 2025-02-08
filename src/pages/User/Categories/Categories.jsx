@@ -9,7 +9,7 @@ import { CircularProgress } from "@mui/material";
 
 function Categories() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [intialLoad, setInitialLoad] = useState(true);
   const [total, setTotal] = useState(0);
 
@@ -31,7 +31,12 @@ function Categories() {
     },
   });
 
-  if (intialLoad) return <CircularProgress />;
+  if (intialLoad)
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <CircularProgress />
+      </div>
+    );
   if (error) return <p>Error fetching categories</p>;
 
   // Handle page change
@@ -40,8 +45,8 @@ function Categories() {
   };
 
   return (
-    <div className="container mt-4">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+    <div className="container mt-4 d-flex flex-column">
+      <h1 className="text-2xl font-bold mb-4 text-center">Categories</h1>
       <div>
         {isLoading ? <CircularProgress /> : categories.map((category) => (
           <CategoryCard key={category._id} category={category} />

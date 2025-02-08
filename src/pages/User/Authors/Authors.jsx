@@ -29,26 +29,33 @@ function Authors() {
     },
   });
 
-  if (intialLoading) return <CircularProgress />;
+  if (intialLoading)
+    return (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <CircularProgress />
+      </div>
+    );
   if (error) return <p>Error fetching authors</p>;
-
 
   // Handle page change
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
 
-
   return (
-    <div className="container mt-4">
-      <h1 className="text-2xl font-bold mb-4">Authors</h1>
+    <div className="container mt-4 d-flex flex-column justify-content-center">
+      <h1 className="text-2xl font-bold mb-4 text-center">Authors</h1>
       <div className="d-flex justify-content-center align-items-center">
-        {isLoading ? <CircularProgress /> : authors?.map((author) => (
-          <AuthorCard key={author._id} author={author} />
-        ))}
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          authors?.map((author) => (
+            <AuthorCard key={author._id} author={author} />
+          ))
+        )}
       </div>
 
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Pagination
           count={Math.ceil(total / itemsPerPage)}
           disabled={isLoading || Math.ceil(total / itemsPerPage) < 2}

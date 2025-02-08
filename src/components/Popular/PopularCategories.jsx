@@ -3,7 +3,7 @@ import { Box, Chip, Stack, Typography } from "@mui/material";
 import axiosInstance from "../../apis/config";
 import { useNavigate } from "react-router";
 
-export default function CategoryRanking() {
+export default function CategoryRanking({ user }) {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function CategoryRanking() {
               label={category.name}
               variant="outlined"
               sx={{ color: "black", fontWeight: "bold" }}
-              onClick={() => navigate( `/categories/`)}
+              onClick={() => navigate(user === "admin" ? `/adminCategories` : `/categories/`)}
             />
             </Stack>
           </Box>

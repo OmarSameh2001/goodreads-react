@@ -20,6 +20,7 @@ function Success() {
             subscriptionType: subscriptionType
         });
         if (response.status === 200) {
+          localStorage.setItem("endDate", response.data.endDate);
           alert("Payment successful");
           navigate("/profile");
         }

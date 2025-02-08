@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../apis/config";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import AuthorBooks from "../../../components/Author/AuthorBooks";
 
 const AuthorDetails = () => {
   const { id } = useParams();
@@ -31,7 +30,7 @@ const AuthorDetails = () => {
           </button>
       {author ? (
         <>
-        <h1 className="text-2xl font-bold mb-4">Author Details</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Author Details</h1>
         <div className="row">
           <div className="col-md-4">
             <img src={author.img} alt={author.name} className="img-fluid" />
@@ -46,9 +45,14 @@ const AuthorDetails = () => {
             <h2>
               <strong>About:</strong> {author.about}
             </h2>
+            <button
+              className="btn btn-primary mt-2"
+              onClick={() => navigate(`/books?authors=${author.name.split(" ").join("+")}`)}
+            >
+              View Books
+            </button>
           </div>
         </div>
-        <AuthorBooks />
         </>
       ) : (
         <h1>Loading Author...</h1>

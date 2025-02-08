@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, IconButton } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import "../Popular/popularBooks.css";
-export default function BookList() {
+export default function BookList({ user }) {
   const [books, setBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
@@ -60,25 +60,25 @@ export default function BookList() {
                 textAlign: "center",
               }}
             >
-              <Box onClick={() => navigate(`/bookDetails/${book._id}`)} >
-                  <div className="book">
-                    <a href="#">
-                      <ul>
-                        <li className="page page3"></li>
-                        <li className="page page2"></li>
-                        <li className="page page1"></li>
-                        <li 
-  className="cover" 
-  style={{ 
-    backgroundImage: `url(${book.img})`, 
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat"
-  }} 
-></li>
-                      </ul>
-                    </a>
-                  </div>
+              <Box onClick={() => navigate(user ? `/adminBooks` : `/bookDetails/${book._id}`)}>
+                <div className="book">
+                  <a href="#">
+                    <ul>
+                      <li className="page page3"></li>
+                      <li className="page page2"></li>
+                      <li className="page page1"></li>
+                      <li
+                        className="cover"
+                        style={{
+                          backgroundImage: `url(${book.img})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                      ></li>
+                    </ul>
+                  </a>
+                </div>
               </Box>
             </Box>
           ))}
