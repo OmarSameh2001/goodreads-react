@@ -37,92 +37,87 @@ export default function BookList() {
     return () => controller.abort();
   }, []);
   return (
-        <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
-        <h2 style={{textAlign:"left"}}>You cannot miss out these trending books !</h2>
+    <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
+      <h2 style={{ textAlign: "left" }}>
+        You cannot miss out these trending books !
+      </h2>
 
-          {/* Carousel viewport */}
-          <Box overflow="hidden" sx={{padding:"30px"}}>
+      {/* Carousel viewport */}
+      <Box overflow="hidden" sx={{ padding: "30px" }}>
+        <Box
+          display="flex"
+          sx={{
+            transform: `translateX(-${currentIndex * (imageWidth + gap)}px)`,
+            transition: "transform 0.3s ease",
+          }}
+        >
+          {books.map((book) => (
             <Box
-              display="flex"
+              key={book._id}
               sx={{
-                transform: `translateX(-${currentIndex * (imageWidth + gap)}px)`,
-                transition: "transform 0.3s ease",
+                flex: `0 0 ${imageWidth}px`,
+                mx: `${gap / 2}px`,
+                textAlign: "center",
               }}
             >
-              {books.map((book) => (
-                <Box
-                  key={book._id}
-                  sx={{
-                    flex: `0 0 ${imageWidth}px`,
-                    mx: `${gap / 2}px`,
-                    textAlign: "center",
-                  }}
-                >
-                  <Box
-                    onClick={() => navigate(`/bookDetails/${book._id}`)}
-                    sx={{
-                      cursor: "pointer",
-                      borderRadius: 2,
-                      boxShadow: 3,
-                      transition: "transform 0.3s ease",
-                      "&:hover": { transform: "scale(1.05)" },
-                      // width: imageWidth,
-                       height: imageHeight,
-                      // overflow: "hidden",
-                      // border: "5px solid #383838",
-                    }}
-                  >
-                   <div className="book-3d">
-                    <div className="book-3d__inner">
-                      <img
-                         className="book-3d__cover" 
-                         src={book.img}
-                         alt={book.title}
-                       />
-                    </div>
+              <Box onClick={() => navigate(`/bookDetails/${book._id}`)} >
+                  <div className="book">
+                    <a href="#">
+                      <ul>
+                        <li className="page page3"></li>
+                        <li className="page page2"></li>
+                        <li className="page page1"></li>
+                        <li 
+  className="cover" 
+  style={{ 
+    backgroundImage: `url(${book.img})`, 
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat"
+  }} 
+></li>
+                      </ul>
+                    </a>
                   </div>
-                  </Box>
-
-                </Box>
-              ))}
+              </Box>
             </Box>
-          </Box>
-    
-          {/* Left Arrow */}
-          <IconButton
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: 0,
-              transform: "translateY(-50%)",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
-            }}
-          >
-            <KeyboardArrowLeft />
-          </IconButton>
-    
-          {/* Right Arrow */}
-          <IconButton
-            onClick={handleNext}
-            disabled={currentIndex >= books.length - visibleCount}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              right: 0,
-              transform: "translateY(-50%)",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              color: "#fff",
-              "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
-            }}
-          >
-            <KeyboardArrowRight />
-          </IconButton>
+          ))}
         </Box>
+      </Box>
+
+      {/* Left Arrow */}
+      <IconButton
+        onClick={handlePrev}
+        disabled={currentIndex === 0}
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: 0,
+          transform: "translateY(-50%)",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          color: "#fff",
+          "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
+        }}
+      >
+        <KeyboardArrowLeft />
+      </IconButton>
+
+      {/* Right Arrow */}
+      <IconButton
+        onClick={handleNext}
+        disabled={currentIndex >= books.length - visibleCount}
+        sx={{
+          position: "absolute",
+          top: "50%",
+          right: 0,
+          transform: "translateY(-50%)",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          color: "#fff",
+          "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
+        }}
+      >
+        <KeyboardArrowRight />
+      </IconButton>
+    </Box>
   );
 }
-             
-
