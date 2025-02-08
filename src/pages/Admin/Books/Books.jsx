@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
@@ -19,10 +18,12 @@ import { IoMdAddCircle } from "react-icons/io";
 import { RiDeleteBinFill } from "react-icons/ri";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import axiosInstance from "../../../apis/config";
 
 function AdminBooks() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(2);
+  const [total, setTotal] = useState(1);
   const [update, setUpdate] = useState({});
   const [isNew, setIsNew] = useState(false);
   const [newBook, setNewBook] = useState({});
@@ -30,12 +31,11 @@ function AdminBooks() {
   const [imageLoading, setImageLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    setRowsPerPage(event.target.value);
   };
 
   function handleClose() {
@@ -90,11 +90,8 @@ function AdminBooks() {
         "Are you sure you want to delete this Book?"
       );
       if (confirm) {
-        await axios.delete(`http://localhost:3001/books/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        await axiosInstance.delete(`/books/${id}`
+        );
         <Snackbar open={true} autoHideDuration={2000} message="Book deleted" />;
         handleClose();
         refetch();
@@ -124,11 +121,7 @@ function AdminBooks() {
     try {
       e.preventDefault();
       const body = handleIds(update.author, update.category);
-      await axios.put(`http://localhost:3001/books/${update._id}`, body, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axiosInstance.put(`/books/${update._id}`, body);
       handleClose();
       refetch();
     } catch (error) {
@@ -140,12 +133,7 @@ function AdminBooks() {
     try {
       e.preventDefault();
       const body = handleIds(newBook.author, newBook.category);
-      console.log(newBook);
-      await axios.post("http://localhost:3001/books", body, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axiosInstance.post("/books", body);
       handleClose();
       refetch();
     } catch (error) {
@@ -161,11 +149,7 @@ function AdminBooks() {
   } = useQuery({
     queryKey: ["authors"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/authors/names", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await axiosInstance.get("/authors/names");
       return res.data;
     },
   });
@@ -176,11 +160,7 @@ function AdminBooks() {
   } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/categories/names", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await axiosInstance.get("/categories/names");
       return res.data;
     },
   });
@@ -190,15 +170,11 @@ function AdminBooks() {
     isError: bookError,
     refetch,
   } = useQuery({
-    queryKey: ["books"],
+    queryKey: ["books", page, rowsPerPage],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3001/books/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log(res.data);
-      return res.data;
+      const res = await axiosInstance.get(`/books/paginated?page=${page}&limit=${rowsPerPage}`);
+      setTotal(res.data.data.pagination.total);
+      return res.data.data.items;
     },
   });
   const columns = [
@@ -253,12 +229,9 @@ function AdminBooks() {
       align: "left",
     },
   ];
-  // useEffect(() => {
-  //   console.log(newBook);
-  // }, [newBook]);
-  // useEffect(() => {
-  //   console.log(update);
-  // }, [update]);
+  
+
+  console.log(total);
   if (authorLoading || categoryLoading || bookLoading) {
     return (
       <div className="App-header" style={{ backgroundColor: "white" }}>
@@ -445,7 +418,6 @@ function AdminBooks() {
             <TableBody>
               {books &&
                 books
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((book, index) => (
                     <TableRow
                       hover
@@ -458,7 +430,7 @@ function AdminBooks() {
                       }}
                     >
                       <TableCell align="left">
-                        {page * rowsPerPage + index + 1}
+                        {(page-1) * rowsPerPage + index + 1}
                       </TableCell>
                       <TableCell align="left">
                         <a
@@ -502,11 +474,13 @@ function AdminBooks() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
+          rowsPerPageOptions={
+            total > 25 ? [10, 25, 100] : total > 10 ? [10, 25] : [10]
+          }
           component="div"
-          count={books?.length}
+          count={total}
           rowsPerPage={rowsPerPage}
-          page={page}
+          page={page - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

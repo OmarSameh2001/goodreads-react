@@ -1,69 +1,63 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import AuthorCard from "../../../components/Card/AuthorCard ";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import axiosInstance from "../../../apis/config";
+import { CircularProgress, Pagination } from "@mui/material";
 
 function Authors() {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [intialLoading, setInitialLoading] = useState(true);
   const itemsPerPage = 5;
 
-  const { data: authors, error, isLoading} = useQuery({
-    queryKey: ["authors"],
+  const {
+    data: authors,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["authors", currentPage],
     queryFn: async () => {
-      const res = await axiosInstance.get("/authors/");
-      return res.data;
+      const res = await axiosInstance.get(
+        `/authors/paginated?page=${currentPage}&limit=${itemsPerPage}`
+      );
+      setTotal(res.data.data.pagination.total);
+      setInitialLoading(false);
+      console.log(res.data.data.items, currentPage);
+      return res.data.data.items;
     },
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (intialLoading) return <CircularProgress />;
   if (error) return <p>Error fetching authors</p>;
 
 
-
-  const totalPages = Math.ceil(authors.length / itemsPerPage);
-  const startIndex = currentPage * itemsPerPage;
-  const currentAuthors = authors.slice(startIndex, startIndex + itemsPerPage);
-
   // Handle page change
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected);
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
+
 
   return (
     <div className="container mt-4">
       <h1 className="text-2xl font-bold mb-4">Authors</h1>
       <div className="d-flex justify-content-center align-items-center">
-        {currentAuthors.map((author) => (
+        {isLoading ? <CircularProgress /> : authors?.map((author) => (
           <AuthorCard key={author._id} author={author} />
         ))}
       </div>
 
-
-
-      <ReactPaginate
-        previousLabel={"← Previous"}
-        nextLabel={"Next →"}
-        breakLabel={"..."}
-        pageCount={totalPages}
-        marginPagesDisplayed={1}
-        pageRangeDisplayed={2}
-        onPageChange={handlePageChange}
-        containerClassName={"pagination justify-content-center mt-4"}
-        pageClassName={"page-item"}
-        pageLinkClassName={"page-link"}
-        previousClassName={"page-item"}
-        previousLinkClassName={"page-link"}
-        nextClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        breakClassName={"page-item"}
-        breakLinkClassName={"page-link"}
-        activeClassName={"active"}
-      />
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <Pagination
+          count={Math.ceil(total / itemsPerPage)}
+          disabled={isLoading || Math.ceil(total / itemsPerPage) < 2}
+          onChange={handlePageChange}
+          page={currentPage}
+        />
+      </div>
     </div>
-);
-    
+  );
 }
 
-export default Authors
+export default Authors;
