@@ -11,6 +11,7 @@ list-style: none;
 perspective-origin: 0 50% 0;
 perspective: 800px;
 -webkit-transform: translate3d(0,0,0);
+transform: translate3d(0,0,0);
 }
 
 .book ul > li {

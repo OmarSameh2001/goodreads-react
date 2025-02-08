@@ -12,27 +12,36 @@ import {
   Rating,
 } from "@mui/material";
 import { useContext, useState } from "react";
-import UserBooks from "../../context/userBooks.js";
 import axiosInstance from "../../apis/config.js";
+import UserBooks from "../../context/userBooks";
 
-export default function UserReview({ bookId }) {
-  const { userBooks } = useContext(UserBooks);
-  const userBook = userBooks.find((userBook) => userBook.book._id === bookId && (userBook.rating != null || userBook.review != null)); 
+export default function UserReview({ bookId, onReviewSubmit }) {
+  const { userBooks, setUserBooks } = useContext(UserBooks); // Add setUserBooks for state update
+  const userBook = userBooks.find((userBook) => userBook.book._id === bookId && userBook.review != null); 
   const [inputReview, setInputReview] = useState("");
   const [showTextarea, setShowTextarea] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const username = localStorage.getItem("username");
-console.log(userBook);
+
   async function handleReviewSubmit() {
     setLoading(true);
     try {
-      await axiosInstance.patch(`/userbook/review/${bookId}`, {
+      const response = await axiosInstance.patch(`/userbook/review/${bookId}`, {
         userId: localStorage.getItem("userId"),
         review: inputReview
       });
+
+      // Update local state to trigger re-render
+      setUserBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book.book._id === bookId ? { ...book, review: inputReview, updatedAt: new Date().toISOString() } : book
+        )
+      );
+
       setShowTextarea(false);
       setSuccess(true);
+      onReviewSubmit(); 
     } catch (error) {
       console.error("Error submitting review:", error);
     } finally {
@@ -59,7 +68,6 @@ console.log(userBook);
         </>
       )}
            
-   
     {userBook ? (
       <>
        <h3 className="b612-bold">Your Review</h3>
@@ -77,7 +85,7 @@ console.log(userBook);
         </>
       ) : (
         !showTextarea && (
-          <Container sx={{ background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", borderRadius: 2, boxShadow: 2, p: 2, mb: 2 , borderRadius: 2, p: 2, textAlign: "center", mt: 3 }}>
+          <Container sx={{ background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", boxShadow: 2, p: 2, mb: 2 , borderRadius: 2, textAlign: "center", mt: 3 }}>
             <Typography variant="h6">No review yet?</Typography>
             <Button variant="contained" onClick={() => setShowTextarea(true)} sx={{ mt: 1 }}>
               Write your review now 

@@ -23,7 +23,7 @@ import { Link as RouterLink } from "react-router";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import LinkIcon from "@mui/icons-material/Link";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import UserBooks from "../../../context/userBooks.js";
+import UserBooks from "../../../context/userBooks";
 
 function BookDetails(props) {
   const { userBooks, setUserBooks } = useContext(UserBooks);
@@ -273,27 +273,6 @@ function BookDetails(props) {
           </Box>
 
           {/* Action Buttons */}
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<BookmarkAddIcon />}
-              onClick={() => handleAddToWantToRead(userId, book._id)}
-              disabled={userBooks.some(
-                (userBook) => userBook.book._id === book._id
-              )}
-              sx={{
-                px: 4,
-                fontWeight: 600,
-                borderRadius: "8px",
-                textTransform: "none",
-              }}
-            >
-              {userBooks.some((userBook) => userBook.book._id === book._id)
-                ? "Already Added"
-                : "Want to Read"}
-            </Button>
-          </Box>
         </Grid>
       </Grid>
       <ToastContainer />

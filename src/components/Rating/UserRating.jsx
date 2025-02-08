@@ -1,9 +1,10 @@
 import { Rating } from "@mui/material";
 import axiosInstance from "../../apis/config";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import UserBooks from "../../context/userBooks"; 
 
-// This component is responsible for viewing and updating user rating
 function UserRating({ userId, bookId, rating = 0 }) {
+  const { userBooks, setUserBooks } = useContext(UserBooks); 
   const [rate, setRating] = useState(rating);
 
   function handleRatingChange(event, newValue) {
@@ -14,6 +15,16 @@ function UserRating({ userId, bookId, rating = 0 }) {
       })
       .then((response) => {
         setRating(response.data.rating);
+
+        // ✅ Update global state using context
+        setUserBooks((prevUserBooks) =>
+          prevUserBooks.map((userBook) => {
+            if (userBook.book._id === bookId) {
+              return { ...userBook, rating: response.data.rating };
+            }
+            return userBook;
+          })
+        );
       })
       .catch((error) => {
         console.error("Error updating rating:", error);
@@ -21,11 +32,7 @@ function UserRating({ userId, bookId, rating = 0 }) {
   }
 
   return (
-    <Rating
-      name="size-medium"
-      value={rate} 
-      onChange={handleRatingChange}
-    />
+    <Rating name="size-medium" value={rate} onChange={handleRatingChange} />
   );
 }
 

@@ -19,13 +19,14 @@ import Categories from "./pages/User/Categories/Categories";
 import Otp from "./components/Otp/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import BooksContext from "./context/books";
-import UserBooks from "./context/userBooks";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 import MyBooks from "./pages/User/UserActivity/MyBooks";
 import Reviews from "./pages/User/UserActivity/Reviews";
+import { UserBooksProvider } from "./context/userBooks";
+import BooksContext from './context/books';
+import UserBooks from "./context/userBooks";
 import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
@@ -33,20 +34,26 @@ import ForgetPassword from "./pages/Login/ForgetPassword";
 
 function App() {
   const [books, setBooks] = useState([]);
-  const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
   const queryClient = new QueryClient();
+  const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
   const [token, setToken] = useState(localStorage.getItem("token"));
   useEffect(() => {
     async function handleUserBooks() {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-
+  
         const res1 = await axiosInstance.post("/auth/verify");
         if (res1.status !== 200) return;
-
+  
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
+        );
+  
+        setUserBooks((prevUserBooks) =>
+          JSON.stringify(prevUserBooks) !== JSON.stringify(response.data)
+            ? response.data
+            : prevUserBooks
         );
 
         //Prevent unnecessary re-renders
@@ -57,10 +64,10 @@ function App() {
         console.log(error);
       }
     }
-
+  
     handleUserBooks();
-  }, [userBooks, token]); // ✅ Runs when userBooks changes
-
+  }, [token,setUserBooks]); 
+  
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>

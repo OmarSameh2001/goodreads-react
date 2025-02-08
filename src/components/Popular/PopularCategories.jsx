@@ -1,78 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
-import ApexCharts from "react-apexcharts";
+import { Box, Chip, Stack, Typography } from "@mui/material";
 import axiosInstance from "../../apis/config";
+import { useNavigate } from "react-router";
 
-export default function CategoryPolarChart() {
+export default function CategoryRanking() {
   const [categories, setCategories] = useState([]);
-  const [chartData, setChartData] = useState({
-    labels: [],
-    datasets: [
-      {
-        name: "Category Popularity",
-        data: [],
-        background: [],
-      },
-    ],
-  });
-  const controller = new AbortController();
-
-
+  const navigate = useNavigate();
   useEffect(() => {
     axiosInstance
       .get("/categories/popular")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setCategories(res.data);
-
-          const labels = res.data.map((category) => category.name);
-          const data = res.data.map((category) => category.views);
-
-          setChartData({
-            labels,
-            datasets: [
-              {
-                name: "Category Popularity",
-                data,
-              },
-            ],
-          });
         }
       })
       .catch((err) => console.error("Unable to fetch popular categories", err));
-
-    return () => controller.abort();
   }, []);
 
-  const chartOptions = {
-    chart: {
-      type: "polarArea",
-      height: 350,
-    },
-    labels: chartData.labels,
-    plotOptions: {
-      polarArea: {
-        dataLabels: {
-          style: {
-            fontSize: "14px",
-            fontWeight: "bold",
-          },
-        },
-      },
-    },
-    colors: chartData.datasets[0]?.background,
-    legend: {
-      position: "bottom",
-    },
-  };
-
   return (
-    <Box sx={{ padding: "20px", textAlign: "center" }}>
-        <h2 style={{textAlign:"left"}}>Check Out the Most Loved Categories That Are Setting the Trends
-        </h2>
-
-
-      <ApexCharts options={chartOptions} series={chartData.datasets[0]?.data} type="polarArea" height={350} />
+    <Box sx={{ width: "80%", margin: "auto", mt: 4, position: "relative" }}>
+      <h2 style={{ textAlign: "left", marginBottom: "20px" }}>
+        Check Out the Most Loved Categories
+      </h2>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 15,
+          marginBottom: "100px",
+        }}
+      >
+        {categories.map((category, index) => (
+          <Box
+            key={category.name}
+            sx={{ position: "relative", display: "flex", alignItems: "center" }}
+          >
+            <Stack direction="row" spacing={1}>
+            <Chip
+              label={category.name}
+              variant="outlined"
+              sx={{ color: "black", fontWeight: "bold" }}
+              onClick={() => navigate( `/categories/`)}
+            />
+            </Stack>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 }
