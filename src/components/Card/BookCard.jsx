@@ -30,7 +30,7 @@ export default function BookCard(props) {
       toast.success(`Book: ${book.title} added successfully!`);
       setUserBooks((prevUserBooks) => [
         ...prevUserBooks, 
-        { book: book, state: "want to read" } // Default state
+        { _id: response.data._id, book: book, state: "want to read" }
       ]);
     } catch (error) {
       toast.error("Error: Book already exists!");

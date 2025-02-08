@@ -32,6 +32,8 @@ function Login() {
       password,
     });
     localStorage.setItem("token", res.data.token);
+    setToken(res.data.token);  
+    localStorage.setItem("token", res.data.token);
     localStorage.setItem("user", res.data.user.role);
     localStorage.setItem("userName", res.data.user.username);
     localStorage.setItem("userId", res.data.user._id);

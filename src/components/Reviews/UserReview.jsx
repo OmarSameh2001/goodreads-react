@@ -22,7 +22,7 @@ export default function UserReview({ bookId, onReviewSubmit }) {
   const [showTextarea, setShowTextarea] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const username = localStorage.getItem("username");
+  const username = localStorage.getItem("userName");
 
   async function handleReviewSubmit() {
     setLoading(true);

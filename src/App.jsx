@@ -37,6 +37,7 @@ function App() {
   const queryClient = new QueryClient();
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
   const [token, setToken] = useState(localStorage.getItem("token"));
+
   useEffect(() => {
     async function handleUserBooks() {
       try {
@@ -49,12 +50,6 @@ function App() {
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
-  
-        setUserBooks((prevUserBooks) =>
-          JSON.stringify(prevUserBooks) !== JSON.stringify(response.data)
-            ? response.data
-            : prevUserBooks
-        );
 
         //Prevent unnecessary re-renders
         if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {
@@ -66,7 +61,7 @@ function App() {
     }
   
     handleUserBooks();
-  }, [token,setUserBooks]); 
+  }, [token]); 
   
   return (
     <div className="App">

@@ -33,6 +33,7 @@ export default function MyBooks() {
   const { userBooks, setUserBooks } = React.useContext(UserBooks);
 
   useEffect(() => {
+    setUserBooks([...userBooks]);
   }, [userBooks.length]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

@@ -8,7 +8,7 @@ import UserBooks from "../../context/userBooks";
 // This component is responsible for viewing and updating book state [want to read, reading, read]
 function BookState({ userId, bookId, state = "want to read" }) {
   const [bookState, setBookStatus] = useState(state);
-  const { userbooks, setUserbooks } = useContext(UserBooks);
+  const { userBooks, setUserBooks } = useContext(UserBooks);
 
   function handleStatusChange(event) {
     const newValue = event.target.value; // Extract the selected value
@@ -19,7 +19,7 @@ function BookState({ userId, bookId, state = "want to read" }) {
       })
       .then((response) => {
         setBookStatus(response.data.state);
-        setUserbooks((prevUserbooks) =>
+        setUserBooks((prevUserbooks) =>
           prevUserbooks.map((userbook) => {
             if (userbook.book._id === bookId) {
               return { ...userbook, state: response.data.state };
