@@ -4,6 +4,8 @@ import TokenContext from "../../context/token";
 import { Tabs, Tab, Box, IconButton, TextField, InputAdornment, Typography } from "@mui/material";
 import { Logout, Search as SearchIcon } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import { Avatar } from "@mui/material";
+import { FaBook } from "react-icons/fa";
 
 // Styled Navbar Container
 const NavbarContainer = styled("div")(({ theme }) => ({
@@ -27,17 +29,19 @@ const NavbarContainer = styled("div")(({ theme }) => ({
 }));
 
 function Navbar() {
-  const { token, setToken } = useContext(TokenContext);
   const navigate = useNavigate();
   const user = localStorage.getItem("user");
+  const token = localStorage.getItem("token");
+  const userName = localStorage.getItem("userName");
+  const endDate = localStorage.getItem("endDate");
+  const sType = localStorage.getItem("sType");
+  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "Premium";
 
   const [value, setValue] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
   function handleLogout() {
-    localStorage.removeItem("token");
-    setToken(null);
-    localStorage.removeItem("user");
+    localStorage.clear();
     navigate("/login");
   }
 
@@ -87,7 +91,38 @@ function Navbar() {
         {/* Logout & User Info */}
         {token ? (
           <>
-            <Typography variant="body1">UserName</Typography>
+            <Link
+              style={{ textDecoration: "none", color: "black" }}
+              to={"/profile"}
+            >
+              <h5 style={{ cursor: "pointer" }}>
+                {userName || user || "UserName"}
+              </h5>
+            </Link>
+            <h5 style={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                style={{
+                  backgroundColor: subscription ? "gold" : "red",
+                  scale: 0.8,
+                }}
+              >
+                <FaBook />
+              </Avatar>
+              {subscription ? (
+                <span>
+                  {Math.ceil(
+                    Math.abs(
+                      new Date(endDate).getTime() - new Date().getTime()
+                    ) /
+                      (1000 * 60 * 60 * 24)
+                  )}
+                  {" "}
+                  Days Left
+                </span>
+              ) : (
+                "Free Plan"
+              )}
+            </h5>
             <IconButton onClick={handleLogout} sx={{ color: "white" }}>
               <Logout />
             </IconButton>

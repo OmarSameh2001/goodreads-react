@@ -23,6 +23,7 @@ function Login() {
     localStorage.setItem("user", res.data.user.role);
     localStorage.setItem("userName", res.data.user.username);
     localStorage.setItem("userId", res.data.user._id);
+    localStorage.setItem("sType", res.data.user.subscription.subscriptionType);
     localStorage.setItem("endDate", res.data.user.subscription.endDate);
     console.log(res);
     if (res.data.user.role === "admin") {
