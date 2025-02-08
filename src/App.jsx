@@ -29,6 +29,7 @@ import Reviews from "./pages/User/UserActivity/Reviews";
 import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
+import ForgetPassword from "./pages/Login/ForgetPassword";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -73,6 +74,7 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
+                  <Route path="/forget" element={<ForgetPassword />} />
 
                   <Route
                     path="/admin"

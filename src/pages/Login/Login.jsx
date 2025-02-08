@@ -5,13 +5,14 @@ import UserBooks from "../../context/userBooks";
 import axiosInstance from "../../apis/config";
 import { set } from "react-hook-form";
 import TokenContext from "../../context/token";
+import { toast } from "react-toastify";
 function Login() {
   const { token, setToken } = useContext(TokenContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { userBooks, setUserBooks } = useContext(UserBooks);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const { userBooks, setUserBooks } = useContext(UserBooks);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState(null);
   const navigate = useNavigate();
   async function handleLogin() {
     const res = await axios.post("http://localhost:3001/auth/login", {
@@ -57,25 +58,33 @@ function Login() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          gap: "20px",
+          width: "fit-content",
         }}
       >
         <input
           type="email"
           placeholder="email"
           value={email}
+          style={{ width: "100%" }}
           onChange={(e) => setEmail(e.target.value)}
+          className="mb-3"
         />
+        <div className="d-flex" style={{ flexDirection: "row", width: "100%" }}>
+          <p className="m-0 p-0" style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }} onClick={() => navigate("/forget")}>
+            Forgot Password?
+          </p>
+        </div>
         <input
           type="password"
           placeholder="password"
           value={password}
+          style={{ width: "100%" }}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           disabled={!email || password.length < 8}
           type="submit"
-          className="btn btn-success"
+          className="btn btn-success my-3"
         >
           Login
         </button>
