@@ -2,6 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import * as React from "react";
+import { Link as RouterLink } from "react-router";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  FormHelperText,
+  Divider,
+  Box,
+  InputAdornment,
+  IconButton,
+  Link,
+} from "@mui/material";
+import {
+  Lock,
+  Person,
+  Email,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 
 function Register() {
   // const [email, setEmail] = useState("");
@@ -129,161 +151,166 @@ function Register() {
   }, []);
 
   return (
-    <div className="container form-box">
-      <h2>Registeration Page</h2>
-      <hr />
+    <Container
+      maxWidth="sm"
+      sx={{ mt: 4, p: 4, boxShadow: 3, borderRadius: 2 }}
+    >
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ fontWeight: "bold" }}
+      >
+        Create Account
+      </Typography>
+      <Divider sx={{ mb: 4 }} />
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <div className="mb-3">
-            <label
-              htmlFor="exampleFormControlInput1"
-              className="form-label text-start d-block"
-            >
-              First Name
-            </label>
-            <input
-              className="form-control"
-              id="exampleFormControlInput1"
-              placeholder="Please type your name..."
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="First Name"
+              placeholder="John"
+              variant="outlined"
               value={formValues.fname}
               name="fname"
               onChange={handleChange}
+              error={!!formErrors.fnameError}
+              helperText={formErrors.fnameError}
+              InputProps={{
+                startAdornment: (
+                  <Person sx={{ color: "action.active", mr: 1 }} />
+                ),
+              }}
             />
-          </div>
-          {formErrors.fnameError && (
-            <div id="emailHelp" className="form-text text-danger">
-              {formErrors.fnameError}
-            </div>
-          )}
-          <div className="mb-3">
-            <label
-              htmlFor="exampleFormControlInput1"
-              className="form-label text-start d-block"
-            >
-              Last Name
-            </label>
-            <input
-              className="form-control"
-              id="exampleFormControlInput1"
-              placeholder="Please type your name..."
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Last Name"
+              placeholder="Doe"
+              variant="outlined"
               value={formValues.lname}
               name="lname"
               onChange={handleChange}
+              error={!!formErrors.lnameError}
+              helperText={formErrors.lnameError}
             />
-          </div>
-          {formErrors.lnameError && (
-            <div id="emailHelp" className="form-text text-danger">
-              {formErrors.lnameError}
-            </div>
-          )}
-          <label
-            htmlFor="exampleFormControlInput1"
-            className="form-label text-start d-block"
-          >
-            Email address
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="exampleFormControlInput1"
-            placeholder="name@example.com"
-            value={formValues.email}
-            name="email"
-            onChange={handleChange}
-          />
-          {formErrors.emailError && (
-            <div id="emailHelp" className="form-text text-danger">
-              {formErrors.emailError}
-            </div>
-          )}
-          <div className="mb-3">
-            <label
-              htmlFor="exampleFormControlInput1"
-              className="form-label text-start d-block"
-            >
-              User Name
-            </label>
-            <input
-              className="form-control"
-              id="exampleFormControlInput1"
-              placeholder="Please type your name..."
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Email Address"
+              placeholder="john.doe@example.com"
+              variant="outlined"
+              type="email"
+              value={formValues.email}
+              name="email"
+              onChange={handleChange}
+              error={!!formErrors.emailError}
+              helperText={formErrors.emailError}
+              InputProps={{
+                startAdornment: (
+                  <Email sx={{ color: "action.active", mr: 1 }} />
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Username"
+              placeholder="johndoe123"
+              variant="outlined"
               value={formValues.username}
               name="username"
               onChange={handleChange}
+              error={!!formErrors.usernameError}
+              helperText={formErrors.usernameError}
             />
-            {formErrors.usernameError && (
-              <div id="emailHelp" className="form-text text-danger">
-                {formErrors.usernameError}
-              </div>
-            )}
-          </div>
-          <label
-            htmlFor="inputPassword5"
-            className="form-label text-start d-block"
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              variant="outlined"
+              placeholder="••••••••"
+              value={formValues.password}
+              name="password"
+              onChange={handleChange}
+              error={!!formErrors.passwordError}
+              helperText={formErrors.passwordError}
+              InputProps={{
+                startAdornment: <Lock sx={{ color: "action.active", mr: 1 }} />,
+              }}
+            />
+            <FormHelperText sx={{ mt: 1, fontSize: "0.8rem" }}>
+              Password must contain at least:
+              <ul>
+                <li>8 characters</li>
+                <li>1 uppercase letter</li>
+                <li>1 lowercase letter</li>
+                <li>1 number</li>
+                <li>1 special character</li>
+              </ul>
+            </FormHelperText>
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              placeholder="••••••••"
+              value={formValues.confirmPassword}
+              name="confirmPassword"
+              onChange={handleChange}
+              error={!!formErrors.confirmPasswordError}
+              helperText={formErrors.confirmPasswordError}
+              InputProps={{
+                startAdornment: <Lock sx={{ color: "action.active", mr: 1 }} />,
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          size="large"
+          type="submit"
+          disabled={
+            Object.values(formErrors).some((error) => error !== null) ||
+            Object.values(formValues).some((value) => value === "")
+          }
+          sx={{ mt: 3, py: 1.5, borderRadius: 1 }}
+        >
+          Create Account
+        </Button>
+
+        <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
+          Already have an account?{" "}
+          <Link
+            component={RouterLink}
+            to="/login"
+            underline="hover"
+            color="primary"
           >
-            Password
-          </label>
-          <input
-            type="password"
-            id="inputPassword5"
-            className="form-control"
-            aria-describedby="passwordHelpBlock"
-            placeholder="Please type your password..."
-            value={formValues.password}
-            name="password"
-            onChange={handleChange}
-          />
-          {formErrors.passwordError && (
-            <div id="emailHelp" className="form-text text-danger">
-              {formErrors.passwordError}
-            </div>
-          )}
-          <div id="passwordHelpBlock" className="form-text">
-            Your password length not less than 8 characters, contains at least
-            one lowercase letter, one uppercase letter, at least one digit, and
-            a special character
-          </div>
-          <label
-            htmlFor="inputPassword5"
-            className="form-label mt-3 text-start d-block"
-          >
-            Confirm password
-          </label>
-          <input
-            type="password"
-            id="inputPassword5"
-            className="form-control"
-            aria-describedby="passwordHelpBlock"
-            placeholder="Please retype your password..."
-            value={formValues.confirmPassword}
-            name="confirmPassword"
-            onChange={handleChange}
-          />
-          {formErrors.confirmPasswordError && (
-            <div id="emailHelp" className="form-text text-danger">
-              {formErrors.confirmPasswordError}
-            </div>
-          )}
-          <button
-            type="submit"
-            className="btn btn-success mt-4"
-            disabled={
-              Object.values(formErrors).some((error) => error !== null) ||
-              formValues.fname.length === 0 ||
-              formValues.lname.length === 0 ||
-              formValues.username.length === 0 ||
-              formValues.email.length === 0 ||
-              formValues.password.length === 0 ||
-              formValues.confirmPassword.length === 0
-            }
-          >
-            Register
-          </button>
-        </div>
-      </form>
+            Sign In
+          </Link>
+        </Typography>
+      </Box>
+
       <ToastContainer />
-    </div>
+    </Container>
   );
 }
 
