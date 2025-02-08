@@ -71,7 +71,6 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <BooksContext.Provider value={{ books, setBooks }}>
-            <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
               <UserBooks.Provider value={{ userBooks, setUserBooks }}>
                 <TokenContext.Provider value={{ token, setToken }}>
                   <Navbar />
@@ -206,7 +205,6 @@ function App() {
                   </Routes>
                 </TokenContext.Provider>
               </UserBooks.Provider>
-            </WtrBooksContext.Provider>
           </BooksContext.Provider>
         </BrowserRouter>
       </QueryClientProvider>

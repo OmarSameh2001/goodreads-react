@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@esbuild/linux-x64": "^0.25.0",
     "@mui/icons-material": "^6.4.3",
     "@mui/joy": "^5.0.0-beta.51",
     "@mui/material": "^6.4.3",
@@ -45,6 +46,7 @@
     "react-router-dom": "^7.1.5",
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.3",
+    "rollup": "^4.34.6",
     "styled-components": "^6.1.14",
     "web-vitals": "^4.2.4"
   },

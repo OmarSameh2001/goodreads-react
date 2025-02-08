@@ -34,7 +34,7 @@ function Navbar() {
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
   const sType = localStorage.getItem("sType");
-  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "Premium";
+  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "premium";
 
   const [value, setValue] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
