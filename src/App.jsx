@@ -24,13 +24,20 @@ import UserBooks from "./context/userBooks";
 import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
+<<<<<<< HEAD
 import MyBooks from "./pages/User/UserActivity/MyBooks";
 import Reviews from "./pages/User/UserActivity/Reviews";
 import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
+=======
+import ReadBook from "./components/Books/ReadBook";
+>>>>>>> pdf2
 
+import TestReadBook from "./pages/Admin/Books/TestReadBook";
+const pdfUrl = "https://drive.google.com/file/d/1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC/preview";
+const bookId="67a6f3c894fba1ebeb358442";
 function App() {
   const [books, setBooks] = useState([]);
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
@@ -66,6 +73,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <BooksContext.Provider value={{ books, setBooks }}>
+<<<<<<< HEAD
             <UserBooks.Provider value={{ userBooks, setUserBooks }}>
               <TokenContext.Provider value={{ token, setToken }}>
                 <Navbar />
@@ -74,6 +82,17 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
                   <Route path="/forget" element={<ForgetPassword />} />
+=======
+            <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
+              <Navbar />
+              <Routes>
+              <Route path="/test-readbook" element={<TestReadBook />} />
+              </Routes>
+                {/* <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/otp" element={<Otp />} />
+>>>>>>> pdf2
 
                   <Route
                     path="/admin"
@@ -171,6 +190,7 @@ function App() {
                     </UserRoute>
                   }
                 />
+<<<<<<< HEAD
                 <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
                 <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
                 <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
@@ -178,6 +198,43 @@ function App() {
                 </Routes>
               </TokenContext.Provider>
             </UserBooks.Provider>
+=======
+                <Route
+                  path="/authors/:id"
+                  element={
+                    <UserRoute>
+                      <AuthorDetails />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/books"
+                  element={
+                    <UserRoute>
+                      <Books />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/bookDetails"
+                  element={
+                    <UserRoute>
+                      <BookDetails />
+                    </UserRoute>
+                  }
+                />
+                <Route
+                  path="/categories"
+                  element={
+                    <UserRoute>
+                      <Categories />
+                    </UserRoute>
+                  }
+                />
+                <Route path="*" element={<NotFound />} /> 
+              </Routes>  */}
+            </WtrBooksContext.Provider>
+>>>>>>> pdf2
           </BooksContext.Provider>
         </BrowserRouter>
       </QueryClientProvider>
