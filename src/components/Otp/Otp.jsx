@@ -37,6 +37,13 @@ function Otp() {
     if (e.target.name === "otp6") {
       setOtp({ ...otp, otp6: e.target.value });
     }
+    //switch to next input automatically.
+    if (e.target.value.length === 1) {
+      const nextInput = e.target.nextElementSibling;
+      if (nextInput && nextInput.tagName === "INPUT") {
+        nextInput.focus();
+      }
+    }
   }
   async function handleSubmit(e) {
     e.preventDefault();
@@ -44,9 +51,10 @@ function Otp() {
     // console.log(
     //   `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`
     // );
-    let status
+    let status;
     if (type === "forget") {
       status = await handlePassOtp();
+      
     } else {
       status = await handleOtp();
     }
@@ -56,7 +64,9 @@ function Otp() {
           payload.status === "removed" &&
           payload.content === "user verified successfully"
         ) {
-          type === "forget" ? navigate("/forget", { state: {email, type: "forget"} }) : navigate("/login");
+          type === "forget"
+            ? navigate("/forget", { state: { email, type: "forget" } })
+            : navigate("/login");
         }
       });
       toast("user verified successfully", {
@@ -173,7 +183,7 @@ function Otp() {
         </button>
         <p className="resendNote">
           Didn't receive the code?{" "}
-          <button className="resendBtn" onClick={handleResendOtp}>
+          <button className="resendBtn" type="button" onClick={handleResendOtp}>
             Resend Code
           </button>
         </p>

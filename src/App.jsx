@@ -163,24 +163,45 @@ function App() {
                     }
                   />
                   <Route
-                  path="/mybooks"
-                  element={
-                    <UserRoute>
-                      <MyBooks />
-                    </UserRoute>
-                  }
-                />
-                 <Route
-                  path="/reviews/:bookId"
-                  element={
-                    <UserRoute>
-                      <Reviews />
-                    </UserRoute>
-                  }
-                />
-                <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
-                <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
-                <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
+                    path="/mybooks"
+                    element={
+                      <UserRoute>
+                        <MyBooks />
+                      </UserRoute>
+                    }
+                  />
+                  <Route
+                    path="/reviews/:bookId"
+                    element={
+                      <UserRoute>
+                        <Reviews />
+                      </UserRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <UserRoute>
+                        <Profile />
+                      </UserRoute>
+                    }
+                  />
+                  <Route
+                    path="/success"
+                    element={
+                      <UserRoute>
+                        <Success />
+                      </UserRoute>
+                    }
+                  />
+                  <Route
+                    path="/cancel"
+                    element={
+                      <UserRoute>
+                        <Cancel />
+                      </UserRoute>
+                    }
+                  />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </TokenContext.Provider>

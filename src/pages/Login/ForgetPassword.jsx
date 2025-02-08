@@ -2,6 +2,17 @@ import { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Divider,
+  InputAdornment,
+  FormHelperText,
+} from "@mui/material";
+import { Email, Lock } from "@mui/icons-material";
 
 function ForgetPassword() {
   const location = useLocation();
@@ -99,92 +110,124 @@ function ForgetPassword() {
   }
 
   return (
-    <div
-      className="container d-flex flex-column align-items-center justify-content-center"
-      style={{ height: "50vh" }}
+    <Container
+      maxWidth="sm"
+      sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2 }}
     >
-      <h1>Forget Password</h1>
-      <form onSubmit={handleSubmit} style={{ width: "20%" }}>
-        {type !== "forget" && (
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              {type === "forget" ? "New Password" : "Email address"}
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              value={type === "forget" ? password : email}
-              name={type === "forget" ? "password" : "email"}
-              onChange={handleChange}
-            />
-            {formErrors.emailError && (
-              <div className="text-danger">
-                {formErrors.emailError === "error"
-                  ? null
-                  : formErrors.emailError}
-              </div>
-            )}
-          </div>
-        )}
-        {type === "forget" && (
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ fontWeight: "bold" }}
+      >
+        {type === "forget" ? "Reset Password" : "Forgot Password"}
+      </Typography>
+      <Divider sx={{ mb: 4 }} />
+
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        {type !== "forget" ? (
+          <TextField
+            fullWidth
+            label="Email Address"
+            placeholder="john.doe@example.com"
+            variant="outlined"
+            type="email"
+            value={email}
+            onChange={handleChange}
+            name="email"
+            error={!!formErrors.emailError}
+            helperText={
+              formErrors.emailError &&
+              formErrors.emailError !== "error" &&
+              formErrors.emailError
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Email sx={{ color: "action.active" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 3 }}
+          />
+        ) : (
           <>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                name="password"
-                onChange={handleChange}
-              />
-              {formErrors.passwordError && (
-                <div className="text-danger">
-                  {formErrors.passwordError === "error"
-                    ? null
-                    : formErrors.passwordError}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="confirmPassword" className="form-label">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="confirmPassword"
-                value={confirmPassword}
-                name="confirmPassword"
-                onChange={handleChange}
-              />
-              {formErrors.confirmPasswordError && (
-                <div className="text-danger">
-                  {formErrors.confirmPasswordError === "error"
-                    ? null
-                    : formErrors.confirmPasswordError}
-                </div>
-              )}
-            </div>
+            <TextField
+              fullWidth
+              label="New Password"
+              type="password"
+              variant="outlined"
+              placeholder="••••••••"
+              value={password}
+              onChange={handleChange}
+              name="password"
+              error={!!formErrors.passwordError}
+              helperText={
+                formErrors.passwordError &&
+                formErrors.passwordError !== "error" &&
+                formErrors.passwordError
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock sx={{ color: "action.active" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 2 }}
+            />
+
+            <TextField
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={handleChange}
+              name="confirmPassword"
+              error={!!formErrors.confirmPasswordError}
+              helperText={
+                formErrors.confirmPasswordError &&
+                formErrors.confirmPasswordError !== "error" &&
+                formErrors.confirmPasswordError
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock sx={{ color: "action.active" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 2 }}
+            />
           </>
         )}
-        <button
+
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          size="large"
           type="submit"
-          className="btn btn-primary"
           disabled={
             formErrors.emailError ||
             formErrors.passwordError ||
             formErrors.confirmPasswordError
           }
+          sx={{
+            py: 1.5,
+            borderRadius: 1,
+            mt: 2,
+          }}
         >
-          Submit
-        </button>
-      </form>
+          {type === "forget" ? "Reset Password" : "Send Reset Link"}
+        </Button>
+      </Box>
+
       <ToastContainer />
-    </div>
+    </Container>
   );
 }
 
