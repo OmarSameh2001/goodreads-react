@@ -31,6 +31,9 @@ import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
 
+import TestReadBook from "./pages/Admin/Books/TestReadBook";
+const pdfUrl = "https://drive.google.com/file/d/1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC/preview";
+const bookId="67a6f3c894fba1ebeb358442";
 function App() {
   const [books, setBooks] = useState([]);
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
