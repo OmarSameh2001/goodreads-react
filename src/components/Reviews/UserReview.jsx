@@ -77,7 +77,15 @@ console.log(userBook);
         </>
       ) : (
         !showTextarea && (
-          <Container sx={{ background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", borderRadius: 2, boxShadow: 2, p: 2, mb: 2 , borderRadius: 2, p: 2, textAlign: "center", mt: 3 }}>
+          <Container sx={{ 
+            background: "linear-gradient(135deg, #f8bbd0, #bbdefb, #d1c4e9)", 
+            borderRadius: 2, 
+            boxShadow: 2, 
+            p: 2, 
+            mb: 2, 
+            textAlign: "center", 
+            mt: 3 
+           }}>
             <Typography variant="h6">No review yet?</Typography>
             <Button variant="contained" onClick={() => setShowTextarea(true)} sx={{ mt: 1 }}>
               Write your review now 
