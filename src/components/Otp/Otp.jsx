@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import "../Register/Otp.css";
+import "./Otp.css";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";

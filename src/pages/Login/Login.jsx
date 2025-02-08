@@ -14,40 +14,21 @@ function Login() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   async function handleLogin() {
-    try {
-      const res = await axios.post("http://localhost:3001/auth/login", {
-        email,
-        password,
-      });
-      localStorage.setItem("token", res.data.token);
-
-      localStorage.setItem("user", res.data.user.role);
-      localStorage.setItem("userId", res.data.user._id);
-      if (res.data.user.role === "admin") {
-        console.log("admin");
-        navigate("/admin");
-      } else {
-        setToken(res.data.token);
-        // async function handleUserBooks() {
-        //   try {
-        //     const token = localStorage.getItem("token");
-        //     if (!token) return;
-
-        //     const res1 = await axiosInstance.post("/auth/verify");
-        //     if (res1.status !== 200) return;
-        //     const response = await axiosInstance.get(
-        //       `/userBook/${res1.data.decodedUser.id}`
-        //     );
-        //     setUserBooks(response.data);
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // }
-        // handleUserBooks();
-        navigate("/");
-      }
-    } catch (error) {
-      console.log(error);
+    const res = await axios.post("http://localhost:3001/auth/login", {
+      email,
+      password,
+    });
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", res.data.user.role);
+    localStorage.setItem("userName", res.data.user.username);
+    localStorage.setItem("userId", res.data.user._id);
+    localStorage.setItem("endDate", res.data.user.subscription.endDate);
+    console.log(res);
+    if (res.data.user.role === "admin") {
+      console.log("admin");
+      navigate("/admin");
+    } else {
+      navigate("/");
     }
   }
   function handleSubmit(e) {
