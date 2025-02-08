@@ -162,7 +162,7 @@ function BookDetails(props) {
 
             {book.category?.name && (
               <Link
-                to={`/category/${book.category._id}`}
+                to={`/books?categories=${book.category._id}`}
                 component={RouterLink}
                 sx={{
                   textDecoration: "none",

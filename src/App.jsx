@@ -20,7 +20,7 @@ import Otp from "./components/Otp/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BooksContext from "./context/books";
-import UserBooks from "./context/userBooks"; // Import WtrBooksContext
+import UserBooks from "./context/userBooks";
 import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
@@ -48,7 +48,6 @@ function App() {
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
-        console.log(response.data);
 
         //Prevent unnecessary re-renders
         if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {
@@ -125,13 +124,13 @@ function App() {
                     }
                   />
                   <Route
-                  path="/authors/:id"
-                  element={
-                    <UserRoute>
-                      <AuthorDetails />
-                    </UserRoute>
-                  }
-                />
+                    path="/authors/:id"
+                    element={
+                      <UserRoute>
+                        <AuthorDetails />
+                      </UserRoute>
+                    }
+                  />
                   <Route
                     path="/books"
                     element={
