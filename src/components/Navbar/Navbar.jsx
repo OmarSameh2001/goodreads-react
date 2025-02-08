@@ -10,7 +10,7 @@ import { FaBook } from "react-icons/fa";
 // Styled Navbar Container
 const NavbarContainer = styled("div")(({ theme }) => ({
   background: `#2C3E50`,
-  color: "white", 
+  // color: "white", 
   textShadow: "1px 1px 4px rgba(0,0,0,0.3)", // Improves visibility  
   height: 90,
   display: "flex",
@@ -20,7 +20,6 @@ const NavbarContainer = styled("div")(({ theme }) => ({
   color: "rgb(242, 233, 240)",
   fontSize: "1.5rem",
   fontWeight: "bold",
-  textShadow: "1px 1px 8px rgba(0,0,0,0.2)",
   borderBottomLeftRadius: "80px",
   borderBottomRightRadius: "80px",
   position: "sticky",
@@ -42,6 +41,7 @@ function Navbar() {
 
   function handleLogout() {
     localStorage.clear();
+    alert("Logout successful");
     navigate("/login");
   }
 
@@ -99,7 +99,7 @@ function Navbar() {
                 {userName || user || "UserName"}
               </h5>
             </Link>
-            <h5 style={{ display: "flex", alignItems: "center" }}>
+            {user === "user" && <h5 style={{ display: "flex", alignItems: "center" }}>
               <Avatar
                 style={{
                   backgroundColor: subscription ? "gold" : "red",
@@ -122,7 +122,7 @@ function Navbar() {
               ) : (
                 "Free Plan"
               )}
-            </h5>
+            </h5>}
             <IconButton onClick={handleLogout} sx={{ color: "white" }}>
               <Logout />
             </IconButton>

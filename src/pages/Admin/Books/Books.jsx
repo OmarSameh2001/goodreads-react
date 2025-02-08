@@ -22,7 +22,7 @@ import axiosInstance from "../../../apis/config";
 
 function AdminBooks() {
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(1);
   const [update, setUpdate] = useState({});
   const [isNew, setIsNew] = useState(false);
@@ -240,7 +240,7 @@ function AdminBooks() {
     );
   }
   return (
-    <div>
+    <div  className="d-flex flex-column align-items-center justify-content-center">
       {update._id || isNew ? (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
@@ -391,7 +391,7 @@ function AdminBooks() {
         </div>
       ) : null}
       <IoMdAddCircle
-        style={{ scale: 2, cursor: "pointer", marginBottom: 20 }}
+        style={{ scale: 2, cursor: "pointer", margin: 20 }}
         onClick={() => setIsNew(true)}
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>

@@ -270,7 +270,7 @@ function AdminAuthors() {
         </div>
       ) : null}
       <IoMdAddCircle
-        style={{ scale: 2, cursor: "pointer", marginBottom: 20 }}
+        style={{ scale: 2, cursor: "pointer", margin: 20 }}
         onClick={() => setIsNew(true)}
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>

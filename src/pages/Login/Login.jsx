@@ -50,6 +50,7 @@ function Login() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        height: "50vh"
       }}
     >
       <form
@@ -62,6 +63,7 @@ function Login() {
           width: "fit-content",
         }}
       >
+        <h1>Login</h1>
         <input
           type="email"
           placeholder="email"

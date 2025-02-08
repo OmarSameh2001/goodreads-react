@@ -117,9 +117,9 @@ function AdminCategories() {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative" }}  className="d-flex flex-column align-items-center justify-content-center">
       <IoMdAddCircle
-        style={{ scale: 2, cursor: "pointer", marginBottom: 20 }}
+        style={{ scale: 2, cursor: "pointer", margin: 20 }}
         onClick={() => handleOpen()}
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
