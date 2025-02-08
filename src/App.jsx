@@ -30,7 +30,12 @@ import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
+import ReadBook from "./components/Books/ReadBook";
 
+import TestReadBook from "./pages/Admin/Books/TestReadBook";
+const pdfUrl =
+  "https://drive.google.com/file/d/1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC/preview";
+const bookId = "67a6f3c894fba1ebeb358442";
 function App() {
   const [books, setBooks] = useState([]);
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
@@ -66,118 +71,142 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <BooksContext.Provider value={{ books, setBooks }}>
-            <UserBooks.Provider value={{ userBooks, setUserBooks }}>
-              <TokenContext.Provider value={{ token, setToken }}>
-                <Navbar />
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/otp" element={<Otp />} />
-                  <Route path="/forget" element={<ForgetPassword />} />
+            <WtrBooksContext.Provider value={{ wtrBooks, setWtrBooks }}>
+              <UserBooks.Provider value={{ userBooks, setUserBooks }}>
+                <TokenContext.Provider value={{ token, setToken }}>
+                  <Navbar />
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/otp" element={<Otp />} />
+                    <Route path="/forget" element={<ForgetPassword />} />
 
-                  <Route
-                    path="/admin"
-                    element={
-                      <AdminRoute>
-                        <AdminHome />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminAuthors"
-                    element={
-                      <AdminRoute>
-                        <AdminAuthors />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminBooks"
-                    element={
-                      <AdminRoute>
-                        <AdminBooks />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminCategories"
-                    element={
-                      <AdminRoute>
-                        <AdminCategories />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/"
-                    element={
-                      <UserRoute>
-                        <Home />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/authors"
-                    element={
-                      <UserRoute>
-                        <Authors />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/authors/:id"
-                    element={
-                      <UserRoute>
-                        <AuthorDetails />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/books"
-                    element={
-                      <UserRoute>
-                        <Books />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/bookDetails/:bookId"
-                    element={
-                      <UserRoute>
-                        <BookDetails />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/categories"
-                    element={
-                      <UserRoute>
-                        <Categories />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                  path="/mybooks"
-                  element={
-                    <UserRoute>
-                      <MyBooks />
-                    </UserRoute>
-                  }
-                />
-                 <Route
-                  path="/reviews/:bookId"
-                  element={
-                    <UserRoute>
-                      <Reviews />
-                    </UserRoute>
-                  }
-                />
-                <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
-                <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
-                <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </TokenContext.Provider>
-            </UserBooks.Provider>
+                    <Route path="/test-readbook" element={<TestReadBook />} />
+                    <Route
+                      path="/admin"
+                      element={
+                        <AdminRoute>
+                          <AdminHome />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminAuthors"
+                      element={
+                        <AdminRoute>
+                          <AdminAuthors />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminBooks"
+                      element={
+                        <AdminRoute>
+                          <AdminBooks />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminCategories"
+                      element={
+                        <AdminRoute>
+                          <AdminCategories />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/"
+                      element={
+                        <UserRoute>
+                          <Home />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/authors"
+                      element={
+                        <UserRoute>
+                          <Authors />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/authors/:id"
+                      element={
+                        <UserRoute>
+                          <AuthorDetails />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/books"
+                      element={
+                        <UserRoute>
+                          <Books />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/bookDetails/:bookId"
+                      element={
+                        <UserRoute>
+                          <BookDetails />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/categories"
+                      element={
+                        <UserRoute>
+                          <Categories />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/mybooks"
+                      element={
+                        <UserRoute>
+                          <MyBooks />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/reviews/:bookId"
+                      element={
+                        <UserRoute>
+                          <Reviews />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <UserRoute>
+                          <Profile />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/success"
+                      element={
+                        <UserRoute>
+                          <Success />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/cancel"
+                      element={
+                        <UserRoute>
+                          <Cancel />
+                        </UserRoute>
+                      }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </TokenContext.Provider>
+              </UserBooks.Provider>
+            </WtrBooksContext.Provider>
           </BooksContext.Provider>
         </BrowserRouter>
       </QueryClientProvider>

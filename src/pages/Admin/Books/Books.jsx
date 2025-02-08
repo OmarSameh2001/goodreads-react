@@ -29,7 +29,8 @@ function AdminBooks() {
   const [newBook, setNewBook] = useState({});
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
-
+  const [pdfUrl, setPdfUrl] = useState(""); 
+  const [uploading, setUploading] = useState(false);
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -44,7 +45,7 @@ function AdminBooks() {
     setNewBook({});
     setImage(null);
   }
-
+ /// image 
   function handleImage(e) {
     setImageLoading(true);
     const file = e.target.files[0];
@@ -71,6 +72,64 @@ function AdminBooks() {
 
     reader.readAsDataURL(file);
   }
+
+
+
+
+  ///pdf
+  function handlePdfUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    if (file.type !== "application/pdf") {
+      alert("Please upload a valid PDF file.");
+      return;
+    }
+  
+    
+    const maxSize = 20 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size should not exceed 10MB.");
+      return;
+    }
+  
+    
+    setUploading(true);
+  
+    const formData = new FormData();
+    formData.append("file", file);
+  
+    axiosInstance
+      .post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`Upload progress: ${percentCompleted}%`);
+        },
+      })
+      .then((response) => {
+        const pdfLink = response.data.fileUrl; 
+        console.log("Uploaded PDF link:", pdfLink);
+  
+        setPdfUrl(pdfLink);
+        isNew
+          ? setNewBook((prev) => ({ ...prev, pdfLink }))
+          : setUpdate((prev) => ({ ...prev, pdfLink }));
+  
+        setUploading(false);
+      })
+      .catch((error) => {
+        console.error("Error uploading PDF:", error.response?.data || error.message);
+        alert("Failed to upload PDF. Please try again.");
+        setUploading(false);
+      });
+  }
+  
+  
+  
+  ///////////
   function handleChange(e) {
     console.log(e.target.name, e.target.value);
     isNew
@@ -120,7 +179,7 @@ function AdminBooks() {
   async function handleUpdate(e) {
     try {
       e.preventDefault();
-      const body = handleIds(update.author, update.category);
+      const body = handleIds(update.author, update.category ,update.fileUrl);
       await axiosInstance.put(`/books/${update._id}`, body);
       handleClose();
       refetch();
@@ -132,7 +191,7 @@ function AdminBooks() {
   async function handleAdd(e) {
     try {
       e.preventDefault();
-      const body = handleIds(newBook.author, newBook.category);
+      const body = handleIds(newBook.author, newBook.category , newBook.fileUrl);
       await axiosInstance.post("/books", body);
       handleClose();
       refetch();
@@ -222,6 +281,11 @@ function AdminBooks() {
       minWidth: 170,
       align: "left",
     },
+    { id: "Upload PDF",
+      label: "Upload PDF",
+      minWidth: 170,
+      align: "left"
+     },
     {
       id: "Actions",
       label: "Actions",
@@ -252,7 +316,12 @@ function AdminBooks() {
           ></div>
           <div
             className="position-relative bg-white p-4 rounded-4 shadow-lg"
-            style={{ width: "350px", backdropFilter: "blur(5px)" }}
+            style={{
+              width: "400px",
+              maxHeight: "80vh", 
+              overflowY: "auto", 
+              backdropFilter: "blur(5px)"
+            }}
           >
             <h2 className="text-center mb-3">{isNew ? "Add" : "Edit"} Book</h2>
             <GiCancel
@@ -317,6 +386,27 @@ function AdminBooks() {
                   {imageLoading ? <CircularProgress /> : "Upload"}
                 </button> */}
               </div>
+              <div className="mb-1">
+              <label htmlFor="pdfUpload" className="form-label">Upload PDF</label>
+              <input
+                id="pdfUpload"
+                type="file"
+                className="form-control"
+                name="pdf"
+                accept="application/pdf"
+                onChange={handlePdfUpload}
+                required={isNew} // Only required when adding a new book
+              />
+  
+               {/* Show loader when uploading */}
+               {uploading && (
+                   <div className="mt-2">
+                   <CircularProgress size={20} style={{ marginLeft: "10px" }} />
+                   <span style={{ marginLeft: "5px" }}>Uploading...</span>
+                   </div>
+                    )}
+                </div>
+  
               <div className="mb-1">
                 <label htmlFor="description" className="form-label">
                   Description
@@ -396,7 +486,7 @@ function AdminBooks() {
       />
       <Paper sx={{ width: "90%", overflow: "hidden", marginX: 10 }}>
         <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" >
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -455,6 +545,15 @@ function AdminBooks() {
                       <TableCell align="left">{book.edition}</TableCell>
                       <TableCell align="left">{book.views}</TableCell>
                       <TableCell align="left">
+                        {book.pdfLink ? (
+                         <a href={book.pdfLink} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                           View PDF
+                          </a>
+                          ) : (
+                         <span style={{ color: "gray" }}>No PDF Available</span>
+                         )}
+                      </TableCell>
+                      <TableCell align="left">
                         <FaPencilAlt
                           style={{
                             marginRight: 20,
@@ -485,7 +584,21 @@ function AdminBooks() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-    </div>
+      {/* <div>
+      <h3>Upload PDF</h3>
+      <input type="file" accept="application/pdf" onChange={handlePdfUpload} />
+
+      {pdfUrl && (
+        <div style={{ marginTop: 20, height: "600px" }}>
+          <h3>PDF Preview</h3>
+          <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+
+            <Viewer fileUrl={pdfUrl} />
+          </Worker>
+        </div>
+      )}
+    </div>*/}
+    </div> 
   );
 }
 
