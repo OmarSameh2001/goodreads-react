@@ -90,9 +90,9 @@ function AdminBooks() {
     }
   
     
-    const maxSize = 20 * 1024 * 1024;
+    const maxSize = 100 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("File size should not exceed 10MB.");
+      alert("File size should not exceed 100MB.");
       return;
     }
   
@@ -113,6 +113,7 @@ function AdminBooks() {
         },
       })
       .then((response) => {
+        console.log("response",response.data);
         const pdfLink = response.data.fileUrl; 
         console.log("Uploaded PDF link:", pdfLink);
   
@@ -576,8 +577,8 @@ function AdminBooks() {
                       <TableCell align="left">{book.edition}</TableCell>
                       <TableCell align="left">{book.views}</TableCell>
                       <TableCell align="left">
-                        {book.pdfLink ? (
-                         <a href={book.pdfLink} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                        {book.url ? (
+                         <a href={book.url} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
                            View PDF
                           </a>
                           ) : (
