@@ -49,7 +49,7 @@ export default function OAuthSignInPage() {
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
+      <div>
         <GoogleLogin onSuccess={handleSuccess} onError={handleFailure} />
       </div>
     </GoogleOAuthProvider>
