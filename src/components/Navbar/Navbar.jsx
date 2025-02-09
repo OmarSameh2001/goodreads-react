@@ -27,7 +27,7 @@ const NavbarContainer = styled("div")(({ theme }) => ({
   zIndex: 1000,
 }));
 
-function Navbar() {
+function Navbar({ setToken, setUserBooks }) {
   const navigate = useNavigate();
   const user = localStorage.getItem("user");
   const token = localStorage.getItem("token");
@@ -41,6 +41,8 @@ function Navbar() {
 
   function handleLogout() {
     localStorage.clear();
+    setToken(null);
+    setUserBooks([]);
     alert("Logout successful");
     navigate("/login");
   }

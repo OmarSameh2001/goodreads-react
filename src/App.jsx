@@ -73,8 +73,8 @@ function App() {
           <BooksContext.Provider value={{ books, setBooks }}>
             <UserBooks.Provider value={{ userBooks, setUserBooks }}>
               <TokenContext.Provider value={{ token, setToken, subscription, setSubscription }}>
-                <Navbar />
-                <Routes>
+              <Navbar setToken={setToken} setUserBooks={setUserBooks} />
+              <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
