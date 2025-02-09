@@ -220,8 +220,9 @@ function ForgetPassword() {
             py: 1.5,
             borderRadius: 1,
             mt: 2,
+            backgroundColor: "rgb(44, 62, 80)",
             "&:hover": {
-              backgroundColor: "rgb(20, 86, 151)",
+              backgroundColor: "rgb(32, 45, 58)",
             },
           }}
         >
