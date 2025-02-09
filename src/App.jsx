@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import axiosInstance from "./apis/config";
-import axiosInstance from "./apis/config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
@@ -32,6 +31,7 @@ import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
 import { ToastContainer } from "react-toastify";
+import ReadBook from "./pages/User/Books/ReadBook";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -167,6 +167,17 @@ function App() {
                       </UserRoute>
                     }
                   />
+                  
+                  <Route
+                   path="/read-book/:bookId"
+                   element={
+                   <UserRoute>
+                     <ReadBook />
+                   </UserRoute>
+                   }
+                 />
+
+
                   <Route
                     path="/profile"
                     element={

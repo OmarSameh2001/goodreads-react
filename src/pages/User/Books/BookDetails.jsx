@@ -9,16 +9,13 @@ import {
   Link,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-
 import Grid from "@mui/material/Grid";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import axiosInstance from "../../../apis/config.js";
-import { useEffect } from "react";
 import { Chip } from "@mui/material";
 import { toast } from "react-toastify";
-import { useContext } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink } from "react-router-dom"; // Updated import
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import LinkIcon from "@mui/icons-material/Link";
 import UserBooks from "../../../context/userBooks.js";
@@ -30,6 +27,7 @@ function BookDetails(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [book, setBook] = useState({});
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,6 +44,7 @@ function BookDetails(props) {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
+
   async function handleAddToWantToRead(user_id, book_id) {
     const requestBody = {
       user: user_id,
@@ -63,6 +62,7 @@ function BookDetails(props) {
       toast("Error, Book already exist", { type: "error", theme: "colored" });
     }
   }
+
   return (
     <Container
       sx={{ py: 6, fontFamily: "Merriweather, serif", width: "100vw" }}
@@ -202,17 +202,12 @@ function BookDetails(props) {
                 </Typography>
               </Grid>
 
-              {book.url && (
+              {book.pdfLink && (
                 <Grid item xs={6} md={3}>
                   <Typography variant="body2" sx={{ color: "text.secondary" }}>
                     Read Online
                   </Typography>
-                  <Link
-                    href={book.url}
-                    target="_blank"
-                    rel="noopener"
-                    sx={{ textDecoration: "none" }}
-                  >
+                  <RouterLink to={`/read-book/${bookId}`} style={{ textDecoration: "none" }}>
                     <Button
                       variant="text"
                       size="small"
@@ -220,7 +215,7 @@ function BookDetails(props) {
                     >
                       Access Book
                     </Button>
-                  </Link>
+                  </RouterLink>
                 </Grid>
               )}
             </Grid>
@@ -297,4 +292,5 @@ function BookDetails(props) {
     </Container>
   );
 }
+
 export default BookDetails;
