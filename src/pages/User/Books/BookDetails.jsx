@@ -19,11 +19,12 @@ import { Chip } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import { useContext } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink} from "react-router-dom";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import LinkIcon from "@mui/icons-material/Link";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import UserBooks from "../../../context/userBooks.js";
+
 
 function BookDetails(props) {
   const { userBooks, setUserBooks } = useContext(UserBooks);
@@ -80,6 +81,7 @@ function BookDetails(props) {
               transition: "all 0.3s ease",
             }}
           >
+            <RouterLink to={`/read-book/${bookId}`} style={{ textDecoration: "none" }}>
             <CardMedia
               component="img"
               image={book.img || "/default-book-cover.jpg"}
@@ -91,6 +93,7 @@ function BookDetails(props) {
                 objectFit: "cover",
               }}
             />
+            </RouterLink>
             <Chip
               label={`${book.edition} Edition`}
               color="secondary"
@@ -227,6 +230,14 @@ function BookDetails(props) {
               )}
             </Grid>
           </Box>
+           {/* Display a message if no PDF is available */}
+          {!book.pdfLink && (
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" color="error">
+                No PDF available for this book.
+              </Typography>
+            </Box>
+          )}
 
           {/* Author Section */}
           {book.author?.about && (

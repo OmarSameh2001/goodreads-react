@@ -30,10 +30,9 @@ import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
+import ReadBook from "./pages/User/Books/ReadBook";
 
-import TestReadBook from "./pages/Admin/Books/TestReadBook";
-const pdfUrl = "https://drive.google.com/file/d/1fj7hBuHuC0tgdN-wnqdZ7yMTTH0P5jAC/preview";
-const bookId="67a6f3c894fba1ebeb358442";
+
 function App() {
   const [books, setBooks] = useState([]);
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
@@ -65,6 +64,7 @@ function App() {
   }, [userBooks, token]); // ✅ Runs when userBooks changes
 
   return (
+
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
@@ -72,7 +72,8 @@ function App() {
             <UserBooks.Provider value={{ userBooks, setUserBooks }}>
               <TokenContext.Provider value={{ token, setToken }}>
                 <Navbar />
-                <Routes>
+                <AdminBooks/>
+                {/* <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
@@ -151,6 +152,14 @@ function App() {
                     }
                   />
                   <Route
+                   path="/read-book/:bookId"
+                   element={
+                   <UserRoute>
+                     <ReadBook />
+                   </UserRoute>
+                   }
+/>
+                  <Route
                     path="/categories"
                     element={
                       <UserRoute>
@@ -178,7 +187,7 @@ function App() {
                 <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
                 <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
                   <Route path="*" element={<NotFound />} />
-                </Routes>
+                </Routes> */}
               </TokenContext.Provider>
             </UserBooks.Provider>
           </BooksContext.Provider>

@@ -3,11 +3,11 @@ import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 import { Button, Typography, Box, IconButton, CircularProgress} from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
-import axiosInstance from "../../apis/config";
+import axiosInstance from "../../../apis/config.js";
 import { useParams } from "react-router-dom";
 export default function ReadBook() {
-  const { bookId } = useParams();
-  //const bookId = "67a6f3c894fba1ebeb358442"; 
+  //const { bookId } = useParams();
+  const bookId = "67a6f3c894fba1ebeb358442"; 
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdf, setPdf] = useState(null);
@@ -20,7 +20,7 @@ export default function ReadBook() {
   useEffect(() => {
     async function fetchBook() {
       try {
-        const token = localStorage.getItem("token"); 
+        const token = localStorage.getItem("token"); // Get token from storage
   
         if (!token) {
           console.error("No token found, user is not authenticated");
@@ -34,6 +34,7 @@ export default function ReadBook() {
         });
   
         setPdfUrl(response.data.pdfLink);
+        console.log("response",response.data.pdfLink);
       } catch (error) {
         console.error("Error fetching book:", error);
       } finally {
@@ -146,4 +147,3 @@ export default function ReadBook() {
   </Box>
   );
 }
-

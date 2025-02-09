@@ -199,6 +199,7 @@ function AdminBooks() {
       console.log(newBook);
       await axios.post("http://localhost:3001/books", body, {
         headers: {
+          
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
@@ -437,7 +438,7 @@ function AdminBooks() {
                 <Autocomplete
                   disablePortal
                   defaultValue={update?.author?.name || ""}
-                  options={authors?.map((author) => author.name)}
+                  options={authors?.map((author) => author.name || "")}
                   onChange={(e, value) =>
                     handleChange({ target: { name: "author", value } })
                   }
@@ -456,7 +457,7 @@ function AdminBooks() {
                 <Autocomplete
                   disablePortal
                   defaultValue={update?.category?.name || ""}
-                  options={categories?.data?.map((category) => category.name)}
+                  options={categories?.data?.map((category) => category.name || "")}
                   onChange={(e, value) =>
                     handleChange({ target: { name: "category", value } })
                   }

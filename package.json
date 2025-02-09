@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "cra-template": "1.2.0",
     "dotenv": "^16.4.7",
+    "esbuild": "^0.25.0",
     "googleapi": "^1.0.2",
     "googleapis": "^144.0.0",
     "install": "^0.13.0",
@@ -45,6 +46,7 @@
     "react-router-dom": "^7.1.5",
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.3",
+    "rollup": "^4.34.6",
     "styled-components": "^6.1.14",
     "web-vitals": "^4.2.4"
   },
