@@ -9,7 +9,7 @@ import { CircularProgress } from "@mui/material";
 
 function Categories() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [intialLoad, setInitialLoad] = useState(true);
   const [total, setTotal] = useState(0);
 
@@ -43,13 +43,17 @@ function Categories() {
     <div className="container mt-4">
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
       <div>
-        {isLoading ? <CircularProgress /> : categories.map((category) => (
-          <CategoryCard key={category._id} category={category} />
-        ))}
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          categories.map((category) => (
+            <CategoryCard key={category._id} category={category} />
+          ))
+        )}
       </div>
 
       {/* Pagination Component */}
-      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Pagination
           count={Math.ceil(total / itemsPerPage)}
           disabled={isLoading || Math.ceil(total / itemsPerPage) < 2}

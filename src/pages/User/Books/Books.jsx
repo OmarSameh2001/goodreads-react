@@ -27,7 +27,7 @@ function UserBooks() {
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(books.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const currentBooks = displayedBooks.slice(
