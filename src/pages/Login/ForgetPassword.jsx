@@ -220,6 +220,9 @@ function ForgetPassword() {
             py: 1.5,
             borderRadius: 1,
             mt: 2,
+            "&:hover": {
+              backgroundColor: "rgb(20, 86, 151)",
+            },
           }}
         >
           {type === "forget" ? "Reset Password" : "Send Reset Link"}

@@ -13,25 +13,11 @@ import {
   FormHelperText,
   Divider,
   Box,
-  InputAdornment,
-  IconButton,
   Link,
 } from "@mui/material";
-import {
-  Lock,
-  Person,
-  Email,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { Lock, Person, Email } from "@mui/icons-material";
 
 function Register() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [fname, setFname] = useState("");
-  // const [lname, setLname] = useState("");
-  // const [username, setUsername] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const [formValues, setFormValues] = useState({
     fname: "",
     lname: "",
@@ -291,7 +277,15 @@ function Register() {
             Object.values(formErrors).some((error) => error !== null) ||
             Object.values(formValues).some((value) => value === "")
           }
-          sx={{ mt: 3, py: 1.5, borderRadius: 1 }}
+          sx={{
+            mt: 3,
+            py: 1.5,
+            borderRadius: 1,
+            backgroundColor: "rgb(44, 62, 80)",
+            "&:hover": {
+              backgroundColor: "rgb(32, 45, 58)",
+            },
+          }}
         >
           Create Account
         </Button>

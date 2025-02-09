@@ -76,18 +76,17 @@ function UserBooks() {
   };
 
   // Initialize state from URL params
-  //if we remove this useEffect filter will not work from url manually
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
-    // Get author Names directly from URL
+
     const urlAuthorsNames = searchParams.get("authors")?.split(",") || [];
     //check if the category ids in url are valid if not set it to empty array
     const validAuthors = urlAuthorsNames.filter((name) =>
       authors.some((a) => a.name === name)
     );
 
-    // Get category Names directly from URL
+
     const urlCategoriesNames = searchParams.get("categories")?.split(",") || [];
     //check if the category ids in url are valid if not set it to empty array
     const validCategories = urlCategoriesNames.filter((name) =>
@@ -124,7 +123,8 @@ function UserBooks() {
 
     setDisplayedBooks(filteredBooks);
   }, [selectedCategories, selectedAuthors, books, appliedBookSearch]);
-
+  
+  //fetch authors , categories and books
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -150,7 +150,7 @@ function UserBooks() {
 
   return (
     <div>
-      <h1>Books</h1>
+      <h1 className="BooksTitle">Books</h1>
       {isLoading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
       <div className="BooksGrid">
@@ -167,6 +167,13 @@ function UserBooks() {
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "rgb(44, 62, 80)",
+                  color: "white",
+                  borderRadius: 1,
+                },
+              }}
             >
               <Typography component="span">Authors</Typography>
             </AccordionSummary>
@@ -240,6 +247,13 @@ function UserBooks() {
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel2-content"
               id="panel2-header"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "rgb(44, 62, 80)",
+                  color: "white",
+                  borderRadius: 1,
+                },
+              }}
             >
               <Typography component="span">Categories</Typography>
             </AccordionSummary>

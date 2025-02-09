@@ -33,27 +33,29 @@ function Login() {
         email,
         password,
       });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", res.data.user.role);
-      localStorage.setItem("userName", res.data.user.username);
-      localStorage.setItem("userId", res.data.user._id);
-      localStorage.setItem(
-        "sType",
-        res.data.user.subscription.subscriptionType
-      );
-      localStorage.setItem("endDate", res.data.user.subscription.endDate);
-      if (res.data.user.role === "admin") {
-        console.log("admin");
-        navigate("/admin");
-      } else {
-        navigate("/");
+      if (res.status === 200) {
+        toast.onChange((payload) => {
+          if (
+            payload.status === "removed" &&
+            payload.content === "Login successful"
+          ) {
+            res.data.user.role === "admin" ? navigate("/admin") : navigate("/");
+          }
+        });
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", res.data.user.role);
+        localStorage.setItem("userName", res.data.user.username);
+        localStorage.setItem("userId", res.data.user._id);
+        localStorage.setItem(
+          "sType",
+          res.data.user.subscription.subscriptionType
+        );
+        localStorage.setItem("endDate", res.data.user.subscription.endDate);
+        toast("Login successful", { type: "success", theme: "colored" });
       }
     } catch (error) {
       console.log(error);
-      toast(error.response.data.message, {
-        theme: "colored",
-        type: "error",
-      });
+      toast(error.response.data.message, { type: "error", theme: "colored" });
     }
   }
   function handleSubmit(e) {
@@ -135,7 +137,12 @@ function Login() {
             onClick={() => navigate("/forget")}
             underline="hover"
             color="primary"
-            sx={{ fontSize: "0.875rem" }}
+            sx={{
+              fontSize: "0.875rem",
+              ":hover": {
+                backgroundColor: "transparent",
+              },
+            }}
           >
             Forgot Password?
           </Link>
@@ -144,14 +151,16 @@ function Login() {
         <Button
           fullWidth
           variant="contained"
-          color="primary"
           size="large"
           type="submit"
           disabled={!email || password.length < 8}
           sx={{
-            py: 1.5,
+            backgroundColor: "rgb(44, 62, 80)",
             borderRadius: 1,
             mt: 2,
+            "&:hover": {
+              backgroundColor: "rgb(32, 45, 58)",
+            },
           }}
         >
           Sign In

@@ -24,7 +24,11 @@ function Search(props) {
       <button
         className="btn btn-primary mx-2"
         onClick={handleBookSearch}
-        style={{ height: "60px", width: "50px" }}
+        style={{
+          height: "60px",
+          width: "50px",
+          backgroundColor: "rgb(44, 62, 80)",
+        }}
       >
         <FaSearch />
       </button>
