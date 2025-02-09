@@ -112,9 +112,7 @@ function App() {
                   <Route
                     path="/"
                     element={
-                      <UserRoute>
                         <Home />
-                      </UserRoute>
                     }
                   />
                   <Route

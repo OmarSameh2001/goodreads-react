@@ -57,11 +57,13 @@ function EditUser({ user, setIsEditing, fetchUser }) {
       });
       
       await axiosInstance.put(`/auth/update-user/${id}`, payload);
+      localStorage.setItem("userName", payload.username);
       if(user.email !== formValues.email){
         localStorage.clear();
         navigate("/otp", { state: formValues });
       }
-      
+      handleClose();
+      fetchUser();
     } catch (error) {
       toast.error(error.response.data.message, {
         theme: "colored",

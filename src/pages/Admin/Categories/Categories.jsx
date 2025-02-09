@@ -57,7 +57,7 @@ function AdminCategories() {
   });
 
   const handleSave = async () => {
-    if (!formData.name || !formData.description || !formData.image) {
+    if (!formData.name || !formData.description ) {
       setError("All fields are required");
       return;
     }
@@ -130,7 +130,6 @@ function AdminCategories() {
                 <TableCell style={{ color: "#fff" }}>ID</TableCell>
                 <TableCell style={{ color: "#fff" }}>Name</TableCell>
                 <TableCell style={{ color: "#fff" }}>Description</TableCell>
-                <TableCell style={{ color: "#fff" }}>Image</TableCell>
                 <TableCell style={{ color: "#fff" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -146,13 +145,6 @@ function AdminCategories() {
                     <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
                     <TableCell>{category.name}</TableCell>
                     <TableCell>{category.description}</TableCell>
-                    <TableCell>
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        style={{ width: "50px", height: "50px" }}
-                      />
-                    </TableCell>
                     <TableCell>
                       {" "}
                       {/* style={{ display: "flex", gap: "10px" }} */}
@@ -212,15 +204,6 @@ function AdminCategories() {
             value={formData.description}
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
-            }
-            margin="dense"
-          />
-          <TextField
-            label="Image URL"
-            fullWidth
-            value={formData.image}
-            onChange={(e) =>
-              setFormData({ ...formData, image: e.target.value })
             }
             margin="dense"
           />

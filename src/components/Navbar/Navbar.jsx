@@ -34,12 +34,14 @@ function Navbar() {
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
   const sType = localStorage.getItem("sType");
-  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "Premium";
+  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "premium";
 
   const [value, setValue] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
   function handleLogout() {
+    const confirm = window.confirm("Are you sure you want to logout?");
+    if (!confirm) return;
     localStorage.clear();
     alert("Logout successful");
     navigate("/login");
@@ -61,18 +63,20 @@ function Navbar() {
       </Link>
 
       {/* Navigation Tabs */}
-      <Tabs value={value} onChange={(e, newValue) => setValue(newValue)} variant="scrollable" scrollButtons={false}>
+      {/* <Tabs onChange={(e, newValue) => setValue(newValue)} variant="scrollable" scrollButtons={false}> */}
+        <div>
         {navLinks
           .filter((link) => link.condition !== false)
           .map((link, index) => (
             <Tab key={index} label={link.label} component={Link} to={link.path} sx={{ color: "white", fontWeight: "bold" , fontsize: "40px" }} />
           ))}
-      </Tabs>
+        </div>
+      {/* </Tabs> */}
 
       {/* Right Section: Search, User Info, Logout */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         {/* Search Box */}
-        <TextField
+        {/* <TextField
           size="small"
           placeholder="Search..."
           fullWidth
@@ -86,7 +90,7 @@ function Navbar() {
               </InputAdornment>
             ),
           }}
-        />
+        /> */}
 
         {/* Logout & User Info */}
         {token ? (
@@ -123,7 +127,7 @@ function Navbar() {
                 "Free Plan"
               )}
             </h5>}
-            <IconButton onClick={handleLogout} sx={{ color: "white" }}>
+            <IconButton onClick={() => handleLogout()} sx={{ color: "white" }}>
               <Logout />
             </IconButton>
           </>

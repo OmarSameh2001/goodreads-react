@@ -4,7 +4,7 @@ import { Box, Typography, IconButton, Card } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-export default function ListPopularAuthors() {
+export default function ListPopularAuthors({ user }) {
   const [popularAuthors, setPopularAuthors] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ export default function ListPopularAuthors() {
             {popularAuthors.map((author) => (
               <Box key={author._id}>
                 <Box
-                  onClick={() => navigate(`/authors/${author._id}`)}
+                  onClick={() => navigate(user ? `/adminAuthors` : `/authors/${author._id}`)}
                   sx={{
                     cursor: "pointer",
                     borderRadius: 2,

@@ -6,7 +6,7 @@ import UserBooks from "../../context/userBooks";
 import axiosInstance from "../../apis/config";
 import { set } from "react-hook-form";
 import TokenContext from "../../context/token";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Container,
   Typography,
@@ -20,7 +20,7 @@ import {
 import { Email, Lock } from "@mui/icons-material";
 import OAuthSignInPage from "./SignWithGoogle";
 function Login() {
-  const { token, setToken } = useContext(TokenContext);
+  const token = localStorage.getItem("token");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const { userBooks, setUserBooks } = useContext(UserBooks);
@@ -28,24 +28,30 @@ function Login() {
   // const [error, setError] = useState(null);
   const navigate = useNavigate();
   async function handleLogin() {
-    const res = await axios.post("http://localhost:3001/auth/login", {
-      email,
-      password,
-    });
-    localStorage.setItem("token", res.data.token);
-    setToken(res.data.token);  
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("user", res.data.user.role);
-    localStorage.setItem("userName", res.data.user.username);
-    localStorage.setItem("userId", res.data.user._id);
-    localStorage.setItem("sType", res.data.user.subscription.subscriptionType);
-    localStorage.setItem("endDate", res.data.user.subscription.endDate);
-    console.log(res);
-    if (res.data.user.role === "admin") {
-      console.log("admin");
-      navigate("/admin");
-    } else {
-      navigate("/");
+    try {
+      const res = await axios.post("http://localhost:3001/auth/login", {
+        email,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", res.data.user.role);
+      localStorage.setItem("userName", res.data.user.username);
+      localStorage.setItem("userId", res.data.user._id);
+      localStorage.setItem("sType", res.data.user.subscription.subscriptionType);
+      localStorage.setItem("endDate", res.data.user.subscription.endDate);
+      console.log(res);
+      if (res.data.user.role === "admin") {
+        console.log("admin");
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+        toast(error.response.data.message, {
+          theme: "colored",
+          type: "error",
+        });
     }
   }
   function handleSubmit(e) {
@@ -73,11 +79,12 @@ function Login() {
       >
         Welcome Back
       </Typography>
+      <ToastContainer />
       <Divider sx={{ mb: 4 }} />
 
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={(e) => handleSubmit(e)}
         sx={{
           display: "flex",
           flexDirection: "column",
