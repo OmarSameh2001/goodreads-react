@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   Container,
   Card,
@@ -20,21 +20,19 @@ import { useContext } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { Link as RouterLink } from "react-router";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import LinkIcon from "@mui/icons-material/Link";
 import UserBooks from "../../../context/userBooks.js";
-import { Document, Page, pdfjs } from "react-pdf";
-//import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-import { PDFDocument } from 'pdf-lib';
 import BookViewer from "./BookViewer.jsx";
-//pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+import BooksContext from "../../../context/books.js";
 
-function BookDetails(props) {
+function BookDetails() {
   const { userBooks, setUserBooks } = useContext(UserBooks);
   const userId = localStorage.getItem("userId");
   const { bookId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [book, setBook] = useState({});
+  const { setReadingBook } = useContext(BooksContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -208,25 +206,30 @@ function BookDetails(props) {
                 </Typography>
               </Grid>
 
-              {book.url && (
+              {!book.pdfLink ? (
+                <Grid item xs={6} md={3}>
+                  <p>Sorry this book is not available for reading</p>
+                </Grid>
+              ) :
+              book.pdfLink === "not subscribed" ? (
+                <Grid item xs={6} md={3}>
+                  <p>Sorry you need to subscribe to read this book</p>
+                </Grid>
+              ) : (
                 <Grid item xs={6} md={3}>
                   <Typography variant="body2" sx={{ color: "text.secondary" }}>
                     Read Online
                   </Typography>
-                  <Link
-                    href={book.url}
-                    target="_blank"
-                    rel="noopener"
-                    sx={{ textDecoration: "none" }}
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => {
+                      navigate(`/bookViewer/${book.title}`);
+                      setReadingBook(book.pdfLink);
+                    }}
                   >
-                    <Button
-                      variant="text"
-                      size="small"
-                      startIcon={<LinkIcon />}
-                    >
-                      Access Book
-                    </Button>
-                  </Link>
+                    Access Book
+                  </Button>
                 </Grid>
               )}
             </Grid>
@@ -304,7 +307,11 @@ function BookDetails(props) {
                 : "Want to Read"}
             </Button>
           </Box>
-          <BookViewer pdfUrl={"https://drive.google.com/file/d/10-EfbWKjmUkzYZqFAAeueC8mvMEJ_NnH/preview"} />
+          <BookViewer
+            pdfUrl={
+              "https://drive.google.com/file/d/10-EfbWKjmUkzYZqFAAeueC8mvMEJ_NnH/preview"
+            }
+          />
         </Grid>
       </Grid>
     </Container>

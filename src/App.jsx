@@ -31,15 +31,19 @@ import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
 import { ToastContainer } from "react-toastify";
+import BookViewer from "./pages/User/Books/BookViewer";
 
 function App() {
   const [books, setBooks] = useState([]);
+  const [readingBook, setReadingBook] = useState("not subscribed");
   const queryClient = new QueryClient();
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
   const [token, setToken] = useState(localStorage.getItem("token"));
   const endDate = localStorage.getItem("endDate");
   const sType = localStorage.getItem("sType");
-  const [subscription, setSubscription] = useState(new Date(endDate).getTime() > new Date().getTime() && sType === "Premium");
+  const [subscription, setSubscription] = useState(
+    new Date(endDate).getTime() > new Date().getTime() && sType === "premium"
+  );
 
   useEffect(() => {
     async function handleUserBooks() {
@@ -70,11 +74,13 @@ function App() {
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <BooksContext.Provider value={{ books, setBooks }}>
+          <BooksContext.Provider value={{ books, setBooks , readingBook, setReadingBook}}>
             <UserBooks.Provider value={{ userBooks, setUserBooks }}>
-              <TokenContext.Provider value={{ token, setToken, subscription, setSubscription }}>
-              <Navbar setToken={setToken} setUserBooks={setUserBooks} />
-              <Routes>
+              <TokenContext.Provider
+                value={{ token, setToken, subscription, setSubscription }}
+              >
+                <Navbar setToken={setToken} setUserBooks={setUserBooks} />
+                <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
@@ -142,6 +148,14 @@ function App() {
                     element={
                       <UserRoute>
                         <BookDetails />
+                      </UserRoute>
+                    }
+                  />
+                  <Route
+                    path="/bookViewer/:bookName"
+                    element={
+                      <UserRoute>
+                        <BookViewer />
                       </UserRoute>
                     }
                   />
