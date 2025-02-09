@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { use, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import axiosInstance from "../../apis/config";
+import TokenContext from "../../context/token";
 
 function Success() {
   const { search } = useLocation();
@@ -11,6 +12,7 @@ function Success() {
   const sessionId = urlParams.get('session_id');
   const subscriptionType = urlParams.get('subscriptionType');
   const id = localStorage.getItem("userId");
+  const { setSubscription} = useContext(TokenContext);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -21,7 +23,11 @@ function Success() {
         });
         if (response.status === 200) {
           localStorage.setItem("endDate", response.data.endDate);
+          localStorage.setItem("sType", response.data.subscriptionType);
+
           alert("Payment successful");
+          //set subscription context 
+          setSubscription(true);
           navigate("/profile");
         }
       } catch (error) {

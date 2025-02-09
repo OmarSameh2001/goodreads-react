@@ -27,6 +27,7 @@ function Login() {
   // const [isLoading, setIsLoading] = useState(true);
   // const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { setSubscription} = useContext(TokenContext);
   async function handleLogin() {
     try {
       const res = await axios.post("http://localhost:3001/auth/login", {
@@ -42,6 +43,7 @@ function Login() {
         res.data.user.subscription.subscriptionType
       );
       localStorage.setItem("endDate", res.data.user.subscription.endDate);
+      setSubscription(res.data.user.subscription.subscriptionType === "premium");
       if (res.data.user.role === "admin") {
         console.log("admin");
         navigate("/admin");

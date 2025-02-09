@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TokenContext from "../../context/token";
 import { Tabs, Tab, Box, IconButton, TextField, InputAdornment, Typography } from "@mui/material";
 import { Logout, Search as SearchIcon } from "@mui/icons-material";
@@ -33,19 +33,23 @@ function Navbar() {
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
-  const sType = localStorage.getItem("sType");
-  const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "premium";
-
+  //const sType = localStorage.getItem("sType");
+  //const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "Premium";
+  const {subscription} = useContext(TokenContext);
   const [value, setValue] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
   function handleLogout() {
-    const confirm = window.confirm("Are you sure you want to logout?");
-    if (!confirm) return;
     localStorage.clear();
     alert("Logout successful");
     navigate("/login");
   }
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }else { 
+      navigate("/login");}
+  }, [subscription, token]);
 
   const navLinks = [
     { label: "Home", path: "/" },
@@ -63,43 +67,25 @@ function Navbar() {
       </Link>
 
       {/* Navigation Tabs */}
-      {/* <Tabs onChange={(e, newValue) => setValue(newValue)} variant="scrollable" scrollButtons={false}> */}
-        <div>
+      <Tabs value={value} onChange={(e, newValue) => setValue(newValue)} variant="scrollable" scrollButtons={false}>
         {navLinks
           .filter((link) => link.condition !== false)
           .map((link, index) => (
-            <Tab key={index} label={link.label} component={Link} to={link.path} sx={{ color: "white", fontWeight: "bold" , fontsize: "40px" }} />
+            <Tab key={index} label={link.label} component={Link} to={link.path} sx={{ color: "white", fontWeight: "bold" , fontSize: "20px" , fontFamily: "B612, sans-serif" , fontStyle: "italic" }} />
           ))}
-        </div>
-      {/* </Tabs> */}
+      </Tabs>
 
       {/* Right Section: Search, User Info, Logout */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        {/* Search Box */}
-        {/* <TextField
-          size="small"
-          placeholder="Search..."
-          fullWidth
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{  backgroundColor: "#fff", borderRadius: 3 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        /> */}
 
         {/* Logout & User Info */}
         {token ? (
           <>
             <Link
-              style={{ textDecoration: "none", color: "black" }}
+              style={{ textDecoration: "none"}}
               to={"/profile"}
             >
-              <h5 style={{ cursor: "pointer" }}>
+              <h5 style={{ cursor: "pointer" , color: "rgb(225, 226, 234)" }} >
                 {userName || user || "UserName"}
               </h5>
             </Link>
@@ -127,7 +113,7 @@ function Navbar() {
                 "Free Plan"
               )}
             </h5>}
-            <IconButton onClick={() => handleLogout()} sx={{ color: "white" }}>
+            <IconButton onClick={handleLogout} sx={{ color: "white" }}>
               <Logout />
             </IconButton>
           </>

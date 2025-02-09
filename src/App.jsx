@@ -37,6 +37,9 @@ function App() {
   const queryClient = new QueryClient();
   const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const endDate = localStorage.getItem("endDate");
+  const sType = localStorage.getItem("sType");
+  const [subscription, setSubscription] = useState(new Date(endDate).getTime() > new Date().getTime() && sType === "Premium");
 
   useEffect(() => {
     async function handleUserBooks() {
@@ -69,7 +72,7 @@ function App() {
         <BrowserRouter>
           <BooksContext.Provider value={{ books, setBooks }}>
             <UserBooks.Provider value={{ userBooks, setUserBooks }}>
-              <TokenContext.Provider value={{ token, setToken }}>
+              <TokenContext.Provider value={{ token, setToken, subscription, setSubscription }}>
                 <Navbar />
                 <Routes>
                   <Route path="/login" element={<Login />} />
