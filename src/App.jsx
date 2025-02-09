@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./App.css";
 import axiosInstance from "./apis/config";
+import axiosInstance from "./apis/config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/User/Home/Home";
