@@ -18,6 +18,7 @@ import {
   Divider,
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
+import OAuthSignInPage from "./SignWithGoogle";
 function Login() {
   const { token, setToken } = useContext(TokenContext);
   const [email, setEmail] = useState("");
@@ -146,7 +147,7 @@ function Login() {
         >
           Sign In
         </Button>
-
+        <OAuthSignInPage />
         <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
           New to the website?{" "}
           <Link
@@ -158,6 +159,7 @@ function Login() {
             Create Account
           </Link>
         </Typography>
+        
       </Box>
     </Container>
   );
