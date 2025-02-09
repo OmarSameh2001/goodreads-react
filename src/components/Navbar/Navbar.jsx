@@ -40,10 +40,11 @@ function Navbar({ setToken, setUserBooks }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   function handleLogout() {
+    const confirm = window.confirm("Are you sure you want to logout?");
+    if (!confirm) return;
     localStorage.clear();
     setToken(null);
     setUserBooks([]);
-    alert("Logout successful");
     navigate("/login");
   }
   useEffect(() => {
