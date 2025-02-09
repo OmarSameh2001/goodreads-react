@@ -27,6 +27,7 @@
     "jwt-decode": "^4.0.0",
     "material-react-table": "^3.1.0",
     "papaparse": "^5.5.2",
+    "pdfjs": "^2.5.3",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.0.0",

@@ -29,6 +29,7 @@ function AdminBooks() {
   const [newBook, setNewBook] = useState({});
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
@@ -119,24 +120,30 @@ function AdminBooks() {
 
   async function handleUpdate(e) {
     try {
+      setUploadLoading(true);
       e.preventDefault();
       const body = handleIds(update.author, update.category);
       await axiosInstance.put(`/books/${update._id}`, body);
       handleClose();
+      setUploadLoading(false);
       refetch();
     } catch (error) {
+      setUploadLoading(false);
       console.log(error);
     }
   }
 
   async function handleAdd(e) {
     try {
+      setUploadLoading(true);
       e.preventDefault();
       const body = handleIds(newBook.author, newBook.category);
       await axiosInstance.post("/books", body);
       handleClose();
+      setUploadLoading(false);
       refetch();
     } catch (error) {
+      setUploadLoading(false);
       alert(error.response.data.message);
       console.log(error);
     }
@@ -292,7 +299,6 @@ function AdminBooks() {
                   name="img"
                   accept="image/*"
                   onChange={(e) => handleImage(e)}
-                  required
                   max={1}
                 />
                 {imageLoading ? (
@@ -383,7 +389,7 @@ function AdminBooks() {
                   required
                 />
               </div>
-              <button className="btn btn-primary w-100" type="submit">
+              <button className="btn btn-primary w-100" type="submit" disabled={uploadLoading}>
                 {isNew ? "Add" : "Update"}
               </button>
             </form>
