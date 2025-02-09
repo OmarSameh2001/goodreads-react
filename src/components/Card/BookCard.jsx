@@ -5,24 +5,21 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import CardOverflow from "@mui/joy/CardOverflow";
 import Chip from "@mui/joy/Chip";
-import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import { Navigate } from "react-router";
-import { Link as RouterLink } from "react-router"; // Import React Router Link
+import { Link as RouterLink } from "react-router";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import Box from "@mui/joy/Box";
 import Rating from "@mui/material/Rating";
 import axiosInstance from "../../apis/config";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import UserBooks from "../../context/userBooks";
-import CategoryCard from "./CategoryCard";
 export default function BookCard(props) {
   const { book } = props;
   const { userBooks, setUserBooks } = useContext(UserBooks);
   const userId = localStorage.getItem("userId");
+
+  //Add a book to userBooks as want to read by default.
   async function handleAddToWantToRead(user_id, book_id) {
     const requestBody = {
       user: user_id,
@@ -57,8 +54,8 @@ export default function BookCard(props) {
       <CardOverflow>
         <AspectRatio ratio="2/3" sx={{ borderRadius: "sm" }}>
           <img
-            src={book.img || "/default-book-cover.jpg"}
-            srcSet={book.img || "/default-book-cover.jpg"}
+            src={book.img}
+            srcSet={book.img} //incase of multiple image versions choose best resolution.
             loading="lazy"
             alt={book.title}
             style={{ objectFit: "cover" }}
@@ -68,8 +65,8 @@ export default function BookCard(props) {
 
       <CardContent sx={{ flexGrow: 1, px: 2, pt: 2 }}>
         <Typography
-          level="title-md"
-          component={RouterLink}
+          level="title-md"//font size
+          component={RouterLink} //makes it render as a React Router link (<Link> tag)
           to={`/bookDetails/${book._id}`}
           sx={{
             fontWeight: "bold",
@@ -106,7 +103,7 @@ export default function BookCard(props) {
             mb: 1,
             color: "text.tertiary",
             display: "-webkit-box",
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 3, // number of lines to show
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}

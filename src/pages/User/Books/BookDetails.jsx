@@ -285,6 +285,12 @@ function BookDetails(props) {
                 fontWeight: 600,
                 borderRadius: "8px",
                 textTransform: "none",
+                backgroundColor: "rgb(44, 62, 80)",
+                "&:hover": {
+                  scale: 1.05,
+                  transition: "all 0.3s ease-in-out",
+                  backgroundColor: "rgb(44, 62, 80)",
+                },
               }}
             >
               {userBooks.some((userBook) => userBook.book._id === book._id)

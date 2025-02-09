@@ -2,3 +2,8 @@
   display: grid;
   grid-template-columns: 0.7fr 4.3fr;
 }
+.BooksTitle {
+  text-align: center;
+  padding-top: 0.5em;
+  margin-bottom: 0;
+}
