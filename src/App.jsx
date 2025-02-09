@@ -24,13 +24,13 @@ import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 import MyBooks from "./pages/User/UserActivity/MyBooks";
 import Reviews from "./pages/User/UserActivity/Reviews";
-import { UserBooksProvider } from "./context/userBooks";
-import BooksContext from './context/books';
+import BooksContext from "./context/books";
 import UserBooks from "./context/userBooks";
 import Profile from "./pages/User/Profile/Profile";
 import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -43,10 +43,10 @@ function App() {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-  
+
         const res1 = await axiosInstance.post("/auth/verify");
         if (res1.status !== 200) return;
-  
+
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
@@ -59,10 +59,10 @@ function App() {
         console.log(error);
       }
     }
-  
+
     handleUserBooks();
-  }, [token]); 
-  
+  }, [userBooks, token]);
+
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
@@ -109,12 +109,7 @@ function App() {
                       </AdminRoute>
                     }
                   />
-                  <Route
-                    path="/"
-                    element={
-                        <Home />
-                    }
-                  />
+                  <Route path="/" element={<Home />} />
                   <Route
                     path="/authors"
                     element={
@@ -197,6 +192,7 @@ function App() {
                   />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                <ToastContainer />
               </TokenContext.Provider>
             </UserBooks.Provider>
           </BooksContext.Provider>

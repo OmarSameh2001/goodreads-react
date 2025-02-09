@@ -15,7 +15,6 @@ function Otp() {
   });
   const location = useLocation();
   const { email, type } = location.state;
-  console.log(email);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -54,7 +53,6 @@ function Otp() {
     let status;
     if (type === "forget") {
       status = await handlePassOtp();
-      
     } else {
       status = await handleOtp();
     }

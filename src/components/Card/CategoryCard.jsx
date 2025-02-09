@@ -10,6 +10,12 @@ const CategoryCard = ({ category }) => {
         sx={{
           cursor: "pointer",
           textAlign: "center",
+          padding: 2,
+          ":hover": {
+            backgroundColor: "#f5f5f5",
+            scale: 1.05,
+            transition: "all 0.3s ease-in-out",
+          },
         }}
         onClick={() => {
           navigate(`/books?categories=${category.name.split(" ").join("+")}`);

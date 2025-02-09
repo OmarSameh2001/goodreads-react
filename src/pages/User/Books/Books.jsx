@@ -13,7 +13,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Search from "../../../components/Search/Search.jsx";
 import {
   Checkbox,
-  CircularProgress,
   FormControlLabel,
   FormGroup,
   TextField,
@@ -28,7 +27,7 @@ function UserBooks() {
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(books.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const currentBooks = displayedBooks.slice(
@@ -150,12 +149,12 @@ function UserBooks() {
   };
 
   return (
-    <div className="d-flex flex-column align-items-center">
-      <h1 className="my-3">Books</h1>
-      {isLoading && <div><CircularProgress /></div>}
+    <div>
+      <h1>Books</h1>
+      {isLoading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
       <div className="BooksGrid">
-        <div className="filters mx-5">
+        <div className="filters m-5">
           <h3>Filters</h3>
           <Search
             bookSearch={bookSearch}
@@ -290,7 +289,7 @@ function UserBooks() {
         </div>
 
         {displayedBooks && displayedBooks.length > 0 ? (
-          <div className="row row-cols-1 row-cols-md-5 g-4 text-center mx-5">
+          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-5">
             {currentBooks
               .sort((a, b) => a.title.localeCompare(b.title))
               .map((book) => (

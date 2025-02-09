@@ -11,19 +11,17 @@ import {
 import Button from "@mui/material/Button";
 
 import Grid from "@mui/material/Grid";
-import { use, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import axiosInstance from "../../../apis/config.js";
 import { useEffect } from "react";
 import { Chip } from "@mui/material";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useContext } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { Link as RouterLink } from "react-router";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import LinkIcon from "@mui/icons-material/Link";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import UserBooks from "../../../context/userBooks";
+import UserBooks from "../../../context/userBooks.js";
 
 function BookDetails(props) {
   const { userBooks, setUserBooks } = useContext(UserBooks);
@@ -273,9 +271,29 @@ function BookDetails(props) {
           </Box>
 
           {/* Action Buttons */}
+          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<BookmarkAddIcon />}
+              onClick={() => handleAddToWantToRead(userId, book._id)}
+              disabled={userBooks.some(
+                (userBook) => userBook.book._id === book._id
+              )}
+              sx={{
+                px: 4,
+                fontWeight: 600,
+                borderRadius: "8px",
+                textTransform: "none",
+              }}
+            >
+              {userBooks.some((userBook) => userBook.book._id === book._id)
+                ? "Already Added"
+                : "Want to Read"}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
-      <ToastContainer />
     </Container>
   );
 }
