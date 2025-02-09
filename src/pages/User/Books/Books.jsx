@@ -25,6 +25,13 @@ function UserBooks() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [authorSearch, setAuthorSearch] = useState("");
+  const [bookSearch, setBookSearch] = useState("");
+  const [appliedBookSearch, setAppliedBookSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const itemsPerPage = 10;
@@ -34,13 +41,7 @@ function UserBooks() {
     startIndex,
     startIndex + itemsPerPage
   );
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [selectedAuthors, setSelectedAuthors] = useState([]);
-  const [authorSearch, setAuthorSearch] = useState("");
-  const [bookSearch, setBookSearch] = useState("");
-  const [appliedBookSearch, setAppliedBookSearch] = useState("");
+
   // Update handlers to modify URL with IDs
   const handleAuthorSelect = (event, authorName) => {
     const newSelectedAuthors = event.target.checked
@@ -48,7 +49,7 @@ function UserBooks() {
       : selectedAuthors.filter((name) => name !== authorName);
 
     setSelectedAuthors(newSelectedAuthors);
-
+    
     const searchParams = new URLSearchParams(location.search);
     if (newSelectedAuthors.length > 0) {
       searchParams.set("authors", newSelectedAuthors.join(",")); //"," is encoded to %2C in the URL as commas are reserved characters in url.
@@ -72,7 +73,7 @@ function UserBooks() {
     } else {
       searchParams.delete("categories");
     }
-    navigate(`?${searchParams.toString()}`, { replace: true });
+    navigate(`?${searchParams.toString()}`, { replace: true }); //replace current entry in browser history instead of adding new one.
   };
 
   // Initialize state from URL params
@@ -81,14 +82,14 @@ function UserBooks() {
 
 
     const urlAuthorsNames = searchParams.get("authors")?.split(",") || [];
-    //check if the category ids in url are valid if not set it to empty array
+    //check if the authors names in url are valid if not set it to empty array
     const validAuthors = urlAuthorsNames.filter((name) =>
       authors.some((a) => a.name === name)
     );
 
 
     const urlCategoriesNames = searchParams.get("categories")?.split(",") || [];
-    //check if the category ids in url are valid if not set it to empty array
+    //check if the category names in url are valid if not set it to empty array
     const validCategories = urlCategoriesNames.filter((name) =>
       categories.some((c) => c.name === name)
     );
