@@ -154,7 +154,7 @@ function UserBooks() {
       {isLoading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
       <div className="BooksGrid">
-        <div className="filters m-5">
+        <div className="filters mt-5 mx-3">
           <h3>Filters</h3>
           <Search
             bookSearch={bookSearch}
@@ -303,7 +303,7 @@ function UserBooks() {
         </div>
 
         {displayedBooks && displayedBooks.length > 0 ? (
-          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-5">
+          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-3">
             {currentBooks
               .sort((a, b) => a.title.localeCompare(b.title))
               .map((book) => (

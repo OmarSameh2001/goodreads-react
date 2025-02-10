@@ -88,7 +88,7 @@ export default function BookCard(props) {
             value={
               book.totalRateCount > 0 ? book.totalRate / book.totalRateCount : 0
             }
-            precision={0.5}
+            precision={0.01}
             readOnly
             size="sm"
           />
