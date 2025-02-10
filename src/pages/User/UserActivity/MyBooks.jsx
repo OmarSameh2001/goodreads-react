@@ -9,13 +9,15 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../apis/config";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Delete";
 import UserRating from "../../../components/Rating/UserRating";
 import ReviewLink from "../../../components/Reviews/ReviewLink";
 import UserBooks from "../../../context/userBooks";
 import BookState from "../../../components/Userbook/BookState";
 import { useNavigate } from "react-router";
+import { FaBook } from 'react-icons/fa';
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
@@ -60,105 +62,159 @@ export default function MyBooks() {
   }
 
   return (
-    <Box sx={{ margin: "20px" }}>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
-        <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column._id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    <h4 className="b612-regular">{column.label}</h4>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {userBooks
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow key={row._id}>
+    <>
+      {/* Hero Section */}
+      <Box
+  sx={{
+    padding: "20px",
+    textAlign: "center",
+    marginBottom: "20px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    borderRadius: "8px",
+  }}
+      >
+        <h2 className="b612-regular" style={{ color: "#000", fontSize: "24px" }}>
+          My Books Library
+        </h2>
+        <h4 className="b612-regular-italic" style={{ color: "gray" }}>
+          Explore and manage your favorite books.
+        </h4>
+        <Box sx={{ mt: 2 }}>
+  <LocalLibraryIcon sx={{ fontSize: 90, color: "rgba(148,187,233)" }} />
+</Box>
+      </Box>
+  
+      {/* Table Section */}
+      <Box sx={{ margin: "20px" }}>
+        <Paper
+          sx={{
+            width: "100%",
+            overflow: "hidden",
+            borderRadius: 2,
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          }}
+        >
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow
+                  sx={{
+                    background:
+                      // "linear-gradient(90deg, rgba(238,174,202,1) 0% 100%)",
+                      "rgba(14dd8,187,233)",
+                    "& th": { backgroundColor: "transparent" },
+                  }}
+                >
+                  {columns.map((column) => (
                     <TableCell
-                      onClick={() => navigate(`/bookDetails/${row.book._id}`)}
-                      style={{ cursor: "pointer" }}
+                      key={column._id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
                     >
-                      <h6 className="b612-regular">{row.book.title}</h6>
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      onClick={() => navigate(`/bookDetails/${row.book._id}`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={row.book.img}
-                        alt={row.book.title}
-                        style={{ width: 50, height: 75 }}
-                      />
-                    </TableCell>
-                    {/* <TableCell>
-                      {" "}
-                      <h6
-                        style={{ fontSize: "12px" }}
-                        className="b612-regular-italic"
+                      <h4
+                        className="b612-regular"
+                        style={{ color: "#000", margin: 0 }}
                       >
-                        {row.book.author.name}{" "}
-                      </h6>
-                    </TableCell> */}
-                    <TableCell align="center">
-                      <UserRating
-                        userId={id}
-                        bookId={row.book._id}
-                        rating={row.rating}
-                      />
+                        {column.label}
+                      </h4>
                     </TableCell>
-                    <TableCell align="center">
-                      <ReviewLink bookId={row.book._id} review={row.review} />
-                    </TableCell>
-                    <TableCell align="center">
-                      <BookState
-                        userId={id}
-                        bookId={row.book._id}
-                        state={row.state}
-                      />
-                    </TableCell>
-                    {/* Delete Button */}
-                    <TableCell align="center">
-                      <ClearIcon
-                        sx={{
-                          cursor: "pointer",
-                          fontSize: 25,
-                          transition: "0.3s",
-                          "&:hover": {
-                            transform: "scale(1.2)",
-                            color: "gray",
-                          },
-                          "&:active": {
-                            transform: "scale(0.9)",
-                            color: "secondary.main",
-                          },
-                        }}
-                        onClick={() => handleDelete(row._id)}
-                      ></ClearIcon>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={userBooks.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {userBooks
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <TableRow
+                      key={row._id}
+                      sx={{
+                        backgroundColor: index % 2 === 0 ? "#f7f7f7" : "#fff",
+                        "&:hover": {
+                          backgroundColor: "#e0e0e0",
+                        },
+                      }}
+                    >
+                      <TableCell
+                        onClick={() =>
+                          navigate(`/bookDetails/${row.book._id}`)
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
+                        <h6
+                          className="b612-regular"
+                          style={{ color: "#000", margin: 0 , fontSize: "14px"}}
+                        >
+                          {row.book.title}
+                        </h6>
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        onClick={() =>
+                          navigate(`/bookDetails/${row.book._id}`)
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
+                        <img
+                          src={row.book.img}
+                          alt={row.book.title}
+                          style={{ width: 50, height: 75 }}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <UserRating
+                          userId={id}
+                          bookId={row.book._id}
+                          rating={row.rating}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <ReviewLink
+                          bookId={row.book._id}
+                          review={row.review}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <BookState
+                          userId={id}
+                          bookId={row.book._id}
+                          state={row.state}
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <ClearIcon
+                          sx={{
+                            cursor: "pointer",
+                            fontSize: 25,
+                            transition: "0.3s",
+                            "&:hover": {
+                              transform: "scale(1.2)",
+                              color: "gray",
+                            },
+                            "&:active": {
+                              transform: "scale(0.9)",
+                              color: "secondary.main",
+                            },
+                          }}
+                          onClick={() => handleDelete(row._id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={userBooks.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{ color: "#000" }}
+          />
+        </Paper>
+      </Box>
+    </>
   );
 }

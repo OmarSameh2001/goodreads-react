@@ -29,6 +29,7 @@
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.4.2",
     "googleapi": "^1.0.2",
     "googleapis": "^144.0.0",
     "jwt-decode": "^4.0.0",

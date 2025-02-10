@@ -14,11 +14,11 @@ function ReviewLink({ bookId }) {
     <>
       {bookReview ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <h5 className="b612-regular-italic">{bookReview.slice(0, 40)}...</h5>
+          <h5 className="b612-regular-italic" style={{ fontSize: "14px" }}>{bookReview.slice(0, 40)}...</h5>
           <Link
             to={`/reviews/${bookId}`}
             style={{
-              fontSize: "12px",
+              fontSize: "14px",
               marginLeft: "8px",
               color: "#1976d2",
               textDecoration: "none",

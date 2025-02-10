@@ -1,50 +1,65 @@
 import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/config";
+import { Container, Grid, Typography, Box, CircularProgress } from '@mui/material';
 
 const AuthorBooks = () => {
   const { id } = useParams();
-  console.log(id);
   const navigate = useNavigate();
-  const [authorBooks, setAuthorBooks] = useState({});
+  const [authorBooks, setAuthorBooks] = useState([]);
 
   useEffect(() => {
-  async function fetchData() {
-    try {
-      const res = await axiosInstance.get(`/books/filter?authors=${id}`);
-      setAuthorBooks(res.data.books);
-      console.log(res);
-    } catch (err) {
-      console.error(err);
+    async function fetchData() {
+      try {
+        const res = await axiosInstance.get(`/books/filter?authors=${id}`);
+        setAuthorBooks(res.data.books);
+        console.log(res);
+      } catch (err) {
+        console.error(err);
+      }
     }
-  }
-
-  fetchData();
+    fetchData();
   }, [id]);
 
   return (
-    <div className="container mt-4">
-      <div className="row justify-content-center">
-        <h3>Author Books</h3>
-        {authorBooks.length > 0 ? authorBooks.map((authorBook) => (
-          <div
-            className="col-md-2 d-flex flex-column"
-            style={{ cursor: "pointer" }}
-            key={authorBook._id}
-            onClick={() => navigate(`/bookDetails?bookId=${authorBook._id}`)}
-          >
-            <img
-              src={authorBook.img.includes("imgur") ? authorBook.img.replace("imgur", "i.imgur") + ".jpg" : authorBook.img}
-              alt={authorBook.name + " image"}
-              style={{ width: "100%", height: "100%" }}
-            />
-            <p>{authorBook.title}</p>
-          </div>
-        )) : <>
-        <h1>Loading Author Books</h1>
-        </>}
-      </div>
-    </div>
+    <Container >
+      <Typography variant="h3" align="center" gutterBottom>
+        Author Books
+      </Typography>
+      {authorBooks && authorBooks.length > 0 ? (
+        <Grid container spacing={2} justifyContent="center">
+          {authorBooks.map((authorBook) => (
+            <Grid item xs={12} sm={6} md={3} key={authorBook._id}>
+              <Box
+                sx={{
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                onClick={() => navigate(`/bookDetails?bookId=${authorBook._id}`)}
+              >
+                <Box
+                  component="img"
+                  src={
+                    authorBook.img.includes("imgur")
+                      ? authorBook.img.replace("imgur", "i.imgur") + ".jpg"
+                      : authorBook.img
+                  }
+                  alt={`${authorBook.name} image`}
+                  sx={{ width: "100%", height: "auto" }}
+                />
+                <Typography variant="subtitle1">{authorBook.title}</Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+    </Container>
   );
 };
 

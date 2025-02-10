@@ -8,10 +8,10 @@ export default function BookList({ user }) {
   const [books, setBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
-  const visibleCount = 5; // number of items visible at once
-  const imageWidth = 140; // narrower width
-  const imageHeight = 250; // taller height
-  const gap = 80; // gap between items
+  const visibleCount = 10; // number of items visible at once
+  const imageWidth = 100; // narrower width
+  const imageHeight = 100; // taller height
+  const gap = 3; // gap between items
   const controller = new AbortController();
 
   // Shift left by one item
@@ -38,71 +38,56 @@ export default function BookList({ user }) {
   }, []);
 
   return (
-    <Card
+    <Box
       sx={{
+        m: 4,
+        p: 1,
         background:
-          "linear-gradient(135deg, #1B2A41,#1B2A41,rgb(134, 110, 84), #1B2A41)",
-        borderRadius: 5,
-        boxShadow: 2,
-        p: 2,
-        mb: 2,
-        margin: 6,
+          "linear-gradient(90deg, rgba(238,174,202,1), rgba(148,187,233,1))",
+        borderRadius: 0, // sharp edges
       }}
     >
-      <Box sx={{ width: "90%", margin: "auto", mt: 4, position: "relative" }}>
-        {/* Carousel viewport */}
-        <Box overflow="hidden">
-          <h2
-            style={{
-              textAlign: "left",
-              background: "linear-gradient(135deg, #F5E6CA, #FFFFFF)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              fontSize: "28px",
-            }}
-            className="b612-regular"
-          >
-           Our best choices of books by our users
-          </h2>
-          <Box
-            display="flex"
-            sx={{
-              transform: `translateX(-${currentIndex * (imageWidth + gap)}px)`,
-              transition: "transform 0.3s ease",
-              borderRadius: "10px",
-              padding: "18px",
-            }}
-          >
-            {books.map((book) => (
-              <Box key={book._id}>
-<Box
-  onClick={() => navigate(user ? `/adminBooks` : `/bookDetails/${book._id}`)}
-  sx={{
-    cursor: "pointer",
-    // borderRadius: 2,
-    // boxShadow: 3,
-   // transition: "transform 0.3s ease",
-    //"&:hover": { transform: "scale(1.05)" },
-   // width: imageWidth,
-    //height: imageHeight,
-    // overflow: "hidden",
-   // border: "10px solid #2C3E50",
-    flex: `0 0 ${imageWidth}px`,
-    mx: `${gap / 2}px`,
-    textAlign: "center",
-  }}
->
-                
+      <Card
+        sx={{
+          backgroundColor: "#fff",
+          boxShadow: "0 6px 10px rgba(0,0,0,0.15)",
+          borderRadius: 0, // no curves inside
+          p: 3,
+        }}
+      >
+        <Box sx={{ width: "88%", mx: "auto", mt: 2, position: "relative" }}>
+          {/* Carousel viewport */}
+          <Box overflow="hidden">
+            <h2
+              style={{ textAlign: "left", marginBottom: "20px" }}
+              className="b612-regular"
+            >
+              Check out this collection of the most popular authors
+            </h2>
+            <Box
+              display="flex"
+              sx={{
+                transform: `translateX(-${currentIndex * (imageWidth + gap)}px)`,
+                transition: "transform 0.3s ease",
+                p: 2,
+              }}
+            >
+              {books.map((book) => (
+                <Box key={book._id} sx={{ textAlign: "center", mx: gap / 2 }}>
                   <Box
                     onClick={() =>
-                      navigate(
-                        user ? `/adminBooks` : `/bookDetails/${book._id}`
-                      )
+                      navigate(user ? `/adminBooks` : `/bookDetails/${book._id}`)
                     }
+                    sx={{
+                      cursor: "pointer",
+                      flex: `0 0 ${imageWidth}px`,
+                      mx: `${gap / 2}px`,
+                      textAlign: "center",
+                    }}
                   >
                     <div className="book">
                       <a href="#">
-                        <ul>
+                        <ul >
                           <li className="page page3"></li>
                           <li className="page page2"></li>
                           <li className="page page1"></li>
@@ -118,60 +103,54 @@ export default function BookList({ user }) {
                         </ul>
                       </a>
                     </div>
+                    <h5
+                      className="b612-regular-italic"
+                      style={{ fontSize: "18px", color: "rgb(34, 34, 36)" }}
+                    >
+                      {book.title}
+                    </h5>
                   </Box>
                 </Box>
-                <h4
-                  style={{
-                    textAlign: "center",
-                    background: "linear-gradient(135deg, #F5E6CA, #FFFFFF)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    fontSize: "18px",
-                    marginTop: "8px",
-                  }}
-                  className="b612-regular-italic"
-                >
-                  {book.title}
-                </h4>
-              </Box>
-            ))}
+              ))}
+            </Box>
           </Box>
+  
+          {/* Left Arrow */}
+          <IconButton
+            onClick={handlePrev}
+            disabled={currentIndex === 0}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: 0,
+              transform: "translateY(-50%)",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              color: "#fff",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
+            }}
+          >
+            <KeyboardArrowLeft />
+          </IconButton>
+  
+          {/* Right Arrow */}
+          <IconButton
+            onClick={handleNext}
+            disabled={currentIndex >= books.length - visibleCount}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              right: 0,
+              transform: "translateY(-50%)",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              color: "#fff",
+              "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
+            }}
+          >
+            <KeyboardArrowRight />
+          </IconButton>
         </Box>
-
-        {/* Left Arrow */}
-        <IconButton
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: 0,
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            color: "#fff",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
-          }}
-        >
-          <KeyboardArrowLeft />
-        </IconButton>
-
-        {/* Right Arrow */}
-        <IconButton
-          onClick={handleNext}
-          disabled={currentIndex >= books.length - visibleCount}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            right: 0,
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            color: "#fff",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.7)" },
-          }}
-        >
-          <KeyboardArrowRight />
-        </IconButton>
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
+  
 }

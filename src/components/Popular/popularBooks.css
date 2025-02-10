@@ -43,7 +43,7 @@ transform: translate3d(0,0,0);
 }
 /* Apply gradient background ONLY to pages, NOT the cover */
 .page1, .page2, .page3 {
-  background: linear-gradient(to right, #000000 0%, #000000 90%, #ededed);
+  background: linear-gradient(to right, #302f2f 0%, #beb8bd 90%, #ededed);
 }
 
 .cover {
