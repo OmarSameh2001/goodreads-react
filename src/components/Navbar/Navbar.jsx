@@ -40,8 +40,6 @@ function Navbar({ setToken, setUserBooks }) {
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
   const { subscription } = useContext(TokenContext);
-  const [value, setValue] = useState(0);
-  console.log(subscription);
 
   function handleLogout() {
     const confirm = window.confirm("Are you sure you want to logout?");

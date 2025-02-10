@@ -21,7 +21,6 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { Link as RouterLink } from "react-router";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import UserBooks from "../../../context/userBooks.js";
-import BookViewer from "./BookViewer.jsx";
 import BooksContext from "../../../context/books.js";
 
 function BookDetails() {
@@ -307,11 +306,6 @@ function BookDetails() {
                 : "Want to Read"}
             </Button>
           </Box>
-          <BookViewer
-            pdfUrl={
-              "https://drive.google.com/file/d/10-EfbWKjmUkzYZqFAAeueC8mvMEJ_NnH/preview"
-            }
-          />
         </Grid>
       </Grid>
     </Container>

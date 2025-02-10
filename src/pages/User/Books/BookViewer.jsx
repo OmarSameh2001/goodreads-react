@@ -2,16 +2,18 @@ import React, { useContext, useState } from "react";
 import BooksContext from "../../../context/books";
 import { useNavigate, useParams } from "react-router";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import TokenContext from "../../../context/token";
 const BookViewer = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { readingBook: book } = useContext(BooksContext);
+  const { subscription } = useContext(TokenContext);
   const { bookName } = useParams();
   const navigate = useNavigate();
   const handleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  if (book === "not subscribed") {
+  if (book === "not subscribed" || !subscription) {
     return (
       <div className="d-flex justify-content-center align-items-center mt-5">
         <h1>Not Subscribed</h1>
@@ -28,10 +30,7 @@ const BookViewer = () => {
     <div className="d-flex flex-column justify-content-center align-items-center">
       {isFullScreen ? null : (
         <h1 className="my-5">
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-primary mx-3"
-          >
+          <button onClick={() => navigate(-1)} className="btn btn-primary mx-3">
             <IoMdArrowRoundBack />
           </button>
           {bookName}

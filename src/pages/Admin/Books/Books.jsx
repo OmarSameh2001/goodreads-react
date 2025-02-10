@@ -34,6 +34,7 @@ function AdminBooks() {
   const [imageLoading, setImageLoading] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(""); 
   const [uploading, setUploading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -203,6 +204,7 @@ function AdminBooks() {
     try {
       setUploadLoading(true);
       e.preventDefault();
+      console.log(newBook);
       const body = handleIds(newBook.author, newBook.category , newBook.fileUrl);
       console.log(newBook);
       await axios.post("http://localhost:3001/books", body, {
@@ -314,7 +316,6 @@ function AdminBooks() {
   ];
   
 
-  console.log(total);
   if (authorLoading || categoryLoading || bookLoading) {
     return (
       <div className="App-header" style={{ backgroundColor: "white" }}>
