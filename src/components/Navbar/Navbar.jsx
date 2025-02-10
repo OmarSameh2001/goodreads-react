@@ -59,14 +59,17 @@ function Navbar({ setToken, setUserBooks }) {
 
   const navLinks = [
     { label: "Home", path: user === "admin" ? "/admin" : "/" },
-    { label: "Content", path: user === "admin" ? "/content" : "/" },
-
     { label: "Books", path: user === "admin" ? "/adminBooks" : "/books" },
     { label: "Authors", path: user === "admin" ? "/adminAuthors" : "/authors" },
     {
       label: "Categories",
       path: user === "admin" ? "/adminCategories" : "/categories",
     },
+
+    // Links for admins only
+    { label: "Content", path: "/content", condition: user === "admin"  },
+
+    // Links for users only
     { label: "My Books", path: "/mybooks", condition: user === "user" },
     { label: "About", path: "/about", condition: user === "user" },
     { label: "Terms and Conditions", path: "/terms", condition: user === "user" },
