@@ -1,8 +1,7 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import axiosInstance from "./apis/config";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "./components/Navbar/Navbar";
+//import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./pages/User/Home/Home";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
 import NotFound from "./pages/NotFound/NotFound";
@@ -19,7 +18,7 @@ import Categories from "./pages/User/Categories/Categories";
 import Otp from "./components/Otp/Otp";
 import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
 import AuthorDetails from "./pages/User/Authors/AuthorDetails";
 import MyBooks from "./pages/User/UserActivity/MyBooks";
@@ -35,12 +34,13 @@ import AdminContentEditor from "./pages/Admin/SiteContent/AdminContentEditor";
 import About from "./pages/User/SiteContent/About";
 import Terms from "./pages/User/SiteContent/Terms";
 import BookViewer from "./pages/User/Books/BookViewer";
+import Layout from "./Layout"; // Import the Layout component
 
 function App() {
   const [books, setBooks] = useState([]);
   const [readingBook, setReadingBook] = useState("not subscribed");
   const queryClient = new QueryClient();
-  const [userBooks, setUserBooks] = useState([]); // Add state to store user's want to read books
+  const [userBooks, setUserBooks] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const endDate = localStorage.getItem("endDate");
   const sType = localStorage.getItem("sType");
@@ -60,7 +60,6 @@ function App() {
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
-        //Prevent unnecessary re-renders
         if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {
           setUserBooks(response.data);
         }
@@ -75,172 +74,45 @@ function App() {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <BooksContext.Provider value={{ books, setBooks , readingBook, setReadingBook}}>
-            <UserBooks.Provider value={{ userBooks, setUserBooks }}>
-              <TokenContext.Provider
-                value={{ token, setToken, subscription, setSubscription }}
-              >
-                <Navbar setToken={setToken} setUserBooks={setUserBooks} />
+        <BooksContext.Provider value={{ books, setBooks, readingBook, setReadingBook }}>
+          <UserBooks.Provider value={{ userBooks, setUserBooks }}>
+            <TokenContext.Provider value={{ token, setToken, subscription, setSubscription }}>
+
+              <Layout setToken={setToken} setUserBooks={setUserBooks}>
                 <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/otp" element={<Otp />} />
                   <Route path="/forget" element={<ForgetPassword />} />
 
-                  <Route
-                    path="/admin"
-                    element={
-                      <AdminRoute>
-                        <AdminHome />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminAuthors"
-                    element={
-                      <AdminRoute>
-                        <AdminAuthors />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminBooks"
-                    element={
-                      <AdminRoute>
-                        <AdminBooks />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/adminCategories"
-                    element={
-                      <AdminRoute>
-                        <AdminCategories />
-                      </AdminRoute>
-                    }
-                  />
+                  <Route path="/admin" element={<AdminRoute><AdminHome /></AdminRoute>} />
+                  <Route path="/adminAuthors" element={<AdminRoute><AdminAuthors /></AdminRoute>} />
+                  <Route path="/adminBooks" element={<AdminRoute><AdminBooks /></AdminRoute>} />
+                  <Route path="/adminCategories" element={<AdminRoute><AdminCategories /></AdminRoute>} />
+                  <Route path="/content" element={<AdminRoute><AdminContentEditor /></AdminRoute>} />
 
-                  <Route
-                    path="/content"
-                    element={
-                      <AdminRoute>
-                        <AdminContentEditor />
-                      </AdminRoute>
-                    }
-                  />
                   <Route path="/" element={<Home />} />
-                  <Route
-                    path="/authors"
-                    element={
-                      <UserRoute>
-                        <Authors />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/authors/:id"
-                    element={
-                      <UserRoute>
-                        <AuthorDetails />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/books"
-                    element={
-                      <UserRoute>
-                        <Books />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/bookDetails/:bookId"
-                    element={
-                      <UserRoute>
-                        <BookDetails />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/bookViewer/:bookName"
-                    element={
-                      <UserRoute>
-                        <BookViewer />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/categories"
-                    element={
-                      <UserRoute>
-                        <Categories />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/mybooks"
-                    element={
-                      <UserRoute>
-                        <MyBooks />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/reviews/:bookId"
-                    element={
-                      <UserRoute>
-                        <Reviews />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <UserRoute>
-                        <Profile />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/success"
-                    element={
-                      <UserRoute>
-                        <Success />
-                      </UserRoute>
-                    }
-                  />
-                  <Route
-                    path="/cancel"
-                    element={
-                      <UserRoute>
-                        <Cancel />
-                      </UserRoute>
-                    }
-                  />
-                                    <Route
-                    path="/about"
-                    element={
-                      <UserRoute>
-                        <About />
-                      </UserRoute>
-                    }
-                  />
-                                    <Route
-                    path="/terms"
-                    element={
-                      <UserRoute>
-                        <Terms />
-                      </UserRoute>
-                    }
-                  />
+                  <Route path="/authors" element={<UserRoute><Authors /></UserRoute>} />
+                  <Route path="/authors/:id" element={<UserRoute><AuthorDetails /></UserRoute>} />
+                  <Route path="/books" element={<UserRoute><Books /></UserRoute>} />
+                  <Route path="/bookDetails/:bookId" element={<UserRoute><BookDetails /></UserRoute>} />
+                  <Route path="/bookViewer/:bookName" element={<UserRoute><BookViewer /></UserRoute>} />
+                  <Route path="/categories" element={<UserRoute><Categories /></UserRoute>} />
+                  <Route path="/mybooks" element={<UserRoute><MyBooks /></UserRoute>} />
+                  <Route path="/reviews/:bookId" element={<UserRoute><Reviews /></UserRoute>} />
+                  <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
+                  <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
+                  <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
+                  <Route path="/about" element={<UserRoute><About /></UserRoute>} />
+                  <Route path="/terms" element={<UserRoute><Terms /></UserRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-                <ToastContainer />
-              </TokenContext.Provider>
-            </UserBooks.Provider>
-          </BooksContext.Provider>
-        </BrowserRouter>
+              </Layout>
+
+              <ToastContainer />
+            </TokenContext.Provider>
+          </UserBooks.Provider>
+        </BooksContext.Provider>
       </QueryClientProvider>
     </div>
   );

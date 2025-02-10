@@ -110,128 +110,140 @@ function ForgetPassword() {
   }
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2 }}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh", // Full viewport height
+        background:
+          "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
+      }}
     >
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{ fontWeight: "bold" }}
+      <Container
+        maxWidth="sm"
+        sx={{
+          p: 4,
+          boxShadow: 3,
+          borderRadius: 2,
+          backdropFilter: "blur(10px)", // Softens background
+          border: "1px solid rgba(78, 78, 78, 0.34)", // Subtle border
+        }}
       >
-        {type === "forget" ? "Reset Password" : "Forgot Password"}
-      </Typography>
-      <Divider sx={{ mb: 4 }} />
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        {type !== "forget" ? (
-          <TextField
+        <h2 align="center" className="b612-bold" style={{ fontWeight: "bold" }}>
+  {type === "forget" ? "Reset Password" : "Forgot Password"}
+</h2>
+        <Divider sx={{ mb: 4 }} />
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          {type !== "forget" ? (
+            <TextField
+              fullWidth
+              label="Email Address"
+              placeholder="john.doe@example.com"
+              variant="outlined"
+              type="email"
+              value={email}
+              onChange={handleChange}
+              name="email"
+              error={!!formErrors.emailError}
+              helperText={
+                formErrors.emailError &&
+                formErrors.emailError !== "error" &&
+                formErrors.emailError
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email sx={{ color: "action.active" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 3 }}
+            />
+          ) : (
+            <>
+              <TextField
+                fullWidth
+                label="New Password"
+                type="password"
+                variant="outlined"
+                placeholder="••••••••"
+                value={password}
+                onChange={handleChange}
+                name="password"
+                error={!!formErrors.passwordError}
+                helperText={
+                  formErrors.passwordError &&
+                  formErrors.passwordError !== "error" &&
+                  formErrors.passwordError
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Lock sx={{ color: "action.active" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ mb: 2 }}
+              />
+
+              <TextField
+                fullWidth
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={handleChange}
+                name="confirmPassword"
+                error={!!formErrors.confirmPasswordError}
+                helperText={
+                  formErrors.confirmPasswordError &&
+                  formErrors.confirmPasswordError !== "error" &&
+                  formErrors.confirmPasswordError
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Lock sx={{ color: "action.active" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ mb: 2 }}
+              />
+            </>
+          )}
+
+          <Button
             fullWidth
-            label="Email Address"
-            placeholder="john.doe@example.com"
-            variant="outlined"
-            type="email"
-            value={email}
-            onChange={handleChange}
-            name="email"
-            error={!!formErrors.emailError}
-            helperText={
-              formErrors.emailError &&
-              formErrors.emailError !== "error" &&
-              formErrors.emailError
+            variant="contained"
+            color="primary"
+            size="large"
+            type="submit"
+            disabled={
+              formErrors.emailError ||
+              formErrors.passwordError ||
+              formErrors.confirmPasswordError
             }
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Email sx={{ color: "action.active" }} />
-                </InputAdornment>
-              ),
+            sx={{
+              py: 1.5,
+              borderRadius: 1,
+              mt: 2,
+              backgroundColor: "rgb(44, 62, 80)",
+              "&:hover": {
+                backgroundColor: "rgb(32, 45, 58)",
+              },
             }}
-            sx={{ mb: 3 }}
-          />
-        ) : (
-          <>
-            <TextField
-              fullWidth
-              label="New Password"
-              type="password"
-              variant="outlined"
-              placeholder="••••••••"
-              value={password}
-              onChange={handleChange}
-              name="password"
-              error={!!formErrors.passwordError}
-              helperText={
-                formErrors.passwordError &&
-                formErrors.passwordError !== "error" &&
-                formErrors.passwordError
-              }
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock sx={{ color: "action.active" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
+          >
+            {type === "forget" ? "Reset Password" : "Send Reset Link"}
+          </Button>
+        </Box>
 
-            <TextField
-              fullWidth
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={handleChange}
-              name="confirmPassword"
-              error={!!formErrors.confirmPasswordError}
-              helperText={
-                formErrors.confirmPasswordError &&
-                formErrors.confirmPasswordError !== "error" &&
-                formErrors.confirmPasswordError
-              }
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock sx={{ color: "action.active" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
-          </>
-        )}
-
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          size="large"
-          type="submit"
-          disabled={
-            formErrors.emailError ||
-            formErrors.passwordError ||
-            formErrors.confirmPasswordError
-          }
-          sx={{
-            py: 1.5,
-            borderRadius: 1,
-            mt: 2,
-            backgroundColor: "rgb(44, 62, 80)",
-            "&:hover": {
-              backgroundColor: "rgb(32, 45, 58)",
-            },
-          }}
-        >
-          {type === "forget" ? "Reset Password" : "Send Reset Link"}
-        </Button>
-      </Box>
-
-      <ToastContainer />
-    </Container>
+        <ToastContainer />
+      </Container>
+    </Box>
   );
 }
 

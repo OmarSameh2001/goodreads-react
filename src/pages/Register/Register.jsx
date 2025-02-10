@@ -137,19 +137,28 @@ function Register() {
   }, []);
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ mt: 4, p: 4, boxShadow: 3, borderRadius: 2 }}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh", // Full viewport height
+        background:
+          "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);",
+      }}
     >
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{ fontWeight: "bold" }}
+      <Container
+        maxWidth="sm"
+        sx={{
+          p: 4,
+          boxShadow: 3,
+          borderRadius: 2,
+          backdropFilter: "blur(10px)", // Softens background
+          border: "1px solid rgba(78, 78, 78, 0.34)", // Subtle border
+        }}
       >
-        Create Account
-      </Typography>
+        <h2 align="center" className="b612-bold" style={{ fontWeight: "bold" }}>Sign up to Goodreads</h2>
+
       <Divider sx={{ mb: 4 }} />
 
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -305,6 +314,7 @@ function Register() {
 
       <ToastContainer />
     </Container>
+    </Box>
   );
 }
 

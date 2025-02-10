@@ -50,7 +50,7 @@ export default function OAuthSignInPage() {
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <div>
-        <GoogleLogin onSuccess={handleSuccess} onError={handleFailure} />
+        <GoogleLogin onSuccess={handleSuccess} onError={handleFailure} theme="filled_blue" />
       </div>
     </GoogleOAuthProvider>
   );

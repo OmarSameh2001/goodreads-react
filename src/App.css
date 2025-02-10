@@ -3,7 +3,6 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
 .App-link {
   color: #61dafb;
 }
@@ -16,14 +15,11 @@
     transform: rotate(360deg);
   }
 }
-a {
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif; /* Default font */
-}
 /* Global Styles */
 
 /* Base Font */
 body {
+  margin: 0;
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
@@ -32,19 +28,9 @@ body {
   line-height: 1.6;
 }
 
-/* Links */
-a {
-  color: #007BFF;  /* Link Text */
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
 
 /* Button Styles */
 button, .btn {
-  background-color: #f8f7f6;  /* Button & CTAs */
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -57,17 +43,6 @@ button:hover, .btn:hover {
   background-color: #FF6A00;  /* Hover State */
 }
 
-/* Accent Styles */
-.accent {
-  color: #F1C40F;  /* Accent Color */
-}
-
-.badge {
-  background-color: #F1C40F;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 12px;
-}
 
 /* Borders/Lines */
 hr {
@@ -105,14 +80,3 @@ hr {
   font-weight: 700;
   font-style: italic;
 }
-
-/*
-Primary Text: #333333 (dark gray) – easy on the eyes, not too harsh like black
-Secondary Text: #666666 (medium gray) – for less important text (like metadata or subtitles)
-Link Text: #007BFF (blue) – for clickable links (subtle but noticeable)
-Button & CTAs	#FF8C00	Buttons for actions (e.g., “Buy Now”)
-Accent	#F1C40F	Highlights, badges, secondary accents
-Borders/Lines	#DDDDDD	Divider lines and borders
-Header/Footer Background	#2C3E50	For navigation and footer sections
-Error	#E74C3C	For error messages and alerts
-*/

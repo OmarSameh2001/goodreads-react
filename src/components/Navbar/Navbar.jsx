@@ -1,166 +1,195 @@
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import TokenContext from "../../context/token";
 import {
-  Tabs,
-  Tab,
-  Box,
-  IconButton,
+  AppBar,
+  Toolbar,
   Typography,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Badge,
 } from "@mui/material";
-import { Logout, Search as SearchIcon } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
-import { Avatar } from "@mui/material";
-import { FaBook } from "react-icons/fa";
+import { styled } from "@mui/system";
+import { FaBook, FaBars } from "react-icons/fa";
+import { IoBookSharp } from "react-icons/io5";
+import { Logout } from "@mui/icons-material";
+import TokenContext from "../../context/token";
 
-// Styled Navbar Container
-const NavbarContainer = styled("div")(({ theme }) => ({
-  background: `#2C3E50`,
-  // color: "white",
-  textShadow: "1px 1px 4px rgba(0,0,0,0.3)", // Improves visibility
-  height: 90,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "0 20px",
-  color: "rgb(242, 233, 240)",
-  fontSize: "1.5rem",
-  fontWeight: "bold",
-  borderBottomLeftRadius: "80px",
-  borderBottomRightRadius: "80px",
-  position: "sticky",
-  top: 0,
-  zIndex: 1000,
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  background:
+    "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
+  boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+  color: "#000",
 }));
 
-function Navbar({ setToken, setUserBooks }) {
+const NavLink = styled(Typography)(({ theme }) => ({
+  margin: "0 20px",
+  cursor: "pointer",
+  color: "#000",
+  position: "relative",
+  textDecoration: "none",
+  "&:hover": {
+    textShadow: "0 0 8px rgba(0,0,0,0.5)",
+    "&::after": {
+      width: "100%",
+    },
+  },
+  "&:focus": {
+    textShadow: "0 0 8px rgba(0,0,0,0.5)",
+    "&::after": {
+      width: "100%",
+    },
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: -5,
+    left: 0,
+    width: 0,
+    height: 2,
+    backgroundColor: "#000",
+    transition: "width 0.3s ease",
+  },
+}));
+
+const MyBooksLink = styled(NavLink)(({ theme }) => ({
+  backgroundColor: "rgba(0,0,0,0.1)",
+  padding: "8px 16px",
+  borderRadius: 20,
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(0,0,0,0.2)",
+    transform: "translateY(-2px)",
+  },
+  "&:focus": {
+    backgroundColor: "rgba(0,0,0,0.2)",
+    transform: "translateY(-2px)",
+  },
+}));
+
+const Navbar = ({ setToken, setUserBooks }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { subscription } = useContext(TokenContext);
+  
   const user = localStorage.getItem("user");
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
-  const { subscription } = useContext(TokenContext);
+  
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  function handleLogout() {
-    const confirm = window.confirm("Are you sure you want to logout?");
-    if (!confirm) return;
-    localStorage.clear();
-    setToken(null);
-    setUserBooks([]);
-    navigate("/login");
-  }
   useEffect(() => {
-    if (token) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
+    token ? navigate("/") : navigate("/login");
   }, [subscription, token]);
 
-  const navLinks = [
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      setToken(null);
+      setUserBooks([]);
+      navigate("/login");
+    }
+  };
+
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  const navItems = [
     { label: "Home", path: user === "admin" ? "/admin" : "/" },
     { label: "Books", path: user === "admin" ? "/adminBooks" : "/books" },
     { label: "Authors", path: user === "admin" ? "/adminAuthors" : "/authors" },
-    {
-      label: "Categories",
-      path: user === "admin" ? "/adminCategories" : "/categories",
-    },
-
-    // Links for admins only
-    { label: "Content", path: "/content", condition: user === "admin"  },
-
-    // Links for users only
-    { label: "My Books", path: "/mybooks", condition: user === "user" },
-    { label: "About", path: "/about", condition: user === "user" },
-    { label: "Terms and Conditions", path: "/terms", condition: user === "user" },
-  ];
+    { label: "Categories", path: user === "admin" ? "/adminCategories" : "/categories" },
+    user === "admin" && { label: "Content", path: "/content" },
+  ].filter(Boolean);
 
   return (
-    <NavbarContainer>
-      {/* Logo */}
-      <Link
-        to={user === "admin" ? "/admin" : "/"}
-        style={{ textDecoration: "none", color: "inherit", marginLeft: "30px" }}
-      >
-        <h2 style={{ cursor: "pointer", color: "rgb(225, 226, 234)" }}>
-          GoodReads
-        </h2>
-      </Link>
-
-      {/* Navigation Tabs */}
-      <div
-      >
-        {navLinks
-          .filter((link) => link.condition !== false)
-          .map((link, index) => (
-            <Tab
-              key={index}
-              label={link.label}
-              component={Link}
-              to={link.path}
-              sx={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: "20px",
-                fontFamily: "B612, sans-serif",
-                fontStyle: "italic",
-              }}
-            />
-          ))}
-      </div>
-
-      {/* Right Section: Search, User Info, Logout */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        {/* Logout & User Info */}
-        {token ? (
-          <>
-            <Link style={{ textDecoration: "none" }} to={"/profile"}>
-              <h5 style={{ cursor: "pointer", color: "rgb(225, 226, 234)" }}>
-                {userName || user || "UserName"}
-              </h5>
-            </Link>
-            {user === "user" && (
-              <h5 style={{ display: "flex", alignItems: "center" }}>
-                <Avatar
-                  style={{
-                    backgroundColor: subscription ? "gold" : "red",
-                    scale: 0.8,
-                  }}
-                >
-                  <FaBook />
-                </Avatar>
-                {subscription ? (
-                  <span>
-                    {Math.ceil(
-                      Math.abs(
-                        new Date(endDate).getTime() - new Date().getTime()
-                      ) /
-                        (1000 * 60 * 60 * 24)
-                    )}{" "}
-                    Days Left
-                  </span>
-                ) : (
-                  "Free Plan"
-                )}
-              </h5>
-            )}
-            <IconButton onClick={handleLogout} sx={{ color: "white" }}>
-              <Logout />
-            </IconButton>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/login"
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              <Typography variant="body1">Sign-In</Typography>
-            </Link>
-          </>
+    <StyledAppBar position="sticky">
+      <Toolbar>
+        {isMobile && (
+          <IconButton color="inherit" onClick={handleDrawerToggle}>
+            <FaBars />
+          </IconButton>
         )}
-      </Box>
-    </NavbarContainer>
+
+        <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+          <FaBook size={32} color="black" style={{ marginRight: 16 }} />
+          <Typography variant="h6" component="div">
+            GoodReads
+          </Typography>
+        </Box>
+
+        {!isMobile && (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {navItems.map((item) => (
+              <NavLink key={item.label} component={Link} to={item.path}>
+                {item.label}
+              </NavLink>
+            ))}
+            {user === "user" && (
+              <MyBooksLink component={Link} to="/mybooks">
+                <IoBookSharp />
+                My Books
+              </MyBooksLink>
+            )}
+          </Box>
+        )}
+
+        {token ? (
+          <Box sx={{ ml: 2 }}>
+            <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+              <Avatar sx={{ bgcolor: "#fff", color: "#000" }}>
+                {userName ? userName[0].toUpperCase() : "U"}
+              </Avatar>
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+              <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </Box>
+        ) : (
+          <Link to="/login" style={{ textDecoration: "none", color: "black" }}>
+            <Typography variant="body1">Sign-In</Typography>
+          </Link>
+        )}
+
+        <Drawer
+          variant="temporary"
+          anchor="left"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: 240,
+              backgroundColor: "rgba(148,187,233,0.95)",
+            },
+          }}
+        >
+          <List>
+            {navItems.map((item) => (
+              <ListItem button key={item.label} component={Link} to={item.path}>
+                <ListItemText primary={<Typography variant="h6">{item.label}</Typography>} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      </Toolbar>
+    </StyledAppBar>
   );
-}
+};
 
 export default Navbar;
