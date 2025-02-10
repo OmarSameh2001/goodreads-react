@@ -22,10 +22,10 @@ import { Link as RouterLink } from "react-router";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import LinkIcon from "@mui/icons-material/Link";
 import UserBooks from "../../../context/userBooks.js";
-import { Document, Page, pdfjs } from "react-pdf";
+// import { Document, Page, pdfjs } from "react-pdf";
 //import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-import { PDFDocument } from 'pdf-lib';
-import BookViewer from "./BookViewer.jsx";
+// import { PDFDocument } from 'pdf-lib';
+// import BookViewer from "./BookViewer.jsx";
 //pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function BookDetails(props) {
@@ -304,7 +304,7 @@ function BookDetails(props) {
                 : "Want to Read"}
             </Button>
           </Box>
-          <BookViewer pdfUrl={"https://drive.google.com/file/d/10-EfbWKjmUkzYZqFAAeueC8mvMEJ_NnH/preview"} />
+          {/* <BookViewer pdfUrl={"https://drive.google.com/file/d/10-EfbWKjmUkzYZqFAAeueC8mvMEJ_NnH/preview"} /> */}
         </Grid>
       </Grid>
     </Container>

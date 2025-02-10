@@ -31,6 +31,9 @@ import Success from "./components/Payment/Success";
 import Cancel from "./components/Payment/Cancel";
 import ForgetPassword from "./pages/Login/ForgetPassword";
 import { ToastContainer } from "react-toastify";
+import AdminContentEditor from "./pages/Admin/SiteContent/AdminContentEditor";
+import About from "./pages/User/SiteContent/About";
+import Terms from "./pages/User/SiteContent/Terms";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -53,7 +56,6 @@ function App() {
         const response = await axiosInstance.get(
           `/userBook/${res1.data.decodedUser.id}`
         );
-
         //Prevent unnecessary re-renders
         if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {
           setUserBooks(response.data);
@@ -109,6 +111,15 @@ function App() {
                     element={
                       <AdminRoute>
                         <AdminCategories />
+                      </AdminRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/content"
+                    element={
+                      <AdminRoute>
+                        <AdminContentEditor />
                       </AdminRoute>
                     }
                   />
@@ -190,6 +201,22 @@ function App() {
                     element={
                       <UserRoute>
                         <Cancel />
+                      </UserRoute>
+                    }
+                  />
+                                    <Route
+                    path="/about"
+                    element={
+                      <UserRoute>
+                        <About />
+                      </UserRoute>
+                    }
+                  />
+                                    <Route
+                    path="/terms"
+                    element={
+                      <UserRoute>
+                        <Terms />
                       </UserRoute>
                     }
                   />
