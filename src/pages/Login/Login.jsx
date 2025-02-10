@@ -32,14 +32,6 @@ function Login() {
         password,
       });
       if (res.status === 200) {
-        toast.onChange((payload) => {
-          if (
-            payload.status === "removed" &&
-            payload.content === "Login successful"
-          ) {
-            res.data.user.role === "admin" ? navigate("/admin") : navigate("/");
-          }
-        });
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", res.data.user.role);
         localStorage.setItem("userName", res.data.user.username);
@@ -50,7 +42,8 @@ function Login() {
         );
         localStorage.setItem("endDate", res.data.user.subscription.endDate);
         setSubscription(res.data.user.subscription.subscriptionType === "premium");
-        toast("Login successful", { type: "success", theme: "colored", closeOnClick: true });
+        alert("Welcome to Goodreads");
+        res.data.user.role === "admin" ? navigate("/admin") : navigate("/");
       }
     } catch (error) {
       console.log(error);

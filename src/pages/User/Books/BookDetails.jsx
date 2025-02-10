@@ -140,17 +140,29 @@ function BookDetails() {
             </Typography>
 
             <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
-              <Rating
-                value={
-                  book.totalRateCount > 0
-                    ? book.totalRate / book.totalRateCount
-                    : 0
-                }
-                precision={0.1}
-                readOnly
-                size="large"
-                sx={{ color: "main" }}
-              />
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Rating
+                  value={
+                    book.totalRateCount > 0
+                      ? book.totalRate / book.totalRateCount
+                      : 0
+                  }
+                  precision={0.01}
+                  readOnly
+                  size="large"
+                  sx={{ color: "main" }}
+                />
+                <Typography>
+                  (
+                  {book.totalRate / book.totalRateCount > 5
+                    ? 0
+                    : isNaN(book.totalRate / book.totalRateCount)
+                      ? 0
+                      : book.totalRate / book.totalRateCount}
+                  )
+                </Typography>
+              </Box>
+
               <Typography variant="body1" sx={{ color: "text.secondary" }}>
                 ({book.totalRateCount.toLocaleString()} ratings)
               </Typography>
@@ -209,8 +221,7 @@ function BookDetails() {
                 <Grid item xs={6} md={3}>
                   <p>Sorry this book is not available for reading</p>
                 </Grid>
-              ) :
-              book.pdfLink === "not subscribed" ? (
+              ) : book.pdfLink === "not subscribed" ? (
                 <Grid item xs={6} md={3}>
                   <p>Sorry you need to subscribe to read this book</p>
                 </Grid>

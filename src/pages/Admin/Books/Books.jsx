@@ -564,8 +564,8 @@ function AdminBooks() {
                       <TableCell align="left">{book.edition}</TableCell>
                       <TableCell align="left">{book.views}</TableCell>
                       <TableCell align="left">
-                        {book.url ? (
-                         <a href={book.url} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                        {book.pdfLink ? (
+                         <a href={book.pdfLink} target="_blank" rel="noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
                            View PDF
                           </a>
                           ) : (
