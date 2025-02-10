@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../apis/config.js";
 import UserBooks from "../../../context/userBooks.js";
 import BooksContext from "../../../context/books.js";
-import UserReview from "../../../components/Reviews/UserReview.jsx";
 import ReviewLink from "../../../components/Reviews/ReviewLink.jsx";
 import UserRating from "../../../components/Rating/UserRating.jsx";
 
@@ -195,8 +194,8 @@ function BookDetails() {
                     !book.pdfLink
                       ? "Sorry this book is not available for reading"
                       : book.pdfLink === "not subscribed"
-                      ? "Sorry you need to subscribe to read this book"
-                      : "Download Book"
+                        ? "Sorry you need to subscribe to read this book"
+                        : "Download Book"
                   }
                 >
                   <span>
@@ -219,53 +218,51 @@ function BookDetails() {
           </Box>
         </CardContent>
         <Divider />
-        <Box sx={{ p: 3 }}>
-          {/* Review Section */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <h2
-              className="b612-regular-italic"
-              style={{ fontSize: "22px", marginRight: 11}}
+        {isBookAdded && (
+          <Box sx={{ p: 3 }}>
+            {/* Review Section */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <h2
+                className="b612-regular-italic"
+                style={{ fontSize: "22px", marginRight: 11 }}
+              >
+                Your review about this book
+              </h2>
+              <ReviewLink bookId={book._id} style={{ marginLeft: "8px" }} />
+            </Box>
+            {/* Rating Section */}
+            <Box
+              sx={{ display: "flex", alignItems: "center", marginTop: "1rem" }}
             >
-              Your review about this book
-            </h2>
-            <ReviewLink bookId={book._id} style={{ marginLeft: "8px" }} />
-          </div>
-          {/* Rating Section */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginTop: "1rem",
-            }}
-          >
-            <h2
-              className="b612-regular-italic"
-              style={{ fontSize: "22px", marginRight: 11 }}
-            >
-              Your Rating
-            </h2>
-            <UserRating
-              userId={userId}
-              bookId={bookId}
-              rating={userRating}
-              style={{ marginLeft: "8px" }}
-            />
-          </div>
-          {/* Link to other reviews */}
-          <div style={{ textAlign: "right", marginTop: "1rem" }}>
-            <Link
-              to={`/reviews/${book._id}`}
-              className="b612-bold"
-              style={{
-                fontSize: "18px",
-                textDecoration: "none",
-                color: "#1976d2",
-              }}
-            >
-              See all reviews
-            </Link>
-          </div>
-        </Box>
+              <h2
+                className="b612-regular-italic"
+                style={{ fontSize: "22px", marginRight: 11 }}
+              >
+                Your Rating
+              </h2>
+              <UserRating
+                userId={userId}
+                bookId={bookId}
+                rating={userRating}
+                style={{ marginLeft: "8px" }}
+              />
+            </Box>
+            {/* Link to other reviews */}
+            <Box sx={{ textAlign: "right", marginTop: "1rem" }}>
+              <Link
+                to={`/reviews/${book._id}`}
+                className="b612-bold"
+                style={{
+                  fontSize: "18px",
+                  textDecoration: "none",
+                  color: "#1976d2",
+                }}
+              >
+                See all reviews
+              </Link>
+            </Box>
+          </Box>
+        )}
       </Card>
     </Container>
   );

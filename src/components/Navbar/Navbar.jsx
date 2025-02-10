@@ -97,12 +97,10 @@ const Navbar = ({ setToken, setUserBooks }) => {
   }, [subscription, token]);
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
       localStorage.clear();
       setToken(null);
       setUserBooks([]);
       navigate("/login");
-    }
   };
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
