@@ -9,7 +9,7 @@ const Home = () => {
       <HeroSection />
       <ListPopularAuthors />
       <ListPopularBooks />
-      <ListPopularCategories/>
+      {/* <ListPopularCategories/> */}
     </div>
   );
 };

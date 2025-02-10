@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../../apis/config";
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   CircularProgress,
@@ -9,6 +8,11 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Container,
+  Typography,
+  Button,
+  Box,
+  Paper,
 } from "@mui/material";
 import EditUser from "../../../components/EditUser/EditUser";
 
@@ -32,74 +36,120 @@ function Profile() {
   function handleDropdownChange(e) {
     setRenew(e.target.value);
   }
+
   async function handleRenew() {
     const res = await axiosInstance.post(`/auth/renew-subscription/${id}`, {
-      
-        subscriptionType: renew,
-        baseUrl: window.location.origin,
-      
+      subscriptionType: renew,
+      baseUrl: window.location.origin,
     });
     if (res.status === 200) {
       window.location.href = res.data.url;
     }
   }
 
-  return isLoading ? (
-    <div className="App-header" style={{ backgroundColor: "white" }}>
-      <CircularProgress />
-    </div>
-  ) : (
-    <div className="container mt-5">
-      <h1>
-        Profile{" "}
-        <button
-          className="btn btn-primary mx-2"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          Edit
-        </button>
-      </h1>
-      <p>Name: {data.fName + " " + data.lName}</p>
-      <p>Email: {data.email}</p>
-      <p>Username: {data.username}</p>
-      <h4>
-        Subscription{" "}
-        <FormControl style={{ minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-label">Renew</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Renew"
-            value={renew}
-            onChange={handleDropdownChange}
-          >
-            <MenuItem value={"monthly"}>Monthly</MenuItem>
-            <MenuItem value={"annually"}>Annually</MenuItem>
-          </Select>
-        </FormControl>
-        <button
-          className="btn btn-primary mx-2"
-          onClick={handleRenew}
-          disabled={!renew}
-        >
-          Renew
-        </button>
-      </h4>
-      <p>Type: {data.subscription.subscriptionType}</p>
-      <p>
-        End Date:{" "}
-        <span
-          style={{
-            color: data.subscription.endDate < new Date() ? "red" : "green",
-          }}
-        >
-          {data.subscription.endDate.split("T")[0]}
-        </span>
-      </p>
-      {isEditing && (
-        <EditUser user={user} setIsEditing={setIsEditing} fetchUser={refetch} />
-      )}
-    </div>
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          backgroundColor: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Typography color="error">Error: {error.message}</Typography>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        {/* Header */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h4">Profile</Typography>
+          <Button variant="contained" onClick={() => setIsEditing(!isEditing)}>
+            Edit
+          </Button>
+        </Box>
+
+        {/* User Info */}
+        <Box mt={2}>
+          <Typography variant="body1">
+            <strong>Name:</strong> {data.fName} {data.lName}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Email:</strong> {data.email}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Username:</strong> {data.username}
+          </Typography>
+        </Box>
+
+        {/* Subscription */}
+        <Box mt={3}>
+          <Typography variant="h6" gutterBottom>
+            Subscription
+          </Typography>
+          <Box display="flex" alignItems="center" gap={2}>
+            <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+              <InputLabel id="renew-label">Renew</InputLabel>
+              <Select
+                labelId="renew-label"
+                id="renew-select"
+                label="Renew"
+                value={renew}
+                onChange={handleDropdownChange}
+              >
+                <MenuItem value="monthly">Monthly</MenuItem>
+                <MenuItem value="annually">Annually</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              onClick={handleRenew}
+              disabled={!renew}
+            >
+              Renew
+            </Button>
+          </Box>
+          <Box mt={2}>
+            <Typography variant="body1">
+              <strong>Type:</strong> {data.subscription.subscriptionType}
+            </Typography>
+            <Typography variant="body1">
+              <strong>End Date:</strong>{" "}
+              <span
+                style={{
+                  color:
+                    new Date(data.subscription.endDate) < new Date()
+                      ? "red"
+                      : "green",
+                }}
+              >
+                {data.subscription.endDate.split("T")[0]}
+              </span>
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Edit User */}
+        {isEditing && (
+          <Box mt={3}>
+            <EditUser user={user} setIsEditing={setIsEditing} fetchUser={refetch} />
+          </Box>
+        )}
+      </Paper>
+    </Container>
   );
 }
 

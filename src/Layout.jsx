@@ -12,7 +12,9 @@ const Layout = ({ children, setToken, setUserBooks }) => {
         <Navbar setToken={setToken} setUserBooks={setUserBooks} />
       )}
       {children}
+      <br/>
       {!hideNavbarRoutes.includes(location.pathname) && (
+       
          <Footer /> 
       )}
     </>

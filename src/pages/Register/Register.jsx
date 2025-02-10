@@ -287,12 +287,11 @@ function Register() {
             Object.values(formValues).some((value) => value === "")
           }
           sx={{
-            mt: 3,
-            py: 1.5,
+            background: "rgba(148,187,233)",
             borderRadius: 1,
-            backgroundColor: "rgb(44, 62, 80)",
+            mt: 2,
             "&:hover": {
-              backgroundColor: "rgb(32, 45, 58)",
+              background: "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
             },
           }}
         >

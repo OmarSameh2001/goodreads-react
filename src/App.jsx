@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import axiosInstance from "./apis/config";
-//import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./pages/User/Home/Home";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
 import NotFound from "./pages/NotFound/NotFound";

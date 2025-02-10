@@ -1,45 +1,47 @@
-import { useNavigate, useParams } from "react-router";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import {
-  Container,
   Card,
-  CardMedia,
-  Typography,
+  CardContent,
   Rating,
+  Button,
+  IconButton,
+  Tooltip,
   Box,
-  Link,
+  Avatar,
+  Stack,
+  Container,
+  Divider,
 } from "@mui/material";
-import Button from "@mui/material/Button";
-
-import Grid from "@mui/material/Grid";
-import { useState } from "react";
-import axiosInstance from "../../../apis/config.js";
-import { useEffect } from "react";
-import { Chip } from "@mui/material";
+import { FaDownload } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { useContext } from "react";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import { Link as RouterLink } from "react-router";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import axiosInstance from "../../../apis/config.js";
 import UserBooks from "../../../context/userBooks.js";
 import BooksContext from "../../../context/books.js";
+import UserReview from "../../../components/Reviews/UserReview.jsx";
+import ReviewLink from "../../../components/Reviews/ReviewLink.jsx";
+import UserRating from "../../../components/Rating/UserRating.jsx";
 
 function BookDetails() {
   const { userBooks, setUserBooks } = useContext(UserBooks);
-  const userId = localStorage.getItem("userId");
-  const { bookId } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [book, setBook] = useState({});
   const { setReadingBook } = useContext(BooksContext);
   const navigate = useNavigate();
+  const { bookId } = useParams();
+  const userId = localStorage.getItem("userId");
+
+  const [book, setBook] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [expanded, setExpanded] = useState(false);
+  const [expandedAuthor, setExpandedAuthor] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/books/${bookId}`);
         setBook(res.data);
-      } catch (error) {
-        setError(error);
+      } catch (err) {
+        setError(err);
       } finally {
         setIsLoading(false);
       }
@@ -49,277 +51,224 @@ function BookDetails() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  async function handleAddToWantToRead(user_id, book_id) {
-    const requestBody = {
-      user: user_id,
-      book: book_id,
-    };
 
+  const isBookAdded = userBooks.some(
+    (userBook) => userBook.book._id === book._id
+  );
+  const userRating =
+    userBooks.find((userBook) => userBook.book._id === book._id)?.rating || 0;
+  const averageRating =
+    book.totalRateCount > 0 ? book.totalRate / book.totalRateCount : 0;
+  const downloadAvailable = book.pdfLink && book.pdfLink !== "not subscribed";
+
+  async function handleAddToWantToRead(user_id, book_id) {
+    const requestBody = { user: user_id, book: book_id };
     try {
       const response = await axiosInstance.post("userBook/", requestBody);
       toast(`Book: ${book.title} has been added successfully`, {
         type: "success",
         theme: "colored",
       });
-      setUserBooks((prevUserBooks) => [...prevUserBooks, response.data]);
+      setUserBooks((prev) => [...prev, response.data]);
     } catch (error) {
       toast("Error, Book already exist", { type: "error", theme: "colored" });
     }
   }
+
   return (
-    <Container
-      sx={{ py: 6, fontFamily: "Merriweather, serif", width: "100vw" }}
-    >
-      <Grid container spacing={6}>
-        {/* Book Cover Section */}
-        <Grid item xs={12} md={4}>
-          <Card
-            sx={{
-              position: "relative",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-              "&:hover": { transform: "scale(1.02)" },
-              transition: "all 0.3s ease",
-            }}
-          >
-            <CardMedia
-              component="img"
-              image={book.img || "/default-book-cover.jpg"}
-              alt={book.title}
-              sx={{
-                height: "auto",
-                borderRadius: "4px",
-                aspectRatio: "2/3",
-                objectFit: "cover",
-              }}
-            />
-            <Chip
-              label={`${book.edition} Edition`}
-              color="secondary"
-              sx={{
-                position: "absolute",
-                top: 16,
-                right: 16,
-                fontWeight: "bold",
-                backdropFilter: "blur(4px)",
-                backgroundColor: "rgba(66, 64, 64, 0.9)",
-              }}
-            />
-          </Card>
-        </Grid>
-
-        {/* Book Details Section */}
-        <Grid item xs={12} md={8}>
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{
-                fontWeight: 700,
-                mb: 2,
-                color: "text.primary",
-                lineHeight: 1.2,
-                fontFamily: "inherit",
-              }}
-            >
-              {book.title}
-            </Typography>
-
-            <Typography
-              variant="h5"
-              component="h2"
-              sx={{
-                mb: 3,
-                color: "text.secondary",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <PersonOutlineIcon fontSize="small" />
-              {book.author?.name || "Unknown Author"}
-            </Typography>
-
-            <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Rating
-                  value={
-                    book.totalRateCount > 0
-                      ? book.totalRate / book.totalRateCount
-                      : 0
-                  }
-                  precision={0.01}
-                  readOnly
-                  size="large"
-                  sx={{ color: "main" }}
-                />
-                <Typography>
-                  (
-                  {book.totalRate / book.totalRateCount > 5
-                    ? 0
-                    : isNaN(book.totalRate / book.totalRateCount)
-                      ? 0
-                      : book.totalRate / book.totalRateCount}
-                  )
-                </Typography>
-              </Box>
-
-              <Typography variant="body1" sx={{ color: "text.secondary" }}>
-                ({book.totalRateCount.toLocaleString()} ratings)
-              </Typography>
-              <Chip
-                label={`📖 ${book.views.toLocaleString()} views`}
-                variant="outlined"
-                sx={{ borderRadius: 1, borderColor: "divider" }}
-              />
-            </Box>
-
-            {book.category?.name && (
-              <Link
-                to={`/books?categories=${book.category.name}`}
-                component={RouterLink}
-                sx={{
-                  textDecoration: "none",
-                  "&:hover": { textDecoration: "underline" },
-                }}
-              >
-                <Chip
-                  label={book.category.name}
-                  color="primary"
-                  variant="outlined"
-                  sx={{
-                    mb: 3,
-                    borderRadius: "8px",
-                    fontWeight: 600,
-                    fontSize: "0.9rem",
-                  }}
-                />
-              </Link>
-            )}
-          </Box>
-
-          {/* Book Metadata */}
+    <Container maxWidth="md" sx={{ my: 4 }}>
+      <Card
+        sx={{
+          borderRadius: "15px",
+          boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+        }}
+      >
+        <CardContent>
           <Box
             sx={{
-              backgroundColor: "background.paper",
-              borderRadius: 2,
-              p: 3,
-              mb: 4,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 4,
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={6} md={3}>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  Added:
-                </Typography>
-                <Typography variant="body1">
-                  {new Date(book.createdAt).toLocaleDateString()}
-                </Typography>
-              </Grid>
-
-              {!book.pdfLink ? (
-                <Grid item xs={6} md={3}>
-                  <p>Sorry this book is not available for reading</p>
-                </Grid>
-              ) : book.pdfLink === "not subscribed" ? (
-                <Grid item xs={6} md={3}>
-                  <p>Sorry you need to subscribe to read this book</p>
-                </Grid>
-              ) : (
-                <Grid item xs={6} md={3}>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    Read Online
-                  </Typography>
-                  <Button
-                    variant="text"
-                    size="small"
-                    onClick={() => {
-                      navigate(`/bookViewer/${book.title}`);
-                      setReadingBook(book.pdfLink);
-                    }}
-                  >
-                    Access Book
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </Box>
-
-          {/* Author Section */}
-          {book.author?.about && (
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant="h6"
-                component="h3"
-                sx={{ mb: 2, fontWeight: 600 }}
-              >
-                About the Author
-              </Typography>
-              <Typography
-                variant="body1"
+            {/* Left Column */}
+            <Box sx={{ flex: 1 }}>
+              <Box
+                component="img"
+                src={book.img || "/default-book-cover.jpg"}
+                alt={book.title}
                 sx={{
-                  lineHeight: 1.8,
-                  color: "text.secondary",
-                  whiteSpace: "pre-wrap",
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+                onError={(e) => {
+                  e.target.src = "/default-book-cover.jpg";
+                }}
+              />
+              <Stack spacing={2} mt={2}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Rating
+                    value={averageRating}
+                    precision={0.01}
+                    readOnly
+                    size="large"
+                  />
+                  <span>({book.totalRateCount.toLocaleString()})</span>
+                </Box>
+                <Button
+                  variant={isBookAdded ? "contained" : "outlined"}
+                  onClick={() => handleAddToWantToRead(userId, book._id)}
+                  disabled={isBookAdded}
+                  sx={{ borderRadius: "20px", textTransform: "none" }}
+                >
+                  {isBookAdded ? "Already Added" : "Want to Read"}
+                </Button>
+                <span style={{ fontSize: "0.8rem", color: "gray" }}>
+                  Added on: {new Date(book.createdAt).toLocaleDateString()}
+                </span>
+              </Stack>
+            </Box>
+
+            {/* Right Column */}
+            <Box sx={{ flex: 2 }}>
+              <h2 className="b612-bold" style={{ fontSize: "30px", margin: 0 }}>
+                {book.title}
+              </h2>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  marginBottom: "1rem",
                 }}
               >
-                {book.author.about}
-              </Typography>
-            </Box>
-          )}
-
-          {/* Description */}
-          <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="h6"
-              component="h3"
-              sx={{ mb: 2, fontWeight: 600 }}
-            >
-              Book Description
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                lineHeight: 1.8,
-                fontSize: "1.1rem",
-                color: "text.primary",
-              }}
-            >
-              {book.description}
-            </Typography>
-          </Box>
-
-          {/* Action Buttons */}
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<BookmarkAddIcon />}
-              onClick={() => handleAddToWantToRead(userId, book._id)}
-              disabled={userBooks.some(
-                (userBook) => userBook.book._id === book._id
+                <Avatar
+                  alt={book.author?.name || "Author"}
+                  src={book.author?.img || "https://via.placeholder.com/40"}
+                />
+                <h3
+                  className="b612-regular"
+                  style={{ color: "gray", fontSize: "16px", margin: 0 }}
+                >
+                  {book.author?.name || "Unknown Author"}
+                </h3>
+              </Box>
+              <p className="b612-regular" style={{ textAlign: "justify" }}>
+                {expanded
+                  ? book.description
+                  : `${book.description.slice(0, 100)}...`}
+                <Button
+                  size="small"
+                  onClick={() => setExpanded(!expanded)}
+                  sx={{ ml: 1, textTransform: "none" }}
+                >
+                  {expanded ? "Read Less" : "Read More"}
+                </Button>
+              </p>
+              {book.author?.about && (
+                <>
+                  <h2
+                    className="b612-bold"
+                    style={{ fontSize: "24px", marginBottom: "0.5rem" }}
+                  >
+                    About the Author
+                  </h2>
+                  <p className="b612-regular" style={{ textAlign: "justify" }}>
+                    {expandedAuthor
+                      ? book.author.about
+                      : `${book.author.about.slice(0, 100)}...`}
+                    <Button
+                      size="small"
+                      onClick={() => setExpandedAuthor(!expandedAuthor)}
+                      sx={{ ml: 1, textTransform: "none" }}
+                    >
+                      {expandedAuthor ? "Read Less" : "Read More"}
+                    </Button>
+                  </p>
+                </>
               )}
-              sx={{
-                px: 4,
-                fontWeight: 600,
-                borderRadius: "8px",
-                textTransform: "none",
-                backgroundColor: "rgb(44, 62, 80)",
-                "&:hover": {
-                  scale: 1.05,
-                  transition: "all 0.3s ease-in-out",
-                  backgroundColor: "rgb(44, 62, 80)",
-                },
+              <Box sx={{ mt: 3 }}>
+                <Tooltip
+                  title={
+                    !book.pdfLink
+                      ? "Sorry this book is not available for reading"
+                      : book.pdfLink === "not subscribed"
+                      ? "Sorry you need to subscribe to read this book"
+                      : "Download Book"
+                  }
+                >
+                  <span>
+                    <IconButton
+                      disabled={!downloadAvailable}
+                      aria-label="download book"
+                      onClick={() => {
+                        if (downloadAvailable) {
+                          setReadingBook(book.pdfLink);
+                          navigate(`/bookViewer/${book.title}`);
+                        }
+                      }}
+                    >
+                      <FaDownload />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
+            </Box>
+          </Box>
+        </CardContent>
+        <Divider />
+        <Box sx={{ p: 3 }}>
+          {/* Review Section */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h2
+              className="b612-regular-italic"
+              style={{ fontSize: "22px", marginRight: 11}}
+            >
+              Your review about this book
+            </h2>
+            <ReviewLink bookId={book._id} style={{ marginLeft: "8px" }} />
+          </div>
+          {/* Rating Section */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: "1rem",
+            }}
+          >
+            <h2
+              className="b612-regular-italic"
+              style={{ fontSize: "22px", marginRight: 11 }}
+            >
+              Your Rating
+            </h2>
+            <UserRating
+              userId={userId}
+              bookId={bookId}
+              rating={userRating}
+              style={{ marginLeft: "8px" }}
+            />
+          </div>
+          {/* Link to other reviews */}
+          <div style={{ textAlign: "right", marginTop: "1rem" }}>
+            <Link
+              to={`/reviews/${book._id}`}
+              className="b612-bold"
+              style={{
+                fontSize: "18px",
+                textDecoration: "none",
+                color: "#1976d2",
               }}
             >
-              {userBooks.some((userBook) => userBook.book._id === book._id)
-                ? "Already Added"
-                : "Want to Read"}
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
+              See all reviews
+            </Link>
+          </div>
+        </Box>
+      </Card>
     </Container>
   );
 }
+
 export default BookDetails;

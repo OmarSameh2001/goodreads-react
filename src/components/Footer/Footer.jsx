@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Container, Grid, Typography, IconButton, Link, Tooltip } from "@mui/material";
 import { FaArrowUp } from "react-icons/fa";
 import { styled } from "@mui/system";
+import { useNavigate } from "react-router";
 
 const StyledFooter = styled(Box)(({ theme }) => ({
   background: "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
@@ -18,7 +19,8 @@ const StyledLink = styled(Link)({
   "&:hover": {
     opacity: 0.8,
     textDecoration: "none"
-  }
+  },
+  cursor: "pointer"
 });
 
 const ScrollTopButton = styled(IconButton)({
@@ -31,7 +33,6 @@ const ScrollTopButton = styled(IconButton)({
     backgroundColor: "rgba(255, 255, 255, 0.2)"
   }
 });
-
 const Footer = () => {
   const handleScrollTop = () => {
     window.scrollTo({
@@ -39,6 +40,7 @@ const Footer = () => {
       behavior: "smooth"
     });
   };
+  const navigate=useNavigate();
 
   return (
     <StyledFooter component="footer">
@@ -58,10 +60,10 @@ const Footer = () => {
                 justifyContent: { sm: "flex-end" }
               }}
             >
-              <StyledLink href="/about" aria-label="About us">
+              <StyledLink onClick={() => navigate("/about")} aria-label="About us">
                 About
               </StyledLink>
-              <StyledLink href="/terms" aria-label="Terms of Service">
+              <StyledLink onClick={() => navigate("/terms")} aria-label="Terms of Service">
                 Terms of Service
               </StyledLink>
             </Box>

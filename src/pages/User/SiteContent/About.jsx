@@ -19,11 +19,10 @@ function About () {
   }, []);
 
   return (
-    <Container>
       <Paper sx={{ p: 3, mt: 3 }}>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </Paper>
-    </Container>
+    
   );
 };
 

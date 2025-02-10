@@ -42,7 +42,6 @@ function Login() {
         );
         localStorage.setItem("endDate", res.data.user.subscription.endDate);
         setSubscription(res.data.user.subscription.subscriptionType === "premium");
-        alert("Welcome to Goodreads");
         res.data.user.role === "admin" ? navigate("/admin") : navigate("/");
       }
     } catch (error) {
@@ -153,13 +152,15 @@ function Login() {
             type="submit"
             disabled={!email || password.length < 8}
             sx={{
-              backgroundColor: "rgb(44, 62, 80)",
+              background: "rgba(148,187,233)",
               borderRadius: 1,
               mt: 2,
               "&:hover": {
-                backgroundColor: "rgb(32, 45, 58)",
+                background: "linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
               },
             }}
+            
+            
           >
             Sign In
           </Button>
