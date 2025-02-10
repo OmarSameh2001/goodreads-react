@@ -6,8 +6,6 @@ import {
   Tab,
   Box,
   IconButton,
-  TextField,
-  InputAdornment,
   Typography,
 } from "@mui/material";
 import { Logout, Search as SearchIcon } from "@mui/icons-material";
@@ -41,11 +39,7 @@ function Navbar({ setToken, setUserBooks }) {
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
-  //const sType = localStorage.getItem("sType");
-  //const subscription = new Date(endDate).getTime() > new Date().getTime() && sType === "Premium";
   const { subscription } = useContext(TokenContext);
-  const [value, setValue] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
 
   function handleLogout() {
     const confirm = window.confirm("Are you sure you want to logout?");
@@ -91,11 +85,7 @@ function Navbar({ setToken, setUserBooks }) {
       </Link>
 
       {/* Navigation Tabs */}
-      <Tabs
-        value={value}
-        onChange={(e, newValue) => setValue(newValue)}
-        variant="scrollable"
-        scrollButtons={false}
+      <div
       >
         {navLinks
           .filter((link) => link.condition !== false)
@@ -114,7 +104,7 @@ function Navbar({ setToken, setUserBooks }) {
               }}
             />
           ))}
-      </Tabs>
+      </div>
 
       {/* Right Section: Search, User Info, Logout */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

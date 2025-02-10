@@ -23,9 +23,6 @@ function Login() {
   const token = localStorage.getItem("token");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const { userBooks, setUserBooks } = useContext(UserBooks);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { setSubscription} = useContext(TokenContext);
   async function handleLogin() {
@@ -53,7 +50,7 @@ function Login() {
         );
         localStorage.setItem("endDate", res.data.user.subscription.endDate);
         setSubscription(res.data.user.subscription.subscriptionType === "premium");
-        toast("Login successful", { type: "success", theme: "colored" });
+        toast("Login successful", { type: "success", theme: "colored", closeOnClick: true });
       }
     } catch (error) {
       console.log(error);
