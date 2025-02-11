@@ -19,6 +19,7 @@ export default function BookCard(props) {
   const { userBooks, setUserBooks } = useContext(UserBooks);
   const userId = localStorage.getItem("userId");
 
+
   //Add a book to userBooks as want to read by default.
   async function handleAddToWantToRead(user_id, book_id) {
     const requestBody = {
@@ -28,13 +29,12 @@ export default function BookCard(props) {
 
     try {
       const response = await axiosInstance.post("userBook/", requestBody);
-      toast(`Book: ${book.title} has been added successfully`, {
-        type: "success",
-        theme: "colored",
-      });
-      setUserBooks((prevUserBooks) => [...prevUserBooks, response.data]);
+      setUserBooks((prevUserBooks) => [
+        ...prevUserBooks, 
+        { _id: response.data._id, book: book, state: "want to read" }
+      ]);
     } catch (error) {
-      toast("Error, Book already exist", { type: "error", theme: "colored" });
+      //toast("Error, Book already exist", { type: "error", theme: "colored" });
     }
   }
   return (
@@ -126,7 +126,7 @@ export default function BookCard(props) {
             {book.edition} Edition
           </Chip>
           <Chip variant="outlined" size="sm" color="neutral">
-            {book.category.name}
+            {book.category?.name}
           </Chip>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>

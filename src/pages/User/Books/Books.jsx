@@ -219,7 +219,7 @@ function UserBooks() {
             <div
               className="d-flex flex-column"
             >
-              <Accordion style={{ width: "300px", height: "100%" }}>
+              <Accordion style={{ width: "300px", height: "100%"  , maxHeight: "300px" , overflowY: "scroll"}}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1-content"
@@ -301,7 +301,7 @@ function UserBooks() {
                       ))}
                 </AccordionDetails>
               </Accordion>
-              <Accordion style={{ width: "300px", height: "100%" }}>
+              <Accordion style={{ width: "300px", height: "100%"  , maxHeight: "300px" , overflowY: "scroll"}}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel2-content"

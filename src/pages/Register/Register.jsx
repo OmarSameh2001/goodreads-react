@@ -16,6 +16,7 @@ import {
   Link,
 } from "@mui/material";
 import { Lock, Person, Email } from "@mui/icons-material";
+import axiosInstance from "../../apis/config";
 
 function Register() {
   const [formValues, setFormValues] = useState({
@@ -43,7 +44,7 @@ function Register() {
   }
   async function handleRegister() {
     try {
-      const res = await axios.post("https://goodreads-node-production.up.railway.app/auth/register", {
+      const res = await axiosInstance.post("/auth/register", {
         fName: formValues.fname,
         lName: formValues.lname,
         username: formValues.username,
