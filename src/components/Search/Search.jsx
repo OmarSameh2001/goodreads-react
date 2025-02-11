@@ -24,91 +24,128 @@ function Search(props) {
     return denoised;
   }
 
-  // Model API call
-  async function huggingFaceOcr(imageFile) {
-    const formData = new FormData();
-    formData.append("file", imageFile);
+  // // Model API call
+  // async function huggingFaceOcr(imageFile) {
+  //   const formData = new FormData();
+  //   formData.append("file", imageFile);
   
-    let attempts = 0;
-    const maxAttempts = 3;
-    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  //   let attempts = 0;
+  //   const maxAttempts = 3;
+  //   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   
-    while (attempts < maxAttempts) {
-      try {
-        const response = await axios.post(HUGGING_FACE_API_URL, formData, {
-          headers: {
-            "Authorization": `Bearer ${HUGGING_FACE_API_KEY}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+  //   while (attempts < maxAttempts) {
+  //     try {
+  //       const response = await axios.post(HUGGING_FACE_API_URL, formData, {
+  //         headers: {
+  //           "Authorization": `Bearer ${HUGGING_FACE_API_KEY}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
   
-        // Check for model loading state
-        if (response.data.error === "Model microsoft/trocr-base-printed is currently loading") {
-          console.log(`Model is loading. Waiting for ${response.data.estimated_time} seconds.`);
-          await delay(response.data.estimated_time * 1000); // Wait for the estimated time
-          attempts++;
-          continue;  // Retry the request
-        }
+  //       // Check for model loading state
+  //       if (response.data.error === "Model microsoft/trocr-base-printed is currently loading") {
+  //         console.log(`Model is loading. Waiting for ${response.data.estimated_time} seconds.`);
+  //         await delay(response.data.estimated_time * 1000); // Wait for the estimated time
+  //         attempts++;
+  //         continue;  // Retry the request
+  //       }
   
-        return response.data[0]?.generated_text || "";
-      } catch (error) {
-        attempts++;
-        console.error("API call error:", error);
-        if (attempts < maxAttempts) {
-          console.log("Retrying...");
-          await delay(1000 * attempts); // Retry with increasing delay
-        } else {
-          alert("Failed after multiple attempts.");
-          return "";
-        }
-      }
-    }
-  }
+  //       return response.data[0]?.generated_text || "";
+  //     } catch (error) {
+  //       attempts++;
+  //       console.error("API call error:", error);
+  //       if (attempts < maxAttempts) {
+  //         console.log("Retrying...");
+  //         await delay(1000 * attempts); // Retry with increasing delay
+  //       } else {
+  //         alert("Failed after multiple attempts.");
+  //         return "";
+  //       }
+  //     }
+  //   }
+  // }
   
   function handleBookSearch() {
     setAppliedBookSearch(bookSearch);
     navigate(`?search=${bookSearch}`, { replace: true });
   }
 
+  // async function handleImageUpload(event) {
+  //   const file = event.target.files[0];
+  //   console.log("file",file);
+  //   if (file) {
+  //     setIsExtracting(true);
+  //     try {
+        
+  //       const hfText = await huggingFaceOcr(file);
+
+  //       if (hfText) {
+  //         setBookSearch(hfText);
+  //         setAppliedBookSearch(hfText);
+  //         navigate(`?search=${hfText}`, { replace: true });
+  //       } else {
+  //         // Step 2: Fallback to Tesseract.js if Hugging Face fails
+  //         const { data } = await Tesseract.recognize(file, 'eng', {
+  //           logger: (m) => console.log(m),
+  //         });
+
+  //         const extractedText = data.text.split("\n").join(" ");
+  //         setSource("Tesseract");
+  //         console.log("Extracted Text from Tesseract:", extractedText);
+
+  //         if (extractedText) {
+  //           setBookSearch(extractedText);
+  //           setAppliedBookSearch(extractedText);
+  //           navigate(`?search=${extractedText}`, { replace: true });
+  //         } else {
+  //           alert("No text found. Try another image.");
+  //         }
+        
+  //      }
+  //      } catch (error) {
+  //        console.error("Error in text extraction:", error);
+  //        alert("Failed to extract text. Try again.");
+  //      } finally {
+  //       setIsExtracting(false);
+  //     }
+
+  //    }
+
+  // }
+
+
   async function handleImageUpload(event) {
     const file = event.target.files[0];
-    console.log("file",file);
+    console.log("file", file);
+    
     if (file) {
       setIsExtracting(true);
       try {
-        
-        const hfText = await huggingFaceOcr(file);
-
-        if (hfText) {
-          setBookSearch(hfText);
-          setAppliedBookSearch(hfText);
-          navigate(`?search=${hfText}`, { replace: true });
-        } else {
-          // Step 2: Fallback to Tesseract.js if Hugging Face fails
-          const { data } = await Tesseract.recognize(file, 'eng', {
-            logger: (m) => console.log(m),
-          });
-
-          const extractedText = data.text.split("\n").join(" ");
-          setSource("Tesseract");
-          console.log("Extracted Text from Tesseract:", extractedText);
-
-          if (extractedText) {
-            setBookSearch(extractedText);
-            setAppliedBookSearch(extractedText);
-            navigate(`?search=${extractedText}`, { replace: true });
-          } else {
-            alert("No text found. Try another image.");
-          }
+        // Extract text using Tesseract.js
+        const { data } = await Tesseract.recognize(file, 'eng', {
+          logger: (m) => console.log(m),
+        });
+  
+        const extractedText = data.text.split("\n").join(" ");
+        setSource("Tesseract");
+        console.log("Extracted Text from Tesseract:", extractedText);
+  
+        if (extractedText) {
+          setBookSearch(extractedText);
+          setAppliedBookSearch(extractedText);
+          navigate(`?search=${extractedText}`, { replace: true });
         }
+        
       } catch (error) {
         console.error("Error in text extraction:", error);
-        alert("Failed to extract text. Try again.");
       } finally {
         setIsExtracting(false);
       }
     }
   }
+  
+
+
 
   return (
     <div className="d-flex">
