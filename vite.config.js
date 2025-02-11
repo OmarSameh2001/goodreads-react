@@ -9,6 +9,7 @@ export default defineConfig(() => {
     server: {
       port: 3008,
       strictPort: true,
+      historyApiFallback: true, // Enable client-side routing
     },
     plugins: [react()],
   };
