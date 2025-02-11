@@ -4,7 +4,7 @@ import Footer from "./components/Footer/Footer";
 
 const Layout = ({ children, setToken, setUserBooks }) => {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/register", "/otp", "/forget"];
+  const hideNavbarRoutes = [ "/register", "/otp", "/forget"];
 
   return (
     <>

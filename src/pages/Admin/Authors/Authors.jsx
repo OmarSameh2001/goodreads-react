@@ -48,7 +48,6 @@ function AdminAuthors() {
     isNew
       ? setNewAuthor({ ...newAuthor, [e.target.name]: e.target.value })
       : setUpdate({ ...update, [e.target.name]: e.target.value });
-    console.log(newAuthor);
   }
 
   function handleImage(e) {
@@ -111,7 +110,6 @@ function AdminAuthors() {
   async function handleEdit(e) {
     try {
       e.preventDefault();
-      console.log(update);
       await axiosInstance.put(`/authors/${update._id}`, update);
       handleClose();
       refetch();
@@ -123,9 +121,7 @@ function AdminAuthors() {
   async function handleAdd(e) {
     try {
       e.preventDefault();
-      console.log(newAuthor);
       const res = await axiosInstance.post("/authors", newAuthor);
-      console.log(res);
       handleClose();
       refetch();
     } catch (error) {
@@ -173,7 +169,6 @@ function AdminAuthors() {
     },
   ];
 
-  console.log(Math.ceil(total / rowsPerPage), page, rowsPerPage, total);
   if (isLoading) {
     return (
       <div className="App-header" style={{ backgroundColor: "white" }}>

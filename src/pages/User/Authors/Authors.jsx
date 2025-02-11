@@ -29,7 +29,6 @@ function Authors() {
       );
       setTotal(res.data.data.pagination.total);
       setInitialLoading(false);
-      console.log(res.data.data.items, currentPage);
       return res.data.data.items;
     },
   });
@@ -67,13 +66,15 @@ function Authors() {
 
   return (
     <>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 3 }}>
       <h3
-        align="left"
-        style={{ color: "rgb(34, 34, 36)", marginLeft: "200px" }}
+        align="center"
+        style={{ color: "rgb(34, 34, 36)" }}
         className="b612-bold"
       >
         Authors of our books
       </h3>
+      </Box>
       <Box
         sx={{
           display: "flex",

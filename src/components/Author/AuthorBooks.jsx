@@ -13,7 +13,6 @@ const AuthorBooks = () => {
       try {
         const res = await axiosInstance.get(`/books/filter?authors=${id}`);
         setAuthorBooks(res.data.books);
-        console.log(res);
       } catch (err) {
         console.error(err);
       }

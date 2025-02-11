@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { TbZoomReset } from "react-icons/tb";
 
 function UserBooks() {
   const [books, setBooks] = useState([]);
@@ -30,7 +31,7 @@ function UserBooks() {
   const location = useLocation();
   const navigate = useNavigate();
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(books.length / itemsPerPage);
+  const totalPages = Math.ceil(displayedBooks.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const currentBooks = displayedBooks.slice(
     startIndex,
@@ -43,6 +44,14 @@ function UserBooks() {
   const [authorSearch, setAuthorSearch] = useState("");
   const [bookSearch, setBookSearch] = useState("");
   const [appliedBookSearch, setAppliedBookSearch] = useState("");
+
+  const handleReset = () => {
+    setSelectedCategories([]);
+    setSelectedAuthors([]);
+    setAuthorSearch("");
+    setBookSearch("");
+    navigate("/books", { replace: true });
+  };
   // Update handlers to modify URL with IDs
   const handleAuthorSelect = (event, authorName) => {
     const newSelectedAuthors = event.target.checked
@@ -191,156 +200,172 @@ function UserBooks() {
       )}
       {error && <div>Error: {error.message}</div>}
       <div className="BooksGrid" style={{ minimumHeight: "100vh" }}>
-        <div className="filters mt-5 mx-3">
+        <div className="d-flex align-items-center gap-2">
           <h3>Filters</h3>
+          <button className="btn btn-danger py-0 px-1">
+            <TbZoomReset onClick={handleReset} />
+          </button>
+        </div>
+        <div
+          className="filters d-flex flex-wrap justify-content-center gap-1 mb-2"
+          style={{ maxWidth: "100vw" }}
+        >
           <Search
             bookSearch={bookSearch}
             setBookSearch={setBookSearch}
             appliedBookSearch={appliedBookSearch}
             setAppliedBookSearch={setAppliedBookSearch}
           />
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgb(44, 62, 80)",
-                  color: "white",
-                  borderRadius: 1,
-                },
-              }}
+            <div
+              className="d-flex flex-column"
             >
-              <Typography component="span">Authors</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TextField
-                helperText="Search authors by name"
-                id="author-search-field"
-                label="Search Authors"
-                value={authorSearch}
-                onChange={(e) => setAuthorSearch(e.target.value)}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
+              <Accordion style={{ width: "300px", height: "100%" }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1-content"
+                  id="panel1-header"
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(44, 62, 80)",
+                      color: "white",
+                      borderRadius: 1,
+                    },
+                  }}
+                >
+                  <Typography component="span">Authors</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TextField
+                    helperText="Search authors by name"
+                    id="author-search-field"
+                    label="Search Authors"
+                    value={authorSearch}
+                    onChange={(e) => setAuthorSearch(e.target.value)}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
 
-              {/* Only render authors when the search input is not empty */}
-              {authorSearch.trim() !== "" &&
-                authors
-                  .filter((author) =>
-                    author.name
-                      .toLowerCase()
-                      .includes(authorSearch.trim().toLowerCase())
-                  )
-                  .map((author) => (
-                    <AccordionDetails key={author._id}>
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selectedAuthors.includes(author.name)}
-                              onChange={(e) =>
-                                handleAuthorSelect(e, author.name)
+                  {/* Only render authors when the search input is not empty */}
+                  {authorSearch.trim() !== "" &&
+                    authors
+                      .filter((author) =>
+                        author.name
+                          .toLowerCase()
+                          .includes(authorSearch.trim().toLowerCase())
+                      )
+                      .map((author) => (
+                        <AccordionDetails key={author._id}>
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={selectedAuthors.includes(
+                                    author.name
+                                  )}
+                                  onChange={(e) =>
+                                    handleAuthorSelect(e, author.name)
+                                  }
+                                  icon={<CheckCircleOutlineIcon />}
+                                  checkedIcon={<CheckCircleIcon />}
+                                  color="primary"
+                                  sx={{
+                                    "& .MuiSvgIcon-root": {
+                                      fontSize: 28,
+                                    },
+                                  }}
+                                />
                               }
-                              icon={<CheckCircleOutlineIcon />}
-                              checkedIcon={<CheckCircleIcon />}
-                              color="primary"
+                              label={
+                                <Typography
+                                  variant="body1"
+                                  sx={{
+                                    ml: 1,
+                                    fontWeight: 600,
+                                    color: "text.primary",
+                                  }}
+                                >
+                                  {author.name}
+                                </Typography>
+                              }
                               sx={{
-                                "& .MuiSvgIcon-root": {
-                                  fontSize: 28,
+                                "&:hover": {
+                                  backgroundColor: "action.hover",
+                                  borderRadius: 1,
                                 },
+                                p: 1,
+                                m: 0,
                               }}
                             />
-                          }
-                          label={
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                ml: 1,
-                                fontWeight: 600,
-                                color: "text.primary",
-                              }}
-                            >
-                              {author.name}
-                            </Typography>
-                          }
-                          sx={{
-                            "&:hover": {
-                              backgroundColor: "action.hover",
-                              borderRadius: 1,
-                            },
-                            p: 1,
-                            m: 0,
-                          }}
-                        />
-                      </FormGroup>
-                    </AccordionDetails>
-                  ))}
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2-content"
-              id="panel2-header"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgb(44, 62, 80)",
-                  color: "white",
-                  borderRadius: 1,
-                },
-              }}
-            >
-              <Typography component="span">Categories</Typography>
-            </AccordionSummary>
-            {categories.map((category) => (
-              <AccordionDetails key={category._id}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={selectedCategories.includes(category.name)}
-                        onChange={(e) => handleCategorySelect(e, category.name)}
-                        icon={<CheckCircleOutlineIcon />}
-                        checkedIcon={<CheckCircleIcon />}
-                        color="primary"
+                          </FormGroup>
+                        </AccordionDetails>
+                      ))}
+                </AccordionDetails>
+              </Accordion>
+              <Accordion style={{ width: "300px", height: "100%" }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2-content"
+                  id="panel2-header"
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(44, 62, 80)",
+                      color: "white",
+                      borderRadius: 1,
+                    },
+                  }}
+                >
+                  <Typography component="span">Categories</Typography>
+                </AccordionSummary>
+                {categories.map((category) => (
+                  <AccordionDetails key={category._id}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectedCategories.includes(category.name)}
+                            onChange={(e) =>
+                              handleCategorySelect(e, category.name)
+                            }
+                            icon={<CheckCircleOutlineIcon />}
+                            checkedIcon={<CheckCircleIcon />}
+                            color="primary"
+                            sx={{
+                              "& .MuiSvgIcon-root": {
+                                fontSize: 28,
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              ml: 1,
+                              fontWeight: 600,
+                              color: "text.primary",
+                            }}
+                          >
+                            {category.name}
+                          </Typography>
+                        }
                         sx={{
-                          "& .MuiSvgIcon-root": {
-                            fontSize: 28,
+                          "&:hover": {
+                            backgroundColor: "action.hover",
+                            borderRadius: 1,
                           },
+                          p: 1,
+                          m: 0,
                         }}
                       />
-                    }
-                    label={
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          ml: 1,
-                          fontWeight: 600,
-                          color: "text.primary",
-                        }}
-                      >
-                        {category.name}
-                      </Typography>
-                    }
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                        borderRadius: 1,
-                      },
-                      p: 1,
-                      m: 0,
-                    }}
-                  />
-                </FormGroup>
-              </AccordionDetails>
-            ))}
-          </Accordion>
+                    </FormGroup>
+                  </AccordionDetails>
+                ))}
+              </Accordion>
+            </div>
         </div>
 
         {displayedBooks && displayedBooks.length > 0 ? (
-          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-3 ">
+          <div className="row row-cols-1 row-cols-md-5 g-4 text-center mx-3 ">
             {currentBooks
               .sort((a, b) => a.title.localeCompare(b.title))
               .map((book) => (

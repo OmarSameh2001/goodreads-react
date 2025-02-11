@@ -114,9 +114,7 @@ function AdminBooks() {
         },
       })
       .then((response) => {
-        console.log("response",response.data);
         const pdfLink = response.data.fileUrl; 
-        console.log("Uploaded PDF link:", pdfLink);
   
         setPdfUrl(pdfLink);
         isNew
@@ -132,11 +130,7 @@ function AdminBooks() {
       });
   }
   
-  
-  
-  ///////////
   function handleChange(e) {
-    console.log(e.target.name, e.target.value);
     isNew
       ? setNewBook({
           ...newBook,
@@ -166,7 +160,6 @@ function AdminBooks() {
   }
 
   function handleIds(author, category) {
-    console.log(author, category);
     let newAuthor, newCategory;
     let bookObj = isNew ? { ...newBook } : { ...update };
     if (author && !authors.name) {
@@ -177,7 +170,6 @@ function AdminBooks() {
       newCategory = categories.data.find((categ) => categ.name === category);
       if (newCategory) bookObj = { ...bookObj, category: newCategory._id };
     }
-    console.log(bookObj);
     return bookObj;
   }
 
@@ -204,9 +196,7 @@ function AdminBooks() {
     try {
       setUploadLoading(true);
       e.preventDefault();
-      console.log(newBook);
       const body = handleIds(newBook.author, newBook.category , newBook.fileUrl);
-      console.log(newBook);
       await axios.post("https://goodreads-node-production.up.railway.app/books", body, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -258,7 +248,7 @@ function AdminBooks() {
     },
   });
   const columns = [
-    { id: "Id", label: "Id", minWidth: 50, align: "left" },
+    { id: "Id", label: "Id", minWidth: 30, align: "left" },
     { id: "Photo", label: "Photo", minWidth: 50, align: "left" },
     {
       id: "Title",
@@ -275,42 +265,42 @@ function AdminBooks() {
     {
       id: "Author",
       label: "Author",
-      minWidth: 170,
+      minWidth: 50,
       align: "left",
     },
     {
       id: "Category",
       label: "Category",
-      minWidth: 170,
+      minWidth: 50,
       align: "left",
     },
     {
       id: "Rate",
       label: "Rate",
-      minWidth: 170,
+      minWidth: 50,
       align: "left",
     },
     {
       id: "Edition",
       label: "Edition",
-      minWidth: 170,
+      minWidth: 50,
       align: "left",
     },
     {
       id: "Views",
       label: "Views",
-      minWidth: 170,
+      minWidth: 50,
       align: "left",
     },
     { id: "Upload PDF",
       label: "Upload PDF",
-      minWidth: 170,
+      minWidth: 50,
       align: "left"
      },
     {
       id: "Actions",
       label: "Actions",
-      minWidth: 170,
+      minWidth: 70,
       align: "left",
     },
   ];
@@ -318,7 +308,7 @@ function AdminBooks() {
 
   if (authorLoading || categoryLoading || bookLoading) {
     return (
-      <div className="App-header" style={{ backgroundColor: "white" }}>
+      <div style={{ backgroundColor: "white", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <CircularProgress />
       </div>
     );

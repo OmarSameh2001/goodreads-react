@@ -1,7 +1,9 @@
 .BooksGrid {
-  display: grid;
-  grid-template-columns: 0.7fr 4.3fr;
+  display: flex;
+  flex-direction: column;
   min-height: 57vh;
+  justify-content: center;
+  align-items: center;
 }
 .BooksTitle {
   text-align: center;

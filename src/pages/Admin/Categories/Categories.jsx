@@ -50,7 +50,6 @@ function AdminCategories() {
       const res = await axiosInstance.get(
         `/categories/paginated?page=${page}&limit=${rowsPerPage}`
       );
-      console.log(res);
       setTotal(res.data.data.pagination.total);
       return res.data.data.items;
     },

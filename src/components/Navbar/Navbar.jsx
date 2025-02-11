@@ -83,12 +83,12 @@ const Navbar = ({ setToken, setUserBooks }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { subscription } = useContext(TokenContext);
-  
+
   const user = localStorage.getItem("user");
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("userName");
   const endDate = localStorage.getItem("endDate");
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -97,10 +97,10 @@ const Navbar = ({ setToken, setUserBooks }) => {
   }, [subscription, token]);
 
   const handleLogout = () => {
-      localStorage.clear();
-      setToken(null);
-      setUserBooks([]);
-      navigate("/login");
+    localStorage.clear();
+    setToken(null);
+    setUserBooks([]);
+    navigate("/login");
   };
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
@@ -109,7 +109,10 @@ const Navbar = ({ setToken, setUserBooks }) => {
     { label: "Home", path: user === "admin" ? "/admin" : "/" },
     { label: "Books", path: user === "admin" ? "/adminBooks" : "/books" },
     { label: "Authors", path: user === "admin" ? "/adminAuthors" : "/authors" },
-    { label: "Categories", path: user === "admin" ? "/adminCategories" : "/categories" },
+    {
+      label: "Categories",
+      path: user === "admin" ? "/adminCategories" : "/categories",
+    },
     user === "admin" && { label: "Content", path: "/content" },
   ].filter(Boolean);
 
@@ -131,11 +134,19 @@ const Navbar = ({ setToken, setUserBooks }) => {
 
         {!isMobile && (
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {navItems.map((item) => (
-              <NavLink key={item.label} component={Link} to={item.path}>
-                {item.label}
-              </NavLink>
-            ))}
+            {token
+              ? navItems.map((item) => (
+                  <NavLink key={item.label} component={Link} to={item.path}>
+                    {item.label}
+                  </NavLink>
+                ))
+              : navItems
+                  .filter((item) => item.label === "Home")
+                  .map((item) => (
+                    <NavLink key={item.label} component={Link} to={item.path}>
+                      {item.label}
+                    </NavLink>
+                  ))}
             {user === "user" && (
               <MyBooksLink component={Link} to="/mybooks">
                 <IoBookSharp />
@@ -152,7 +163,11 @@ const Navbar = ({ setToken, setUserBooks }) => {
                 {userName ? userName[0].toUpperCase() : "U"}
               </Avatar>
             </IconButton>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}
+            >
               <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
@@ -178,11 +193,37 @@ const Navbar = ({ setToken, setUserBooks }) => {
           }}
         >
           <List>
-            {navItems.map((item) => (
-              <ListItem button key={item.label} component={Link} to={item.path}>
-                <ListItemText primary={<Typography variant="h6">{item.label}</Typography>} />
-              </ListItem>
-            ))}
+            {token
+              ? navItems.map((item) => (
+                  <ListItem
+                    button
+                    key={item.label}
+                    component={Link}
+                    to={item.path}
+                  >
+                    <ListItemText
+                      primary={
+                        <Typography variant="h6">{item.label}</Typography>
+                      }
+                    />
+                  </ListItem>
+                ))
+              : navItems
+                  .filter((item) => item.label === "Home")
+                  .map((item) => (
+                    <ListItem
+                      button
+                      key={item.label}
+                      component={Link}
+                      to={item.path}
+                    >
+                      <ListItemText
+                        primary={
+                          <Typography variant="h6">{item.label}</Typography>
+                        }
+                      />
+                    </ListItem>
+                  ))}
           </List>
         </Drawer>
       </Toolbar>

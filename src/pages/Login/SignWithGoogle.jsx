@@ -16,7 +16,6 @@ export default function OAuthSignInPage() {
   const handleSuccess = async (response) => {
     try {
         const decodedToken = jwtDecode(response.credential); 
-        console.log("Google User:", decodedToken);
       // Send user details to backend for authentication
       const res = await axiosInstance.post(`/auth/google/callback`, {
         fName: decodedToken.given_name,

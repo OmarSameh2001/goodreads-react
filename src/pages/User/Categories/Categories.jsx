@@ -24,7 +24,6 @@ function Categories() {
       const res = await axiosInstance.get(
         `/categories/paginated?page=${currentPage}&limit=${itemsPerPage}`
       );
-      console.log(res.data.data.items);
       setTotal(res.data.data.pagination.total);
       setInitialLoad(false);
       return res.data.data.items;
