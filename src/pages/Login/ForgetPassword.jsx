@@ -38,10 +38,11 @@ function ForgetPassword() {
       } else {
         body.email = email;
       }
+      const baseURL = import.meta.env.VITE_API_BASE_URL;
       const link =
         type === "forget"
-          ? "https://goodreads-node-production.up.railway.app/auth/forget-password"
-          : `https://goodreads-node-production.up.railway.app/auth/send-otp?email=${email}`;
+          ? `${baseURL}/auth/forget-password`
+          : `${baseURL}/auth/send-otp?email=${email}`;
 
       const res = await axios.post(link, body);
       toast("Please check your email for password reset link", {

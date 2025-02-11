@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-const UserBooks = createContext();
+const UserBooks = createContext([]);
 export default UserBooks;

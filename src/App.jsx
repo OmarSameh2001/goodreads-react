@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import axiosInstance from "./apis/config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
 import AdminRoute from "./components/ProtectedRoute/AdminRoute";
@@ -11,47 +10,34 @@ import BooksContext from "./context/books";
 import UserBooks from "./context/userBooks";
 import { ToastContainer } from "react-toastify";
 import Layout from "./Layout"; // Import the Layout component
-import React, { Suspense } from "react";
-import { CircularProgress, Box } from "@mui/material";
+import React from "react";
+import  fetchAndSetUserBooks  from "../utils";
+ import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./pages/User/Home/Home";
+import NotFound from "./pages/NotFound/NotFound";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import AdminHome from "./pages/Admin/Home/Home";
+import AdminAuthors from "./pages/Admin/Authors/Authors";
+import AdminBooks from "./pages/Admin/Books/Books";
+import AdminCategories from "./pages/Admin/Categories/Categories";
+import Authors from "./pages/User/Authors/Authors";
+import Books from "./pages/User/Books/Books";
+import Categories from "./pages/User/Categories/Categories";
+ import Otp from "./components/Otp/Otp";
+import BookDetails from "./pages/User/Books/BookDetails";
+import AuthorDetails from "./pages/User/Authors/AuthorDetails";
+import Profile from "./pages/User/Profile/Profile";
+ import Success from "./components/Payment/Success";
+ import Cancel from "./components/Payment/Cancel";
+ import ForgetPassword from "./pages/Login/ForgetPassword";
+import AdminContentEditor from './pages/Admin/SiteContent/AdminContentEditor';
+import BookViewer from './pages/User/Books/BookViewer';
+import MyBooks from './pages/User/UserActivity/MyBooks';
+import Reviews from './pages/User/UserActivity/Reviews';
+import About from './pages/User/SiteContent/About';
+import Terms from './pages/User/SiteContent/Terms';
 function App() {
-  const Home = React.lazy(() => import("./pages/User/Home/Home"));
-  const NotFound = React.lazy(() => import("./pages/NotFound/NotFound"));
-  const AdminHome = React.lazy(() => import("./pages/Admin/Home/Home"));
-  const Login = React.lazy(() => import("./pages/Login/Login"));
-  const Register = React.lazy(() => import("./pages/Register/Register"));
-  const AdminAuthors = React.lazy(
-    () => import("./pages/Admin/Authors/Authors")
-  );
-  const AdminBooks = React.lazy(() => import("./pages/Admin/Books/Books"));
-  const AdminCategories = React.lazy(
-    () => import("./pages/Admin/Categories/Categories")
-  );
-  const Authors = React.lazy(() => import("./pages/User/Authors/Authors"));
-  const Books = React.lazy(() => import("./pages/User/Books/Books"));
-  const Categories = React.lazy(
-    () => import("./pages/User/Categories/Categories")
-  );
-  const BookDetails = React.lazy(
-    () => import("./pages/User/Books/BookDetails")
-  );
-  const AuthorDetails = React.lazy(
-    () => import("./pages/User/Authors/AuthorDetails")
-  );
-  const MyBooks = React.lazy(() => import("./pages/User/UserActivity/MyBooks"));
-  const Reviews = React.lazy(() => import("./pages/User/UserActivity/Reviews"));
-  const Profile = React.lazy(() => import("./pages/User/Profile/Profile"));
-  const ForgetPassword = React.lazy(
-    () => import("./pages/Login/ForgetPassword")
-  );
-  const AdminContentEditor = React.lazy(
-    () => import("./pages/Admin/SiteContent/AdminContentEditor")
-  );
-  const About = React.lazy(() => import("./pages/User/SiteContent/About"));
-  const Terms = React.lazy(() => import("./pages/User/SiteContent/Terms"));
-  const BookViewer = React.lazy(() => import("./pages/User/Books/BookViewer"));
-  const Success = React.lazy(() => import("./components/Payment/Success"));
-  const Cancel = React.lazy(() => import("./components/Payment/Cancel"));
-  const Otp = React.lazy(() => import("./components/Otp/Otp"));
 
   const [books, setBooks] = useState([]);
   const [readingBook, setReadingBook] = useState("not subscribed");
@@ -65,27 +51,10 @@ function App() {
   );
 
   useEffect(() => {
-    async function handleUserBooks() {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res1 = await axiosInstance.post("/auth/verify");
-        if (res1.status !== 200) return;
-
-        const response = await axiosInstance.get(
-          `/userBook/${res1.data.decodedUser.id}`
-        );
-        if (JSON.stringify(userBooks) !== JSON.stringify(response.data)) {
-          setUserBooks(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    if (token) {
+      fetchAndSetUserBooks(setUserBooks);
     }
-
-    handleUserBooks();
-  }, [userBooks, token]);
+  }, [token]);
 
   return (
     <div className="App">
@@ -98,21 +67,6 @@ function App() {
               value={{ token, setToken, subscription, setSubscription }}
             >
               <Layout setToken={setToken} setUserBooks={setUserBooks}>
-                <Suspense
-                  fallback={
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100vh",
-                        width: "100vw",
-                      }}
-                    >
-                      <CircularProgress />
-                    </Box>
-                  }
-                >
                   <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
@@ -267,7 +221,6 @@ function App() {
                     />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </Suspense>
               </Layout>
 
               <ToastContainer />

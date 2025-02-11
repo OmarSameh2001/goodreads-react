@@ -18,9 +18,10 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../apis/config.js";
 import UserBooks from "../../../context/userBooks.js";
 import BooksContext from "../../../context/books.js";
-import ReviewLink from "../../../components/Reviews/ReviewLink.jsx";
+import BookState from "../../../components/Userbook/BookState.jsx";
 import UserRating from "../../../components/Rating/UserRating.jsx";
-
+import ReviewLink from "../../../components/Reviews/ReviewLink.jsx";
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 function BookDetails() {
   const { userBooks, setUserBooks } = useContext(UserBooks);
   const { setReadingBook } = useContext(BooksContext);
@@ -51,11 +52,11 @@ function BookDetails() {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const isBookAdded = userBooks.some(
+  const userBook = userBooks.find(
     (userBook) => userBook.book._id === book._id
   );
-  const userRating =
-    userBooks.find((userBook) => userBook.book._id === book._id)?.rating || 0;
+  const isBookAdded = Boolean(userBook);
+
   const averageRating =
     book.totalRateCount > 0 ? book.totalRate / book.totalRateCount : 0;
   const downloadAvailable = book.pdfLink && book.pdfLink !== "not subscribed";
@@ -64,11 +65,10 @@ function BookDetails() {
     const requestBody = { user: user_id, book: book_id };
     try {
       const response = await axiosInstance.post("userBook/", requestBody);
-      toast(`Book: ${book.title} has been added successfully`, {
-        type: "success",
-        theme: "colored",
-      });
-      setUserBooks((prev) => [...prev, response.data]);
+      setUserBooks((prevUserBooks) => [
+        ...prevUserBooks, 
+        { _id: response.data._id, book: book, state: "want to read" }
+      ]);
     } catch (error) {
       toast("Error, Book already exist", { type: "error", theme: "colored" });
     }
@@ -116,14 +116,22 @@ function BookDetails() {
                   />
                   <span>({book.totalRateCount.toLocaleString()})</span>
                 </Box>
-                <Button
-                  variant={isBookAdded ? "contained" : "outlined"}
-                  onClick={() => handleAddToWantToRead(userId, book._id)}
-                  disabled={isBookAdded}
-                  sx={{ borderRadius: "20px", textTransform: "none" }}
-                >
-                  {isBookAdded ? "Already Added" : "Want to Read"}
-                </Button>
+                <Box sx={{ mt: 1.5 }}>
+          {userBook ? (
+            <BookState userId={userId} bookId={book._id} state={userBook.state} />
+          ) : (
+            <Button
+              fullWidth
+              variant="soft"
+              color="primary"
+              size="sm"
+              onClick={(event) => handleAddToWantToRead(userId, book._id)}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <BookmarkAddIcon fontSize="small" /> Want to Read
+            </Button>
+          )}
+        </Box>
                 <span style={{ fontSize: "0.8rem", color: "gray" }}>
                   Added on: {new Date(book.createdAt).toLocaleDateString()}
                 </span>
@@ -218,6 +226,7 @@ function BookDetails() {
           </Box>
         </CardContent>
         <Divider />
+
         {isBookAdded && (
           <Box sx={{ p: 3 }}>
             {/* Review Section */}
@@ -243,7 +252,7 @@ function BookDetails() {
               <UserRating
                 userId={userId}
                 bookId={bookId}
-                rating={userRating}
+                rating={userBook?.rating || 0}
                 style={{ marginLeft: "8px" }}
               />
             </Box>
