@@ -2,41 +2,57 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import axiosInstance from "./apis/config";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Home from "./pages/User/Home/Home";
 import UserRoute from "./components/ProtectedRoute/UserRoute";
-import NotFound from "./pages/NotFound/NotFound";
-import Login from "./pages/Login/Login";
-import Register from "./pages/Register/Register";
 import AdminRoute from "./components/ProtectedRoute/AdminRoute";
-import AdminHome from "./pages/Admin/Home/Home";
-import AdminAuthors from "./pages/Admin/Authors/Authors";
-import AdminBooks from "./pages/Admin/Books/Books";
-import AdminCategories from "./pages/Admin/Categories/Categories";
-import Authors from "./pages/User/Authors/Authors";
-import Books from "./pages/User/Books/Books";
-import Categories from "./pages/User/Categories/Categories";
-import Otp from "./components/Otp/Otp";
-import BookDetails from "./pages/User/Books/BookDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import TokenContext from "./context/token";
-import AuthorDetails from "./pages/User/Authors/AuthorDetails";
-import MyBooks from "./pages/User/UserActivity/MyBooks";
-import Reviews from "./pages/User/UserActivity/Reviews";
 import BooksContext from "./context/books";
 import UserBooks from "./context/userBooks";
-import Profile from "./pages/User/Profile/Profile";
-import Success from "./components/Payment/Success";
-import Cancel from "./components/Payment/Cancel";
-import ForgetPassword from "./pages/Login/ForgetPassword";
 import { ToastContainer } from "react-toastify";
-import AdminContentEditor from "./pages/Admin/SiteContent/AdminContentEditor";
-import About from "./pages/User/SiteContent/About";
-import Terms from "./pages/User/SiteContent/Terms";
-import BookViewer from "./pages/User/Books/BookViewer";
 import Layout from "./Layout"; // Import the Layout component
-
+import React, { Suspense } from "react";
+import { CircularProgress, Box } from "@mui/material";
 function App() {
+  const Home = React.lazy(() => import("./pages/User/Home/Home"));
+  const NotFound = React.lazy(() => import("./pages/NotFound/NotFound"));
+  const AdminHome = React.lazy(() => import("./pages/Admin/Home/Home"));
+  const Login = React.lazy(() => import("./pages/Login/Login"));
+  const Register = React.lazy(() => import("./pages/Register/Register"));
+  const AdminAuthors = React.lazy(
+    () => import("./pages/Admin/Authors/Authors")
+  );
+  const AdminBooks = React.lazy(() => import("./pages/Admin/Books/Books"));
+  const AdminCategories = React.lazy(
+    () => import("./pages/Admin/Categories/Categories")
+  );
+  const Authors = React.lazy(() => import("./pages/User/Authors/Authors"));
+  const Books = React.lazy(() => import("./pages/User/Books/Books"));
+  const Categories = React.lazy(
+    () => import("./pages/User/Categories/Categories")
+  );
+  const BookDetails = React.lazy(
+    () => import("./pages/User/Books/BookDetails")
+  );
+  const AuthorDetails = React.lazy(
+    () => import("./pages/User/Authors/AuthorDetails")
+  );
+  const MyBooks = React.lazy(() => import("./pages/User/UserActivity/MyBooks"));
+  const Reviews = React.lazy(() => import("./pages/User/UserActivity/Reviews"));
+  const Profile = React.lazy(() => import("./pages/User/Profile/Profile"));
+  const ForgetPassword = React.lazy(
+    () => import("./pages/Login/ForgetPassword")
+  );
+  const AdminContentEditor = React.lazy(
+    () => import("./pages/Admin/SiteContent/AdminContentEditor")
+  );
+  const About = React.lazy(() => import("./pages/User/SiteContent/About"));
+  const Terms = React.lazy(() => import("./pages/User/SiteContent/Terms"));
+  const BookViewer = React.lazy(() => import("./pages/User/Books/BookViewer"));
+  const Success = React.lazy(() => import("./components/Payment/Success"));
+  const Cancel = React.lazy(() => import("./components/Payment/Cancel"));
+  const Otp = React.lazy(() => import("./components/Otp/Otp"));
+
   const [books, setBooks] = useState([]);
   const [readingBook, setReadingBook] = useState("not subscribed");
   const queryClient = new QueryClient();
@@ -74,39 +90,184 @@ function App() {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <BooksContext.Provider value={{ books, setBooks, readingBook, setReadingBook }}>
+        <BooksContext.Provider
+          value={{ books, setBooks, readingBook, setReadingBook }}
+        >
           <UserBooks.Provider value={{ userBooks, setUserBooks }}>
-            <TokenContext.Provider value={{ token, setToken, subscription, setSubscription }}>
-
+            <TokenContext.Provider
+              value={{ token, setToken, subscription, setSubscription }}
+            >
               <Layout setToken={setToken} setUserBooks={setUserBooks}>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/otp" element={<Otp />} />
-                  <Route path="/forget" element={<ForgetPassword />} />
+                <Suspense
+                  fallback={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100vh",
+                        width: "100vw",
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  }
+                >
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/otp" element={<Otp />} />
+                    <Route path="/forget" element={<ForgetPassword />} />
 
-                  <Route path="/admin" element={<AdminRoute><AdminHome /></AdminRoute>} />
-                  <Route path="/adminAuthors" element={<AdminRoute><AdminAuthors /></AdminRoute>} />
-                  <Route path="/adminBooks" element={<AdminRoute><AdminBooks /></AdminRoute>} />
-                  <Route path="/adminCategories" element={<AdminRoute><AdminCategories /></AdminRoute>} />
-                  <Route path="/content" element={<AdminRoute><AdminContentEditor /></AdminRoute>} />
+                    <Route
+                      path="/admin"
+                      element={
+                        <AdminRoute>
+                          <AdminHome />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminAuthors"
+                      element={
+                        <AdminRoute>
+                          <AdminAuthors />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminBooks"
+                      element={
+                        <AdminRoute>
+                          <AdminBooks />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/adminCategories"
+                      element={
+                        <AdminRoute>
+                          <AdminCategories />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/content"
+                      element={
+                        <AdminRoute>
+                          <AdminContentEditor />
+                        </AdminRoute>
+                      }
+                    />
 
-                  <Route path="/" element={<Home />} />
-                  <Route path="/authors" element={<UserRoute><Authors /></UserRoute>} />
-                  <Route path="/authors/:id" element={<UserRoute><AuthorDetails /></UserRoute>} />
-                  <Route path="/books" element={<UserRoute><Books /></UserRoute>} />
-                  <Route path="/bookDetails/:bookId" element={<UserRoute><BookDetails /></UserRoute>} />
-                  <Route path="/bookViewer/:bookName" element={<UserRoute><BookViewer /></UserRoute>} />
-                  <Route path="/categories" element={<UserRoute><Categories /></UserRoute>} />
-                  <Route path="/mybooks" element={<UserRoute><MyBooks /></UserRoute>} />
-                  <Route path="/reviews/:bookId" element={<UserRoute><Reviews /></UserRoute>} />
-                  <Route path="/profile" element={<UserRoute><Profile /></UserRoute>} />
-                  <Route path="/success" element={<UserRoute><Success /></UserRoute>} />
-                  <Route path="/cancel" element={<UserRoute><Cancel /></UserRoute>} />
-                  <Route path="/about" element={<UserRoute><About /></UserRoute>} />
-                  <Route path="/terms" element={<UserRoute><Terms /></UserRoute>} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route
+                      path="/authors"
+                      element={
+                        <UserRoute>
+                          <Authors />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/authors/:id"
+                      element={
+                        <UserRoute>
+                          <AuthorDetails />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/books"
+                      element={
+                        <UserRoute>
+                          <Books />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/bookDetails/:bookId"
+                      element={
+                        <UserRoute>
+                          <BookDetails />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/bookViewer/:bookName"
+                      element={
+                        <UserRoute>
+                          <BookViewer />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/categories"
+                      element={
+                        <UserRoute>
+                          <Categories />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/mybooks"
+                      element={
+                        <UserRoute>
+                          <MyBooks />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/reviews/:bookId"
+                      element={
+                        <UserRoute>
+                          <Reviews />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <UserRoute>
+                          <Profile />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/success"
+                      element={
+                        <UserRoute>
+                          <Success />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/cancel"
+                      element={
+                        <UserRoute>
+                          <Cancel />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/about"
+                      element={
+                        <UserRoute>
+                          <About />
+                        </UserRoute>
+                      }
+                    />
+                    <Route
+                      path="/terms"
+                      element={
+                        <UserRoute>
+                          <Terms />
+                        </UserRoute>
+                      }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
               </Layout>
 
               <ToastContainer />
