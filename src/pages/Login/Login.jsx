@@ -27,7 +27,7 @@ function Login() {
   const { setSubscription} = useContext(TokenContext);
   async function handleLogin() {
     try {
-      const res = await axios.post("http://localhost:3001/auth/login", {
+      const res = await axios.post("https://goodreads-node-production.up.railway.app/auth/login", {
         email,
         password,
       });

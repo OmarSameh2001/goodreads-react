@@ -82,7 +82,7 @@ function Otp() {
         otp: `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
       };
       const res = await axios.post(
-        `http://localhost:3001/auth/verify-otp`,
+        `https://goodreads-node-production.up.railway.app/auth/verify-otp`,
         body
       );
       return res.status;
@@ -98,7 +98,7 @@ function Otp() {
         type: "password",
       };
       const res = await axios.post(
-        `http://localhost:3001/auth/verify-otp`,
+        `https://goodreads-node-production.up.railway.app/auth/verify-otp`,
         body
       );
       return res.status;
@@ -107,7 +107,7 @@ function Otp() {
     }
   }
   function handleResendOtp() {
-    axios.post(`http://localhost:3001/auth/send-otp?email=${email}`);
+    axios.post(`https://goodreads-node-production.up.railway.app/auth/send-otp?email=${email}`);
     toast("OTP resent successfully", { type: "success", theme: "colored" });
   }
   return (

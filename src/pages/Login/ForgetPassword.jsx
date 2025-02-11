@@ -40,8 +40,8 @@ function ForgetPassword() {
       }
       const link =
         type === "forget"
-          ? "http://localhost:3001/auth/forget-password"
-          : `http://localhost:3001/auth/send-otp?email=${email}`;
+          ? "https://goodreads-node-production.up.railway.app/auth/forget-password"
+          : `https://goodreads-node-production.up.railway.app/auth/send-otp?email=${email}`;
 
       const res = await axios.post(link, body);
       toast("Please check your email for password reset link", {

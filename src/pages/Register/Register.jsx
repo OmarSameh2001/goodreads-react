@@ -43,7 +43,7 @@ function Register() {
   }
   async function handleRegister() {
     try {
-      const res = await axios.post("http://localhost:3001/auth/register", {
+      const res = await axios.post("https://goodreads-node-production.up.railway.app/auth/register", {
         fName: formValues.fname,
         lName: formValues.lname,
         username: formValues.username,

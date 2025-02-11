@@ -186,7 +186,7 @@ function AdminBooks() {
       setUploadLoading(true);
       e.preventDefault();
       const body = handleIds(update.author, update.category ,update.fileUrl);
-      await axios.put(`http://localhost:3001/books/${update._id}`, body, {
+      await axios.put(`https://goodreads-node-production.up.railway.app/books/${update._id}`, body, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -207,7 +207,7 @@ function AdminBooks() {
       console.log(newBook);
       const body = handleIds(newBook.author, newBook.category , newBook.fileUrl);
       console.log(newBook);
-      await axios.post("http://localhost:3001/books", body, {
+      await axios.post("https://goodreads-node-production.up.railway.app/books", body, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
