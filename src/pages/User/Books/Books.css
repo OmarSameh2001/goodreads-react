@@ -1,6 +1,7 @@
 .BooksGrid {
   display: grid;
   grid-template-columns: 0.7fr 4.3fr;
+  min-height: 57vh;
 }
 .BooksTitle {
   text-align: center;

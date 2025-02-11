@@ -16,8 +16,9 @@ import ReviewLink from "../../../components/Reviews/ReviewLink";
 import UserBooks from "../../../context/userBooks";
 import BookState from "../../../components/Userbook/BookState";
 import { useNavigate } from "react-router";
-import { FaBook } from 'react-icons/fa';
-import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
+import { FaBook } from "react-icons/fa";
+import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
+import "./MyBooks.css";
 
 const columns = [
   { _id: 1, label: "Book", align: "left", minWidth: 100 },
@@ -62,28 +63,31 @@ export default function MyBooks() {
   }
 
   return (
-    <>
+    <div className="MyBooks-Wrapper">
       {/* Hero Section */}
       <Box
-  sx={{
-    padding: "20px",
-    textAlign: "center",
-    marginBottom: "20px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    borderRadius: "8px",
-  }}
+        sx={{
+          padding: "20px",
+          textAlign: "center",
+          marginBottom: "20px",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          borderRadius: "8px",
+        }}
       >
-        <h2 className="b612-regular" style={{ color: "#000", fontSize: "24px" }}>
+        <h2
+          className="b612-regular"
+          style={{ color: "#000", fontSize: "24px" }}
+        >
           My Books Library
         </h2>
         <h4 className="b612-regular-italic" style={{ color: "gray" }}>
           Explore and manage your favorite books.
         </h4>
         <Box sx={{ mt: 2 }}>
-  <LocalLibraryIcon sx={{ fontSize: 90, color: "rgba(148,187,233)" }} />
-</Box>
+          <LocalLibraryIcon sx={{ fontSize: 90, color: "rgba(148,187,233)" }} />
+        </Box>
       </Box>
-  
+
       {/* Table Section */}
       <Box sx={{ margin: "20px" }}>
         <Paper
@@ -135,23 +139,19 @@ export default function MyBooks() {
                       }}
                     >
                       <TableCell
-                        onClick={() =>
-                          navigate(`/bookDetails/${row.book._id}`)
-                        }
+                        onClick={() => navigate(`/bookDetails/${row.book._id}`)}
                         style={{ cursor: "pointer" }}
                       >
                         <h6
                           className="b612-regular"
-                          style={{ color: "#000", margin: 0 , fontSize: "14px"}}
+                          style={{ color: "#000", margin: 0, fontSize: "14px" }}
                         >
                           {row.book.title}
                         </h6>
                       </TableCell>
                       <TableCell
                         align="center"
-                        onClick={() =>
-                          navigate(`/bookDetails/${row.book._id}`)
-                        }
+                        onClick={() => navigate(`/bookDetails/${row.book._id}`)}
                         style={{ cursor: "pointer" }}
                       >
                         <img
@@ -168,10 +168,7 @@ export default function MyBooks() {
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <ReviewLink
-                          bookId={row.book._id}
-                          review={row.review}
-                        />
+                        <ReviewLink bookId={row.book._id} review={row.review} />
                       </TableCell>
                       <TableCell align="center">
                         <BookState
@@ -215,6 +212,6 @@ export default function MyBooks() {
           />
         </Paper>
       </Box>
-    </>
+    </div>
   );
 }

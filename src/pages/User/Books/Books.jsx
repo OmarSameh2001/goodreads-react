@@ -16,8 +16,10 @@ import {
   FormControlLabel,
   FormGroup,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 function UserBooks() {
   const [books, setBooks] = useState([]);
@@ -27,7 +29,7 @@ function UserBooks() {
   const [currentPage, setCurrentPage] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(books.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const currentBooks = displayedBooks.slice(
@@ -79,13 +81,11 @@ function UserBooks() {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
 
-
     const urlAuthorsNames = searchParams.get("authors")?.split(",") || [];
     //check if the category ids in url are valid if not set it to empty array
     const validAuthors = urlAuthorsNames.filter((name) =>
       authors.some((a) => a.name === name)
     );
-
 
     const urlCategoriesNames = searchParams.get("categories")?.split(",") || [];
     //check if the category ids in url are valid if not set it to empty array
@@ -123,27 +123,60 @@ function UserBooks() {
 
     setDisplayedBooks(filteredBooks);
   }, [selectedCategories, selectedAuthors, books, appliedBookSearch]);
-  
-  //fetch authors , categories and books
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authorResponse = await axiosInstance.get("/authors/names");
-        setAuthors(authorResponse.data);
-        const categoryResponse = await axiosInstance.get("/categories/names");
-        setCategories(categoryResponse.data.data);
-        const response = await axiosInstance.get("/books");
-        setBooks(response.data);
-        setDisplayedBooks(response.data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
-    fetchData();
-  }, []);
+  //fetch authors , categories and books
+  // Fetch authors
+  const {
+    data: authorsData,
+    isLoading: authorsLoading,
+    error: authorsError,
+  } = useQuery({
+    queryKey: ["authors"],
+    queryFn: async () => (await axiosInstance.get("/authors/names")).data,
+  });
+
+  // Fetch categories
+  const {
+    data: categoriesData,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () =>
+      (await axiosInstance.get("/categories/names")).data.data,
+  });
+
+  // Fetch books
+  const {
+    data: booksData,
+    isLoading: booksLoading,
+    error: booksError,
+  } = useQuery({
+    queryKey: ["books"],
+    queryFn: async () => (await axiosInstance.get("/books")).data,
+  });
+
+  // Derive combined loading and error states (use these in your render)
+  useEffect(() => {
+    setIsLoading(authorsLoading || categoriesLoading || booksLoading);
+  }, [authorsLoading, categoriesLoading, booksLoading]);
+
+  useEffect(() => {
+    if (authorsError || categoriesError || booksError) {
+      setError(authorsError || categoriesError || booksError);
+    }
+  }, [authorsError, categoriesError, booksError]);
+
+  // Update local state when any query data arrives
+  useEffect(() => {
+    if (authorsData) setAuthors(authorsData);
+    if (categoriesData) setCategories(categoriesData);
+    if (booksData) {
+      setBooks(booksData);
+      setDisplayedBooks(booksData);
+    }
+  }, [authorsData, categoriesData, booksData]);
+
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
@@ -151,9 +184,13 @@ function UserBooks() {
   return (
     <div>
       <h1 className="BooksTitle">Books</h1>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && (
+        <div className="text-center">
+          <CircularProgress />
+        </div>
+      )}
       {error && <div>Error: {error.message}</div>}
-      <div className="BooksGrid">
+      <div className="BooksGrid" style={{ minimumHeight: "100vh" }}>
         <div className="filters mt-5 mx-3">
           <h3>Filters</h3>
           <Search
@@ -303,7 +340,7 @@ function UserBooks() {
         </div>
 
         {displayedBooks && displayedBooks.length > 0 ? (
-          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-3">
+          <div className="row row-cols-1 row-cols-md-5 g-4 text-center m-3 ">
             {currentBooks
               .sort((a, b) => a.title.localeCompare(b.title))
               .map((book) => (

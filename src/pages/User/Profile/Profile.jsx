@@ -72,7 +72,7 @@ function Profile() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
+    <Container maxWidth="sm" sx={{ mt: 4, minHeight: "74.5vh" }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         {/* Header */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -114,11 +114,7 @@ function Profile() {
                 <MenuItem value="annually">Annually</MenuItem>
               </Select>
             </FormControl>
-            <Button
-              variant="contained"
-              onClick={handleRenew}
-              disabled={!renew}
-            >
+            <Button variant="contained" onClick={handleRenew} disabled={!renew}>
               Renew
             </Button>
           </Box>
@@ -145,7 +141,11 @@ function Profile() {
         {/* Edit User */}
         {isEditing && (
           <Box mt={3}>
-            <EditUser user={user} setIsEditing={setIsEditing} fetchUser={refetch} />
+            <EditUser
+              user={user}
+              setIsEditing={setIsEditing}
+              fetchUser={refetch}
+            />
           </Box>
         )}
       </Paper>
