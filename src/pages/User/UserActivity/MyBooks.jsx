@@ -7,16 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axiosInstance from "../../../apis/config";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Delete";
 import UserRating from "../../../components/Rating/UserRating";
 import ReviewLink from "../../../components/Reviews/ReviewLink";
 import UserBooks from "../../../context/userBooks";
 import BookState from "../../../components/Userbook/BookState";
 import { useNavigate } from "react-router";
-import { FaBook } from "react-icons/fa";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import "./MyBooks.css";
 
@@ -37,9 +36,9 @@ export default function MyBooks() {
   const { userBooks, setUserBooks } = React.useContext(UserBooks);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setUserBooks([...userBooks]);
-  }, [userBooks.length]);
+  // useEffect(() => {
+  //   setUserBooks([...userBooks]);
+  // }, [userBooks?.length]);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -126,7 +125,9 @@ export default function MyBooks() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {userBooks
+
+                {/* handle null value in table */}
+                {(Array.isArray(userBooks) ? userBooks : [])
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <TableRow

@@ -4,6 +4,7 @@ import "./Otp.css";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import axiosInstance from "../../apis/config";
 function Otp() {
   const [otp, setOtp] = useState({
     otp1: "",
@@ -77,8 +78,8 @@ function Otp() {
         email: email,
         otp: `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
       };
-      const res = await axios.post(
-        `https://goodreads-node-production.up.railway.app/auth/verify-otp`,
+      const res = await axiosInstance.post(
+        `/auth/verify-otp`,
         body
       );
       return res.status;
@@ -93,8 +94,8 @@ function Otp() {
         otp: `${otp.otp1}${otp.otp2}${otp.otp3}${otp.otp4}${otp.otp5}${otp.otp6}`,
         type: "password",
       };
-      const res = await axios.post(
-        `https://goodreads-node-production.up.railway.app/auth/verify-otp`,
+      const res = await axiosInstance.post(
+        `/auth/verify-otp`,
         body
       );
       return res.status;
@@ -103,7 +104,7 @@ function Otp() {
     }
   }
   function handleResendOtp() {
-    axios.post(`https://goodreads-node-production.up.railway.app/auth/send-otp?email=${email}`);
+    axiosInstance.post(`/auth/send-otp?email=${email}`);
     toast("OTP resent successfully", { type: "success", theme: "colored" });
   }
   return (

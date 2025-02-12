@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Link as RouterLink } from "react-router";
-import UserBooks from "../../context/userBooks";
 import axiosInstance from "../../apis/config";
 import { set } from "react-hook-form";
 import TokenContext from "../../context/token";
@@ -19,15 +18,20 @@ import {
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
 import OAuthSignInPage from "./SignWithGoogle";
+import UserBooks from "../../context/userBooks.js";
+import fetchAndSetUserBooks from "../../../utils.jsx";
+
 function Login() {
   const token = localStorage.getItem("token");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { setSubscription} = useContext(TokenContext);
+  const { setUserBooks } = useContext(UserBooks);
+
   async function handleLogin() {
     try {
-      const res = await axios.post("https://goodreads-node-production.up.railway.app/auth/login", {
+      const res = await axiosInstance.post("/auth/login", {
         email,
         password,
       });
@@ -43,10 +47,12 @@ function Login() {
         localStorage.setItem("endDate", res.data.user.subscription.endDate);
         setSubscription(res.data.user.subscription.subscriptionType === "premium");
         res.data.user.role === "admin" ? navigate("/admin") : navigate("/");
+        await fetchAndSetUserBooks(setUserBooks);
+
       }
     } catch (error) {
       console.log(error);
-      toast(error.response.data.message, { type: "error", theme: "colored" });
+      setUserBooks([]);
     }
   }
   function handleSubmit(e) {

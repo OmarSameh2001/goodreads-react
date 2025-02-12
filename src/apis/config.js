@@ -1,6 +1,6 @@
 import axios from "axios";
 const axiosInstance = axios.create({
-  baseURL: "https://goodreads-node-production.up.railway.app", //import.meta.env.VITE_API_BASE_URL,
+  baseURL: "https://goodreads-node-production.up.railway.app", 
 });
 // Add a request interceptor
 axiosInstance.interceptors.request.use(

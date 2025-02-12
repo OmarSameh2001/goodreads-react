@@ -1,12 +1,15 @@
 .BooksGrid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 0.7fr 4.3fr;
   min-height: 57vh;
-  justify-content: center;
-  align-items: center;
 }
 .BooksTitle {
   text-align: center;
   padding-top: 0.5em;
   margin-bottom: 0;
+}
+@media (max-width: 600px) {
+  .BooksGrid {
+    grid-template-columns: 1fr;
+  }
 }
