@@ -45,8 +45,8 @@ export default function Reviews() {
             return (
               <Card key={review._id} sx={{ backgroundColor: randomColor, borderRadius: 2, boxShadow: 2, p: 2, mb: 2 }}>
                 <CardHeader
-                  avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{review.user.username.charAt(0)}</Avatar>}
-                  title={review.user.username || "Anonymous"}
+                  avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{review?.user?.username?.charAt(0)}</Avatar>}
+                  title={review?.user?.username || "Anonymous"}
                   subheader={new Intl.DateTimeFormat("en-US", {
                     year: "numeric",
                     month: "long",
